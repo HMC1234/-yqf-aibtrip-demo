@@ -1,0 +1,20 @@
+{
+  "bucket": "yqf-aibtrip-demo",
+  "region": "ap-guangzhou",
+  "secretId": "your-secret-id",
+  "secretKey": "your-secret-key",
+  "protocol": "https",
+  "domain": "your-cdn-domain.com",
+  "cosPath": "/",
+  "localPath": "./build",
+  "sync": true,
+  "delete": false,
+  "ignore": [
+    ".git",
+    ".github",
+    "node_modules",
+    "*.md",
+    ".gitignore"
+  ]
+}
+

@@ -48,7 +48,29 @@ jobs:
           BUCKET: ${{ secrets.TENCENT_BUCKET || env.BUCKET }}
           REGION: ${{ secrets.TENCENT_REGION || env.REGION }}
         run: |
+          echo "配置coscmd..."
+          echo "存储桶: $BUCKET"
+          echo "地域: $REGION"
+          
+          if [ -z "$SECRET_ID" ] || [ -z "$SECRET_KEY" ]; then
+            echo "❌ 错误: SecretId或SecretKey未配置"
+            echo "请检查GitHub Secrets: TENCENT_SECRET_ID 和 TENCENT_SECRET_KEY"
+            exit 1
+          fi
+          
+          echo "开始配置coscmd..."
           coscmd config -a "$SECRET_ID" -s "$SECRET_KEY" -b "$BUCKET" -r "$REGION"
+          
+          if [ $? -ne 0 ]; then
+            echo "❌ coscmd配置失败"
+            echo "可能的原因："
+            echo "1. SecretId或SecretKey错误"
+            echo "2. 存储桶名称或地域错误"
+            echo "3. 密钥权限不足"
+            exit 1
+          fi
+          
+          echo "✅ coscmd配置成功"
 
       - name: Deploy to Tencent COS
         env:
@@ -77,3 +99,7 @@ jobs:
           else
             echo "🌐 COS地址: https://$BUCKET.cos-website.$REGION.myqcloud.com"
           fi
+<<<<<<< HEAD
+=======
+
+>>>>>>> a356223 (feat: 娣诲姞鑵捐浜慍OS鑷姩閮ㄧ讲鏀寔)
