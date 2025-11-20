@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Card, Row, Col, Button, Tag, Space, Spin, message } from 'antd'
-import { CheckCircleOutlined, EyeOutlined } from '@ant-design/icons'
+import { CheckCircleOutlined, EyeOutlined, FileTextOutlined } from '@ant-design/icons'
 import { supabase } from '../../lib/supabase'
 import { RecommendationOption } from '../../types'
 import './RecommendationList.css'
@@ -20,6 +20,7 @@ const RecommendationList: React.FC<RecommendationListProps> = ({ recommendationI
   const [recommendation, setRecommendation] = useState<any>(null)
   const [options, setOptions] = useState<RecommendationOption[]>([])
   const [loading, setLoading] = useState(true)
+  const [travelRequest, setTravelRequest] = useState<any>(null)
 
   useEffect(() => {
     if (recommendationId) {
@@ -43,6 +44,19 @@ const RecommendationList: React.FC<RecommendationListProps> = ({ recommendationI
       }
 
       setRecommendation(recData)
+
+      // 如果推荐方案来源于出差申请单，加载申请单信息
+      if (recData?.travel_request_id) {
+        const { data: requestData, error: requestError } = await supabase
+          .from('travel_requests')
+          .select('id, request_no, origin, destination, departure_date, return_date, status')
+          .eq('id', recData.travel_request_id)
+          .single()
+
+        if (!requestError && requestData) {
+          setTravelRequest(requestData)
+        }
+      }
 
       // 加载推荐方案详情
       const { data: detailsData, error: detailsError } = await supabase
@@ -120,12 +134,35 @@ const RecommendationList: React.FC<RecommendationListProps> = ({ recommendationI
           </div>
         }
       >
-        <div className="recommendation-info" style={{ marginBottom: 24, padding: 16, background: '#f5f5f5', borderRadius: 4 }}>
-          <Space>
-            <span><strong>行程：</strong>{recommendation?.origin} → {recommendation?.destination}</span>
-            <span><strong>出发：</strong>{new Date(recommendation?.departure_date).toLocaleDateString()}</span>
-            <span><strong>回程：</strong>{new Date(recommendation?.return_date).toLocaleDateString()}</span>
-          </Space>
+        <div className="recommendation-info" style={{ marginBottom: 24 }}>
+          {/* 显示来源申请单信息 */}
+          {travelRequest && (
+            <Card
+              size="small"
+              style={{ marginBottom: 16, background: '#e6f7ff', borderColor: '#91d5ff' }}
+            >
+              <Space>
+                <FileTextOutlined style={{ color: '#1890ff' }} />
+                <span><strong>来源申请单：</strong></span>
+                <Button
+                  type="link"
+                  style={{ padding: 0, height: 'auto', fontFamily: 'monospace' }}
+                  onClick={() => navigate(`/travel-request/${travelRequest.id}`)}
+                >
+                  {travelRequest.request_no}
+                </Button>
+                <Tag color="blue">出差申请</Tag>
+              </Space>
+            </Card>
+          )}
+          
+          <div style={{ padding: 16, background: '#f5f5f5', borderRadius: 4 }}>
+            <Space>
+              <span><strong>行程：</strong>{recommendation?.origin} → {recommendation?.destination}</span>
+              <span><strong>出发：</strong>{new Date(recommendation?.departure_date).toLocaleDateString()}</span>
+              <span><strong>回程：</strong>{new Date(recommendation?.return_date).toLocaleDateString()}</span>
+            </Space>
+          </div>
         </div>
 
         <Row gutter={[16, 16]}>

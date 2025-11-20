@@ -1,0 +1,12 @@
+.profile {
+  padding: 24px;
+}
+
+.profile .ant-card {
+  min-height: 500px;
+}
+
+.profile .ant-descriptions {
+  margin-top: 16px;
+}
+

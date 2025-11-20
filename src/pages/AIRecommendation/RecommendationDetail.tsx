@@ -11,7 +11,7 @@ import {
   message,
   Modal,
 } from 'antd'
-import { ArrowLeftOutlined } from '@ant-design/icons'
+import { ArrowLeftOutlined, FileTextOutlined } from '@ant-design/icons'
 import { supabase } from '../../lib/supabase'
 import { RecommendationOption } from '../../types'
 import './RecommendationDetail.css'
@@ -26,6 +26,7 @@ const RecommendationDetail: React.FC = () => {
   const [option, setOption] = useState<RecommendationOption | null>(null)
   const [loading, setLoading] = useState(true)
   const [travelRequestId, setTravelRequestId] = useState<string | null>(null)
+  const [travelRequest, setTravelRequest] = useState<any>(null)
   const [regenerating, setRegenerating] = useState(false)
 
   useEffect(() => {
@@ -229,6 +230,17 @@ const RecommendationDetail: React.FC = () => {
       // 保存travel_request_id用于返回
       if (recData?.travel_request_id) {
         setTravelRequestId(recData.travel_request_id)
+        
+        // 加载申请单信息
+        const { data: requestData, error: requestError } = await supabase
+          .from('travel_requests')
+          .select('id, request_no, origin, destination, departure_date, return_date, status')
+          .eq('id', recData.travel_request_id)
+          .single()
+
+        if (!requestError && requestData) {
+          setTravelRequest(requestData)
+        }
       }
 
       // 加载推荐方案详情
@@ -287,6 +299,27 @@ const RecommendationDetail: React.FC = () => {
           </div>
         }
       >
+        {/* 显示来源申请单信息 */}
+        {travelRequest && (
+          <Card
+            size="small"
+            style={{ marginBottom: 24, background: '#e6f7ff', borderColor: '#91d5ff' }}
+          >
+            <Space>
+              <FileTextOutlined style={{ color: '#1890ff' }} />
+              <span><strong>来源申请单：</strong></span>
+              <Button
+                type="link"
+                style={{ padding: 0, height: 'auto', fontFamily: 'monospace' }}
+                onClick={() => navigate(`/travel-request/${travelRequest.id}`)}
+              >
+                {travelRequest.request_no}
+              </Button>
+              <Tag color="blue">出差申请</Tag>
+            </Space>
+          </Card>
+        )}
+
         <Descriptions column={2} bordered style={{ marginBottom: 24 }}>
           <Descriptions.Item label="推荐单号">
             <span style={{ fontFamily: 'monospace' }}>{recommendation.recommendation_no}</span>

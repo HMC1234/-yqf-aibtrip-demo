@@ -1,6 +1,6 @@
 // 主布局组件
 import React from 'react'
-import { Layout, Menu, Avatar, Dropdown, Button, message } from 'antd'
+import { Layout, Menu, Avatar, Dropdown, Button } from 'antd'
 import { Outlet, useNavigate, useLocation } from 'react-router-dom'
 import {
   DashboardOutlined,
@@ -63,8 +63,7 @@ const MainLayout: React.FC = () => {
       icon: <UserOutlined />,
       label: '个人中心',
       onClick: () => {
-        // 个人中心功能待实现
-        message.info('个人中心功能开发中')
+        navigate('/profile')
       },
     },
     {

@@ -11,7 +11,7 @@ interface Order {
   id: string
   order_no: string
   product_type: string
-  product_name: string
+  product_details: any // JSONB字段
   origin: string
   destination: string
   departure_date: string
@@ -102,8 +102,12 @@ const OrderList: React.FC = () => {
     },
     {
       title: '产品名称',
-      dataIndex: 'product_name',
       key: 'product_name',
+      render: (_: any, record: Order) => {
+        // 从product_details JSONB字段中获取产品名称
+        const productName = record.product_details?.name || '-'
+        return <span>{productName}</span>
+      },
     },
     {
       title: '行程',

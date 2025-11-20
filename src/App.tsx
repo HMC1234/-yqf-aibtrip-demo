@@ -18,6 +18,7 @@ import ProductList from './pages/Booking/ProductList'
 import OrderConfirm from './pages/Booking/OrderConfirm'
 import OrderList from './pages/Booking/OrderList'
 import OrderDetail from './pages/Booking/OrderDetail'
+import Profile from './pages/Profile/Profile'
 import { useAuthStore } from './store/authStore'
 import './App.css'
 
@@ -95,6 +96,7 @@ function App() {
             <Route path="booking/confirm" element={<OrderConfirm />} />
             <Route path="booking/orders" element={<OrderList />} />
             <Route path="booking/orders/:id" element={<OrderDetail />} />
+            <Route path="profile" element={<Profile />} />
           </Route>
         </Routes>
       </BrowserRouter>
