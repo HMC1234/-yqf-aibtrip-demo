@@ -1,0 +1,46 @@
+.recommendation-list {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.recommendation-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.recommendation-card .ant-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.score {
+  color: #faad14;
+  font-weight: bold;
+}
+
+.card-content {
+  flex: 1;
+}
+
+.keywords {
+  min-height: 40px;
+}
+
+.reason {
+  min-height: 60px;
+  line-height: 1.6;
+}
+
+
+
+
+

@@ -1,0 +1,276 @@
+// 订单确认页面
+import React, { useState } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
+import {
+  Card,
+  Descriptions,
+  Button,
+  Space,
+  Form,
+  Input,
+  message,
+  Spin,
+} from 'antd'
+import { CheckOutlined, ArrowLeftOutlined } from '@ant-design/icons'
+import { supabase } from '../../lib/supabase'
+import './OrderConfirm.css'
+
+const { TextArea } = Input
+
+const OrderConfirm: React.FC = () => {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const [form] = Form.useForm()
+  const [loading, setLoading] = useState(false)
+
+  const { product, searchParams, productType, searchRecord, aiRecommendationId } = location.state || {}
+
+  if (!product) {
+    message.error('缺少产品信息')
+    navigate('/booking/classic')
+    return null
+  }
+
+  const handleSubmit = async (values: any) => {
+    setLoading(true)
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        message.error('请先登录')
+        return
+      }
+
+      // 获取用户信息
+      const { data: userData } = await supabase
+        .from('users')
+        .select('company_id, department_id, cost_center_id')
+        .eq('id', user.id)
+        .single()
+
+      if (!userData) {
+        message.error('获取用户信息失败')
+        return
+      }
+
+      // 生成订单号
+      const bookingSource = aiRecommendationId ? 'ai_recommendation' : 'classic'
+      const { data: orderNo, error: noError } = await supabase.rpc(
+        'generate_order_no',
+        { booking_source: bookingSource }
+      )
+
+      if (noError || !orderNo) {
+        message.error('生成订单号失败')
+        return
+      }
+
+      // 创建订单
+      const orderData: any = {
+        order_no: orderNo,
+        user_id: user.id,
+        company_id: userData.company_id,
+        department_id: userData.department_id,
+        cost_center_id: userData.cost_center_id,
+        product_type: productType,
+        product_id: product.id,
+        product_name: product.name,
+        product_data: product.details,
+        origin: searchParams?.origin,
+        destination: searchParams?.destination,
+        departure_date: searchParams?.departure_date 
+          ? (typeof searchParams.departure_date === 'string' 
+              ? searchParams.departure_date 
+              : searchParams.departure_date.format('YYYY-MM-DD'))
+          : searchParams?.date_range?.[0]?.format('YYYY-MM-DD'),
+        return_date: searchParams?.return_date
+          ? (typeof searchParams.return_date === 'string' 
+              ? searchParams.return_date 
+              : searchParams.return_date.format('YYYY-MM-DD'))
+          : searchParams?.date_range?.[1]?.format('YYYY-MM-DD'),
+        passenger_count: searchParams?.passenger_count || 1,
+        total_amount: product.price,
+        currency: product.currency || 'CNY',
+        status: 'pending',
+        booking_source: bookingSource,
+        contact_name: values.contact_name,
+        contact_phone: values.contact_phone,
+        remarks: values.remarks,
+      }
+
+      // 如果是从AI推荐跳转，关联推荐方案
+      if (aiRecommendationId) {
+        orderData.ai_recommendation_id = aiRecommendationId
+      }
+
+      // 如果是从申请单跳转，关联申请单
+      if (searchRecord?.travel_request_id) {
+        orderData.travel_request_id = searchRecord.travel_request_id
+      }
+
+      const { data: order, error } = await supabase
+        .from('orders')
+        .insert(orderData)
+        .select()
+        .single()
+
+      if (error) {
+        message.error('创建订单失败：' + error.message)
+        return
+      }
+
+      // 更新搜索记录（如果存在）
+      if (searchRecord?.id) {
+        await supabase
+          .from('search_records')
+          .update({
+            has_order: true,
+            order_id: order.id,
+          })
+          .eq('id', searchRecord.id)
+      }
+
+      message.success('订单创建成功！订单号：' + orderNo)
+      navigate('/booking/orders')
+    } catch (error: any) {
+      message.error('创建订单失败：' + error.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const getProductTypeName = (type: string) => {
+    const map: Record<string, string> = {
+      flight: '机票',
+      hotel: '酒店',
+      train: '火车票',
+      car: '用车',
+    }
+    return map[type] || type
+  }
+
+  return (
+    <div className="order-confirm">
+      <Card
+        title="确认订单信息"
+        extra={
+          <Button
+            icon={<ArrowLeftOutlined />}
+            onClick={() => navigate(-1)}
+          >
+            返回
+          </Button>
+        }
+      >
+        <Descriptions column={2} bordered style={{ marginBottom: 24 }}>
+          <Descriptions.Item label="产品类型">
+            {getProductTypeName(productType)}
+          </Descriptions.Item>
+          <Descriptions.Item label="产品名称">
+            {product.name}
+          </Descriptions.Item>
+          <Descriptions.Item label="出发地">
+            {searchParams?.origin}
+          </Descriptions.Item>
+          <Descriptions.Item label="目的地">
+            {searchParams?.destination}
+          </Descriptions.Item>
+          {searchParams?.departure_date && (
+            <Descriptions.Item label="出发日期">
+              {typeof searchParams.departure_date === 'string' 
+                ? searchParams.departure_date 
+                : searchParams.departure_date?.format('YYYY-MM-DD')}
+            </Descriptions.Item>
+          )}
+          {searchParams?.return_date && (
+            <Descriptions.Item label="回程日期">
+              {typeof searchParams.return_date === 'string' 
+                ? searchParams.return_date 
+                : searchParams.return_date?.format('YYYY-MM-DD')}
+            </Descriptions.Item>
+          )}
+          {searchParams?.date_range && Array.isArray(searchParams.date_range) && (
+            <>
+              <Descriptions.Item label="出发日期">
+                {searchParams.date_range[0]?.format('YYYY-MM-DD')}
+              </Descriptions.Item>
+              {searchParams.date_range[1] && (
+                <Descriptions.Item label="回程日期">
+                  {searchParams.date_range[1].format('YYYY-MM-DD')}
+                </Descriptions.Item>
+              )}
+            </>
+          )}
+          <Descriptions.Item label="人数/房间数">
+            {searchParams?.passenger_count || 1}
+          </Descriptions.Item>
+          <Descriptions.Item label="订单金额">
+            <span style={{ fontSize: 20, fontWeight: 'bold', color: '#1890ff' }}>
+              ¥{product.price}
+            </span>
+          </Descriptions.Item>
+        </Descriptions>
+
+        <Card title="联系信息" style={{ marginBottom: 24 }}>
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={handleSubmit}
+            initialValues={{
+              contact_name: '',
+              contact_phone: '',
+              remarks: '',
+            }}
+          >
+            <Form.Item
+              label="联系人姓名"
+              name="contact_name"
+              rules={[{ required: true, message: '请输入联系人姓名' }]}
+            >
+              <Input size="large" placeholder="请输入联系人姓名" />
+            </Form.Item>
+
+            <Form.Item
+              label="联系电话"
+              name="contact_phone"
+              rules={[
+                { required: true, message: '请输入联系电话' },
+                { pattern: /^1[3-9]\d{9}$/, message: '请输入有效的手机号码' },
+              ]}
+            >
+              <Input size="large" placeholder="请输入手机号码" />
+            </Form.Item>
+
+            <Form.Item label="备注" name="remarks">
+              <TextArea
+                rows={4}
+                placeholder="请输入备注信息（可选）"
+                maxLength={500}
+                showCount
+              />
+            </Form.Item>
+
+            <Form.Item>
+              <Space>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  size="large"
+                  icon={<CheckOutlined />}
+                  loading={loading}
+                >
+                  确认下单
+                </Button>
+                <Button size="large" onClick={() => navigate(-1)}>
+                  取消
+                </Button>
+              </Space>
+            </Form.Item>
+          </Form>
+        </Card>
+      </Card>
+    </div>
+  )
+}
+
+export default OrderConfirm
+
