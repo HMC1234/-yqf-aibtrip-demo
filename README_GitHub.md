@@ -1,7 +1,7 @@
 # YQFAIBTRIP 一起飞智能商旅系统 - DEMO
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/your-username/yqf-aibtrip-demo)
-[![Deploy with Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/your-username/yqf-aibtrip-demo)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/HMC1234/-yqf-aibtrip-demo)
+[![Deploy with Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/HMC1234/-yqf-aibtrip-demo)
 
 ## 🌟 项目简介
 
