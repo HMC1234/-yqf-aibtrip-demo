@@ -1,0 +1,79 @@
+name: Deploy to Tencent Cloud COS
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  REGION: ap-guangzhou
+  BUCKET: yqf-aibtrip-demo
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+        env:
+          CI: false
+
+      - name: Setup Python for coscmd
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install coscmd
+        run: |
+          pip install coscmd
+
+      - name: Configure coscmd
+        env:
+          SECRET_ID: ${{ secrets.TENCENT_SECRET_ID }}
+          SECRET_KEY: ${{ secrets.TENCENT_SECRET_KEY }}
+          BUCKET: ${{ secrets.TENCENT_BUCKET || env.BUCKET }}
+          REGION: ${{ secrets.TENCENT_REGION || env.REGION }}
+        run: |
+          coscmd config -a "$SECRET_ID" -s "$SECRET_KEY" -b "$BUCKET" -r "$REGION"
+
+      - name: Deploy to Tencent COS
+        env:
+          BUCKET: ${{ secrets.TENCENT_BUCKET || env.BUCKET }}
+          REGION: ${{ secrets.TENCENT_REGION || env.REGION }}
+        run: |
+          echo "开始上传文件到COS..."
+          coscmd upload -rs build/ /
+          
+          echo "设置index.html缓存策略..."
+          coscmd put build/index.html /index.html -H '{"Cache-Control":"no-cache, no-store, must-revalidate", "Content-Type":"text/html; charset=utf-8"}'
+          
+          echo "✅ 文件上传完成"
+          
+      - name: Deployment Summary
+        env:
+          BUCKET: ${{ secrets.TENCENT_BUCKET || env.BUCKET }}
+          REGION: ${{ secrets.TENCENT_REGION || env.REGION }}
+          CDN_DOMAIN: ${{ secrets.TENCENT_CDN_DOMAIN }}
+        run: |
+          echo "✅ 部署完成！"
+          echo "📦 存储桶: $BUCKET"
+          echo "📍 地域: $REGION"
+          if [ -n "$CDN_DOMAIN" ]; then
+            echo "🌐 CDN地址: https://$CDN_DOMAIN"
+          else
+            echo "🌐 COS地址: https://$BUCKET.cos-website.$REGION.myqcloud.com"
+          fi
