@@ -78,12 +78,49 @@ jobs:
           REGION: ${{ secrets.TENCENT_REGION || env.REGION }}
         run: |
           echo "开始上传文件到COS..."
-          coscmd upload -rs build/ /
+          echo "存储桶: $BUCKET"
+          echo "地域: $REGION"
           
-          echo "设置index.html缓存策略..."
-          coscmd put build/index.html /index.html -H '{"Cache-Control":"no-cache, no-store, must-revalidate", "Content-Type":"text/html; charset=utf-8"}'
+          # 检查build目录是否存在
+          if [ ! -d "build" ]; then
+            echo "❌ 错误: build目录不存在"
+            exit 1
+          fi
           
-          echo "✅ 文件上传完成"
+          # 检查index.html是否存在
+          if [ ! -f "build/index.html" ]; then
+            echo "❌ 错误: build/index.html不存在"
+            exit 1
+          fi
+          
+          # 先上传index.html，设置不缓存（SPA需要）
+          echo "上传index.html（设置不缓存策略）..."
+          coscmd upload build/index.html /index.html -H 'Cache-Control:no-cache, no-store, must-revalidate' -H 'Content-Type:text/html; charset=utf-8'
+          
+          if [ $? -ne 0 ]; then
+            echo "❌ index.html上传失败"
+            exit 1
+          fi
+          
+          echo "✅ index.html上传成功"
+          
+          # 上传其他文件（static目录等）
+          echo "上传其他文件..."
+          coscmd upload -rs build/static /static
+          
+          if [ $? -ne 0 ]; then
+            echo "❌ static目录上传失败"
+            exit 1
+          fi
+          
+          # 上传asset-manifest.json（如果有）
+          if [ -f "build/asset-manifest.json" ]; then
+            echo "上传asset-manifest.json..."
+            coscmd upload build/asset-manifest.json /asset-manifest.json
+          fi
+          
+          echo "✅ 所有文件上传成功"
+          echo "✅ 部署完成！"
           
       - name: Deployment Summary
         env:
