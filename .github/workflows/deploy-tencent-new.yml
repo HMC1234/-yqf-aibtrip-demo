@@ -1,0 +1,195 @@
+name: Deploy to Tencent Cloud COS (New)
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'package.json'
+      - 'package-lock.json'
+  workflow_dispatch:
+
+env:
+  REGION: ap-guangzhou
+  BUCKET: yqf-aibtrip-demo-1387623418
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 📚 Install dependencies
+        run: npm ci
+
+      - name: 🏗️ Build project
+        run: npm run build
+        env:
+          CI: false
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: 📥 Install Tencent COS SDK
+        run: |
+          pip install --upgrade pip
+          pip install cos-python-sdk-v5
+
+      - name: 🚀 Deploy to Tencent COS
+        env:
+          SECRET_ID: ${{ secrets.TENCENT_SECRET_ID }}
+          SECRET_KEY: ${{ secrets.TENCENT_SECRET_KEY }}
+          BUCKET: ${{ secrets.TENCENT_BUCKET || env.BUCKET }}
+          REGION: ${{ secrets.TENCENT_REGION || env.REGION }}
+        run: |
+          python3 << 'EOF'
+import os
+import sys
+from pathlib import Path
+from qcloud_cos import CosConfig, CosS3Client
+
+# 获取环境变量
+secret_id = os.environ.get('SECRET_ID')
+secret_key = os.environ.get('SECRET_KEY')
+region = os.environ.get('REGION', 'ap-guangzhou')
+bucket = os.environ.get('BUCKET')
+
+print("=" * 60)
+print("🚀 开始部署到腾讯云 COS")
+print("=" * 60)
+print(f"存储桶: {bucket}")
+print(f"地域: {region}")
+print()
+
+# 验证配置
+if not secret_id or not secret_key:
+    print("❌ 错误: SecretId 或 SecretKey 未配置")
+    sys.exit(1)
+
+if not bucket:
+    print("❌ 错误: 存储桶名称未配置")
+    sys.exit(1)
+
+# 初始化 COS 客户端
+print("正在初始化 COS 客户端...")
+try:
+    config = CosConfig(Region=region, SecretId=secret_id, SecretKey=secret_key)
+    client = CosS3Client(config)
+    print("✅ COS 客户端初始化成功")
+    print()
+except Exception as e:
+    print(f"❌ COS 客户端初始化失败: {e}")
+    sys.exit(1)
+
+# 检查 build 目录
+build_dir = Path('build')
+if not build_dir.exists():
+    print("❌ 错误: build 目录不存在")
+    sys.exit(1)
+
+# 上传 index.html
+print("📤 上传 index.html...")
+index_file = build_dir / 'index.html'
+if index_file.exists():
+    try:
+        response = client.upload_file(
+            Bucket=bucket,
+            LocalFilePath=str(index_file),
+            Key='index.html'
+        )
+        print(f"✅ index.html 上传成功 (ETag: {response.get('ETag', 'N/A')})")
+    except Exception as e:
+        print(f"❌ index.html 上传失败: {e}")
+        import traceback
+        traceback.print_exc()
+        sys.exit(1)
+else:
+    print("❌ 错误: build/index.html 不存在")
+    sys.exit(1)
+
+# 上传 static 目录
+static_dir = build_dir / 'static'
+if static_dir.exists():
+    print()
+    print("📤 上传 static 目录...")
+    uploaded = 0
+    failed = 0
+    
+    for file_path in static_dir.rglob('*'):
+        if file_path.is_file():
+            relative_path = file_path.relative_to(build_dir)
+            key = str(relative_path).replace('\\', '/')
+            
+            try:
+                response = client.upload_file(
+                    Bucket=bucket,
+                    LocalFilePath=str(file_path),
+                    Key=key
+                )
+                uploaded += 1
+                if uploaded % 20 == 0:
+                    print(f"  已上传 {uploaded} 个文件...")
+            except Exception as e:
+                print(f"  ❌ 失败: {key} - {e}")
+                failed += 1
+    
+    print()
+    print(f"✅ static 目录上传完成")
+    print(f"   成功: {uploaded} 个文件")
+    if failed > 0:
+        print(f"   失败: {failed} 个文件")
+        sys.exit(1)
+else:
+    print("⚠️  警告: static 目录不存在，跳过")
+
+# 上传 asset-manifest.json (如果有)
+manifest_file = build_dir / 'asset-manifest.json'
+if manifest_file.exists():
+    print()
+    print("📤 上传 asset-manifest.json...")
+    try:
+        response = client.upload_file(
+            Bucket=bucket,
+            LocalFilePath=str(manifest_file),
+            Key='asset-manifest.json'
+        )
+        print("✅ asset-manifest.json 上传成功")
+    except Exception as e:
+        print(f"⚠️  asset-manifest.json 上传失败: {e}")
+
+print()
+print("=" * 60)
+print("✅ 部署完成！")
+print("=" * 60)
+print(f"🌐 访问地址: https://{bucket}.cos-website.{region}.myqcloud.com")
+EOF
+
+      - name: 📋 Deployment Summary
+        if: success()
+        env:
+          BUCKET: ${{ secrets.TENCENT_BUCKET || env.BUCKET }}
+          REGION: ${{ secrets.TENCENT_REGION || env.REGION }}
+          CDN_DOMAIN: ${{ secrets.TENCENT_CDN_DOMAIN }}
+        run: |
+          echo "✅ 部署成功完成！"
+          echo "📦 存储桶: $BUCKET"
+          echo "📍 地域: $REGION"
+          if [ -n "$CDN_DOMAIN" ]; then
+            echo "🌐 CDN地址: https://$CDN_DOMAIN"
+          else
+            echo "🌐 COS地址: https://$BUCKET.cos-website.$REGION.myqcloud.com"
+          fi
+
