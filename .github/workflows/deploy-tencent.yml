@@ -48,9 +48,11 @@ jobs:
           BUCKET: ${{ secrets.TENCENT_BUCKET || env.BUCKET }}
           REGION: ${{ secrets.TENCENT_REGION || env.REGION }}
         run: |
-          echo "开始上传文件到COS..."
+          echo "=========================================="
+          echo "🚀 开始使用Python SDK上传文件到COS..."
           echo "存储桶: $BUCKET"
           echo "地域: $REGION"
+          echo "=========================================="
           
           # 检查build目录是否存在
           if [ ! -d "build" ]; then
@@ -72,8 +74,8 @@ from pathlib import Path
 from qcloud_cos import CosConfig
 from qcloud_cos import CosS3Client
 
-secret_id = os.environ.get('SECRET_ID')
-secret_key = os.environ.get('SECRET_KEY')
+          secret_id = os.environ.get('SECRET_ID') or os.environ.get('TENCENT_SECRET_ID')
+          secret_key = os.environ.get('SECRET_KEY') or os.environ.get('TENCENT_SECRET_KEY')
 region = os.environ.get('REGION', 'ap-guangzhou')
 bucket = os.environ.get('BUCKET')
 
@@ -93,8 +95,8 @@ except Exception as e:
     print(f"❌ COS客户端配置失败: {e}")
     sys.exit(1)
 
-# 上传index.html（设置不缓存策略）
-print("上传index.html...")
+# 上传index.html（使用Python SDK，避免coscmd的bug）
+print("使用Python SDK上传index.html...")
 try:
     response = client.upload_file(
         Bucket=bucket,
