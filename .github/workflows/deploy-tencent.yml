@@ -93,9 +93,9 @@ jobs:
             exit 1
           fi
           
-          # 先上传index.html，设置不缓存（SPA需要）
-          echo "上传index.html（设置不缓存策略）..."
-          coscmd upload build/index.html /index.html -H 'Cache-Control:no-cache, no-store, must-revalidate' -H 'Content-Type:text/html; charset=utf-8'
+          # 先上传index.html（不设置header，避免coscmd的bug）
+          echo "上传index.html..."
+          coscmd upload build/index.html /index.html
           
           if [ $? -ne 0 ]; then
             echo "❌ index.html上传失败"
@@ -104,8 +104,8 @@ jobs:
           
           echo "✅ index.html上传成功"
           
-          # 上传其他文件（static目录等）
-          echo "上传其他文件..."
+          # 上传static目录和其他文件
+          echo "上传static目录和其他文件..."
           coscmd upload -rs build/static /static
           
           if [ $? -ne 0 ]; then
