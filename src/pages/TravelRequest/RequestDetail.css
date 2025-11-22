@@ -1,15 +1,309 @@
+/* Navan风格 - 出差申请详情页面 */
+
 .request-detail {
-  max-width: 1000px;
+  max-width: var(--navan-container-max);
   margin: 0 auto;
+  padding: var(--navan-space-4) var(--navan-container-padding-mobile);
+  background: var(--navan-bg);
+  min-height: calc(100vh - 80px);
 }
 
-.booking-actions {
-  padding: 24px;
-  background: #f5f5f5;
+/* 返回按钮 */
+.detail-back-btn {
+  margin-bottom: var(--navan-space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--navan-space-2);
+}
+
+/* 桌面端详情卡片 */
+.desktop-detail-card {
+  display: block;
+  border-radius: var(--navan-radius-lg);
+  box-shadow: var(--navan-shadow-md);
+  border: 1px solid var(--navan-gray-200);
+  background: var(--navan-white);
+}
+
+.desktop-detail-card .ant-card-head {
+  border-bottom: 1px solid var(--navan-gray-200);
+  padding: var(--navan-space-6) var(--navan-space-8);
+  background: var(--navan-white);
+}
+
+.desktop-detail-card .ant-card-head-title {
+  font-size: var(--navan-h4);
+  font-weight: var(--navan-font-semibold);
+  color: var(--navan-gray-900);
+}
+
+.desktop-detail-card .ant-card-body {
+  padding: var(--navan-space-8);
+}
+
+/* 移动端详情卡片 */
+.mobile-detail-card {
+  display: none;
+}
+
+.mobile-detail-header {
+  padding: var(--navan-space-5);
+  background: linear-gradient(135deg, var(--navan-purple-light) 0%, var(--navan-white) 100%);
+  border-radius: var(--navan-radius-lg) var(--navan-radius-lg) 0 0;
+  border-bottom: 2px solid var(--navan-purple-light);
+}
+
+.mobile-detail-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--navan-space-3);
+  margin-bottom: var(--navan-space-2);
+}
+
+.mobile-detail-id {
+  font-family: 'monospace';
+  font-size: var(--navan-h5);
+  font-weight: var(--navan-font-bold);
+  color: var(--navan-gray-900);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobile-detail-subtitle {
+  font-size: var(--navan-body-small);
+  color: var(--navan-gray-600);
+  margin-top: var(--navan-space-2);
+}
+
+.mobile-detail-content {
+  padding: var(--navan-space-5);
+}
+
+.mobile-detail-info-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--navan-space-2);
+}
+
+.mobile-detail-info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--navan-space-4);
+  padding: var(--navan-space-3) 0;
+}
+
+.mobile-detail-icon {
+  color: var(--navan-purple);
+  font-size: 20px;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.mobile-detail-info-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.mobile-detail-info-label {
+  font-size: var(--navan-body-small);
+  color: var(--navan-gray-500);
+  font-weight: var(--navan-font-medium);
+  margin-bottom: var(--navan-space-1);
+}
+
+.mobile-detail-info-value {
+  font-size: var(--navan-body);
+  color: var(--navan-gray-900);
+  line-height: 1.6;
+  word-break: break-word;
+}
+
+.mobile-detail-actions {
+  padding: var(--navan-space-5);
+  border-top: 1px solid var(--navan-gray-100);
+  background: var(--navan-gray-50);
+  display: flex;
+  flex-direction: column;
+  gap: var(--navan-space-3);
+}
+
+.mobile-action-btn {
+  height: 48px !important;
+  border-radius: var(--navan-radius-md) !important;
+  font-size: var(--navan-body) !important;
+  font-weight: var(--navan-font-semibold) !important;
+}
+
+/* Descriptions样式 */
+.desktop-detail-card .ant-descriptions {
+  margin-top: var(--navan-space-4);
+}
+
+.desktop-detail-card .ant-descriptions-item-label {
+  font-size: var(--navan-body);
+  font-weight: var(--navan-font-semibold);
+  color: var(--navan-gray-700);
+  width: 140px;
+  background: var(--navan-gray-50);
+  padding: var(--navan-space-3) var(--navan-space-4);
+}
+
+.desktop-detail-card .ant-descriptions-item-content {
+  font-size: var(--navan-body);
+  color: var(--navan-gray-900);
+  padding: var(--navan-space-3) var(--navan-space-4);
+}
+
+.desktop-detail-card .ant-descriptions-row {
+  border-bottom: 1px solid var(--navan-gray-200);
+}
+
+.desktop-detail-card .ant-descriptions-row:last-child {
+  border-bottom: none;
+}
+
+/* Tag样式 */
+.request-detail .ant-tag {
+  margin: 0;
+  padding: 2px 8px;
+  height: 22px;
+  line-height: 18px;
+  font-size: 12px;
+  font-weight: 500;
   border-radius: 4px;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
 }
 
+.request-detail .ant-tag.ant-tag-orange {
+  background: #FEF3C7;
+  color: #F59E0B;
+}
 
+.request-detail .ant-tag.ant-tag-blue {
+  background: var(--navan-purple-light);
+  color: var(--navan-accent);
+}
 
+.request-detail .ant-tag.ant-tag-green {
+  background: #D1FAE5;
+  color: #10B981;
+}
 
+.request-detail .ant-tag.ant-tag-red {
+  background: #FEE2E2;
+  color: #EF4444;
+}
 
+/* 预订操作区域 */
+.booking-actions {
+  padding: var(--navan-space-6);
+  background: var(--navan-gray-50);
+  border-radius: var(--navan-radius-lg);
+  border: 1px solid var(--navan-gray-200);
+  margin-top: var(--navan-space-6);
+  text-align: center;
+}
+
+/* 加载状态 */
+.request-detail .ant-spin {
+  padding: var(--navan-space-20) 0;
+}
+
+/* 响应式设计 */
+@media (min-width: 768px) {
+  .request-detail {
+    padding: var(--navan-space-6) var(--navan-container-padding-tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  .request-detail {
+    padding: var(--navan-space-8) var(--navan-container-padding-desktop);
+  }
+}
+
+@media (max-width: 768px) {
+  .request-detail {
+    padding: var(--navan-space-4) var(--navan-container-padding-mobile);
+    background: var(--navan-white);
+    min-height: calc(100vh - 64px);
+  }
+
+  /* 返回按钮优化 */
+  .detail-back-btn {
+    margin-bottom: var(--navan-space-3);
+    padding: var(--navan-space-2) var(--navan-space-4);
+    height: 40px;
+    font-size: var(--navan-body-small);
+  }
+
+  /* 移动端显示卡片，隐藏桌面端 */
+  .mobile-detail-card {
+    display: block;
+    border-radius: var(--navan-radius-lg);
+    box-shadow: var(--navan-shadow-md);
+    border: 1px solid var(--navan-gray-200);
+    background: var(--navan-white);
+    overflow: hidden;
+  }
+
+  .desktop-detail-card {
+    display: none;
+  }
+
+  /* 移动端卡片优化 */
+  .mobile-detail-header {
+    padding: var(--navan-space-4);
+  }
+
+  .mobile-detail-title-row {
+    margin-bottom: var(--navan-space-1);
+  }
+
+  .mobile-detail-id {
+    font-size: var(--navan-h6);
+  }
+
+  .mobile-detail-subtitle {
+    font-size: 12px;
+  }
+
+  .mobile-detail-content {
+    padding: var(--navan-space-4);
+  }
+
+  .mobile-detail-info-item {
+    padding: var(--navan-space-2) 0;
+  }
+
+  .mobile-detail-icon {
+    font-size: 18px;
+  }
+
+  .mobile-detail-info-label {
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+
+  .mobile-detail-info-value {
+    font-size: var(--navan-body-small);
+  }
+
+  .mobile-detail-actions {
+    padding: var(--navan-space-4);
+    gap: var(--navan-space-2);
+  }
+
+  .mobile-action-btn {
+    height: 44px !important;
+    font-size: var(--navan-body-small) !important;
+  }
+}

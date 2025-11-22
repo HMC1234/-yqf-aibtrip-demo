@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Card, Row, Col, Button, Tag, Space, Spin, message } from 'antd'
-import { CheckCircleOutlined, EyeOutlined, FileTextOutlined } from '@ant-design/icons'
+import { CheckCircleOutlined, EyeOutlined, FileTextOutlined, ArrowLeftOutlined } from '@ant-design/icons'
 import { supabase } from '../../lib/supabase'
 import { RecommendationOption } from '../../types'
 import './RecommendationList.css'
@@ -124,6 +124,13 @@ const RecommendationList: React.FC<RecommendationListProps> = ({ recommendationI
 
   return (
     <div className="recommendation-list">
+      <Button
+        icon={<ArrowLeftOutlined />}
+        onClick={() => navigate('/ai-booking')}
+        className="detail-back-btn"
+      >
+        返回列表
+      </Button>
       <Card
         title={
           <div>
@@ -188,7 +195,7 @@ const RecommendationList: React.FC<RecommendationListProps> = ({ recommendationI
                 ]}
               >
                 <div className="card-header">
-                  <Tag color="blue" style={{ fontSize: 16, padding: '4px 12px' }}>
+                  <Tag color="blue" style={{ fontSize: 12, padding: '2px 8px', height: '22px', lineHeight: '18px' }}>
                     方案 {option.option_index}
                   </Tag>
                   {option.score && (

@@ -1,0 +1,293 @@
+/* Navan风格响应式设计系统 */
+
+/* ===== 基础响应式工具类 ===== */
+
+/* 容器响应式 */
+.navan-container {
+  width: 100%;
+  max-width: var(--navan-container-max);
+  margin: 0 auto;
+  padding-left: var(--navan-container-padding-mobile);
+  padding-right: var(--navan-container-padding-mobile);
+}
+
+@media (min-width: 768px) {
+  .navan-container {
+    padding-left: var(--navan-container-padding-tablet);
+    padding-right: var(--navan-container-padding-tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  .navan-container {
+    padding-left: var(--navan-container-padding-desktop);
+    padding-right: var(--navan-container-padding-desktop);
+  }
+}
+
+/* ===== 显示/隐藏工具类 ===== */
+.navan-mobile-only {
+  display: block;
+}
+
+.navan-desktop-only {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .navan-mobile-only {
+    display: none;
+  }
+  
+  .navan-desktop-only {
+    display: block;
+  }
+}
+
+/* ===== 响应式间距 ===== */
+.navan-section {
+  padding-top: var(--navan-space-6);
+  padding-bottom: var(--navan-space-6);
+}
+
+@media (min-width: 768px) {
+  .navan-section {
+    padding-top: var(--navan-space-10);
+    padding-bottom: var(--navan-space-10);
+  }
+}
+
+@media (min-width: 1024px) {
+  .navan-section {
+    padding-top: var(--navan-space-12);
+    padding-bottom: var(--navan-space-12);
+  }
+}
+
+/* ===== 响应式网格 ===== */
+.navan-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--navan-space-4);
+}
+
+@media (min-width: 640px) {
+  .navan-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--navan-space-5);
+  }
+}
+
+@media (min-width: 1024px) {
+  .navan-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--navan-space-6);
+  }
+}
+
+@media (min-width: 1280px) {
+  .navan-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--navan-space-8);
+  }
+}
+
+/* ===== 响应式字体 ===== */
+.navan-text-responsive {
+  font-size: var(--navan-body);
+}
+
+@media (min-width: 768px) {
+  .navan-text-responsive {
+    font-size: var(--navan-body-large);
+  }
+}
+
+/* ===== 触控目标（移动端友好） ===== */
+@media (max-width: 767px) {
+  .navan-touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* 移动端按钮增大 */
+  button, a.button {
+    min-height: 44px;
+    padding: 12px 16px;
+  }
+}
+
+/* ===== 卡片响应式 ===== */
+.navan-card-responsive {
+  width: 100%;
+  margin-bottom: var(--navan-space-4);
+}
+
+@media (min-width: 640px) {
+  .navan-card-responsive {
+    margin-bottom: var(--navan-space-6);
+  }
+}
+
+/* ===== 表格响应式 ===== */
+@media (max-width: 768px) {
+  /* 移动端表格横向滚动 */
+  .navan-table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .navan-table-responsive table {
+    min-width: 600px;
+  }
+  
+  /* 移动端表格隐藏非关键列 */
+  .navan-table-responsive .ant-table-thead > tr > th:nth-child(n+4),
+  .navan-table-responsive .ant-table-tbody > tr > td:nth-child(n+4) {
+    display: none;
+  }
+}
+
+/* ===== 表单响应式 ===== */
+@media (max-width: 768px) {
+  .navan-form-responsive .ant-form-item-label {
+    padding-bottom: 4px;
+  }
+  
+  .navan-form-responsive .ant-form-item {
+    margin-bottom: var(--navan-space-5);
+  }
+}
+
+/* ===== 动画过渡 ===== */
+.navan-transition {
+  transition: all var(--navan-duration-normal) var(--navan-ease-out);
+}
+
+.navan-transition-fast {
+  transition: all var(--navan-duration-fast) var(--navan-ease-out);
+}
+
+/* ===== 悬停效果（仅在非触控设备上） ===== */
+@media (hover: hover) {
+  .navan-hover-lift {
+    transition: transform var(--navan-duration-normal) var(--navan-ease-out),
+                box-shadow var(--navan-duration-normal) var(--navan-ease-out);
+  }
+  
+  .navan-hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--navan-shadow-lg);
+  }
+}
+
+/* ===== 无障碍支持 ===== */
+.navan-focus-visible:focus-visible {
+  outline: 2px solid var(--navan-purple);
+  outline-offset: 2px;
+  border-radius: var(--navan-radius-sm);
+}
+
+/* ===== 平滑滚动 ===== */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ===== 移动端滚动优化 ===== */
+@media (max-width: 767px) {
+  body {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* 防止移动端双击缩放 */
+  * {
+    touch-action: manipulation;
+  }
+}
+
+/* ===== 文本溢出处理 ===== */
+.navan-text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.navan-text-ellipsis-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.navan-text-ellipsis-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ===== 响应式图片 ===== */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.navan-img-responsive {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* ===== 响应式布局工具 ===== */
+.navan-flex-responsive {
+  display: flex;
+  flex-direction: column;
+  gap: var(--navan-space-4);
+}
+
+@media (min-width: 768px) {
+  .navan-flex-responsive {
+    flex-direction: row;
+    gap: var(--navan-space-6);
+  }
+}
+
+/* ===== 移动端优化 ===== */
+@media (max-width: 767px) {
+  /* 移动端字体大小调整 */
+  body {
+    font-size: 14px;
+  }
+  
+  h1 {
+    font-size: 24px;
+  }
+  
+  h2 {
+    font-size: 20px;
+  }
+  
+  h3 {
+    font-size: 18px;
+  }
+  
+  /* 移动端间距减小 */
+  .navan-section {
+    padding-top: var(--navan-space-4);
+    padding-bottom: var(--navan-space-4);
+  }
+  
+  /* 移动端卡片内边距减小 */
+  .ant-card-body {
+    padding: var(--navan-space-4);
+  }
+}
+
+/* ===== 打印样式 ===== */
+@media print {
+  .navan-no-print {
+    display: none !important;
+  }
+}

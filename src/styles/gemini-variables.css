@@ -1,0 +1,137 @@
+/* Gemini 3.0 设计系统 - CSS变量 */
+
+:root {
+  /* ===== 主色板 ===== */
+  --gemini-primary: #4285F4;
+  --gemini-primary-light: #E8F0FE;
+  --gemini-primary-dark: #1967D2;
+  
+  --gemini-secondary: #34A853;
+  --gemini-secondary-light: #E6F4EA;
+  --gemini-secondary-dark: #137333;
+  
+  --gemini-accent: #EA4335;
+  --gemini-accent-light: #FCE8E6;
+  --gemini-warning: #FBBC04;
+  --gemini-warning-light: #FEF7E0;
+  
+  /* ===== 中性色 ===== */
+  --gemini-gray-50: #FAFAFA;
+  --gemini-gray-100: #F5F5F5;
+  --gemini-gray-200: #EEEEEE;
+  --gemini-gray-300: #E0E0E0;
+  --gemini-gray-400: #BDBDBD;
+  --gemini-gray-500: #9E9E9E;
+  --gemini-gray-600: #757575;
+  --gemini-gray-700: #616161;
+  --gemini-gray-800: #424242;
+  --gemini-gray-900: #212121;
+  
+  /* ===== 语义化颜色 ===== */
+  --gemini-success: #34A853;
+  --gemini-info: #4285F4;
+  --gemini-warning-color: #FBBC04;
+  --gemini-error: #EA4335;
+  
+  /* ===== 字体系统 ===== */
+  --gemini-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 
+                        'Helvetica Neue', Arial, sans-serif,
+                        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  --gemini-font-mono: 'Roboto Mono', 'SF Mono', Monaco, 'Cascadia Code', 
+                      'Courier New', monospace;
+  
+  /* ===== 字号 ===== */
+  --gemini-h1: 32px;
+  --gemini-h2: 28px;
+  --gemini-h3: 24px;
+  --gemini-h4: 20px;
+  --gemini-h5: 18px;
+  --gemini-h6: 16px;
+  --gemini-body-large: 16px;
+  --gemini-body: 14px;
+  --gemini-body-small: 12px;
+  --gemini-caption: 12px;
+  --gemini-label: 14px;
+  --gemini-button: 14px;
+  
+  /* ===== 字重 ===== */
+  --gemini-font-light: 300;
+  --gemini-font-regular: 400;
+  --gemini-font-medium: 500;
+  --gemini-font-semibold: 600;
+  --gemini-font-bold: 700;
+  
+  /* ===== 间距系统 ===== */
+  --gemini-space-1: 4px;
+  --gemini-space-2: 8px;
+  --gemini-space-3: 12px;
+  --gemini-space-4: 16px;
+  --gemini-space-5: 20px;
+  --gemini-space-6: 24px;
+  --gemini-space-8: 32px;
+  --gemini-space-10: 40px;
+  --gemini-space-12: 48px;
+  --gemini-space-16: 64px;
+  --gemini-space-20: 80px;
+  --gemini-space-24: 96px;
+  
+  /* ===== 圆角系统 ===== */
+  --gemini-radius-sm: 4px;
+  --gemini-radius-md: 8px;
+  --gemini-radius-lg: 12px;
+  --gemini-radius-xl: 16px;
+  --gemini-radius-2xl: 24px;
+  --gemini-radius-full: 9999px;
+  
+  /* ===== 阴影系统 ===== */
+  --gemini-shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --gemini-shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 
+                      0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --gemini-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+                      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --gemini-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 
+                      0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --gemini-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 
+                      0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+  /* ===== 动画系统 ===== */
+  --gemini-duration-fast: 150ms;
+  --gemini-duration-normal: 250ms;
+  --gemini-duration-slow: 350ms;
+  --gemini-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --gemini-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --gemini-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --gemini-ease-spring: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  /* ===== 响应式断点 ===== */
+  --gemini-breakpoint-xs: 0px;
+  --gemini-breakpoint-sm: 640px;
+  --gemini-breakpoint-md: 768px;
+  --gemini-breakpoint-lg: 1024px;
+  --gemini-breakpoint-xl: 1280px;
+  --gemini-breakpoint-2xl: 1536px;
+  
+  /* ===== 布局 ===== */
+  --gemini-max-width: 1400px;
+  --gemini-content-padding-desktop: 32px;
+  --gemini-content-padding-tablet: 24px;
+  --gemini-content-padding-mobile: 16px;
+  
+  /* ===== Z-index层级 ===== */
+  --gemini-z-dropdown: 1000;
+  --gemini-z-sticky: 1020;
+  --gemini-z-fixed: 1030;
+  --gemini-z-modal-backdrop: 1040;
+  --gemini-z-modal: 1050;
+  --gemini-z-popover: 1060;
+  --gemini-z-tooltip: 1070;
+}
+
+/* 深色模式支持（未来扩展） */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* 可以在这里添加深色模式变量 */
+  }
+}
+
+

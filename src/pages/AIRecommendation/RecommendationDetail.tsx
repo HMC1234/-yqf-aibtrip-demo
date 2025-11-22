@@ -21,6 +21,9 @@ const RecommendationDetail: React.FC = () => {
     recommendationId: string
     optionIndex: string
   }>()
+  
+  // 如果没有recommendationId，从路由中获取
+  const effectiveRecommendationId = recommendationId || ''
   const navigate = useNavigate()
   const [recommendation, setRecommendation] = useState<any>(null)
   const [option, setOption] = useState<RecommendationOption | null>(null)
@@ -278,15 +281,16 @@ const RecommendationDetail: React.FC = () => {
       <Button
         icon={<ArrowLeftOutlined />}
         onClick={() => {
-          if (travelRequestId) {
-            navigate(`/travel-request/${travelRequestId}`)
+          // 返回到推荐方案列表页面
+          if (recommendationId) {
+            navigate(`/ai-recommendation/${recommendationId}/list`)
           } else {
-            navigate('/travel-request/list')
+            navigate('/ai-booking')
           }
         }}
-        style={{ marginBottom: 16 }}
+        className="detail-back-btn"
       >
-        返回
+        返回列表
       </Button>
 
       <Card

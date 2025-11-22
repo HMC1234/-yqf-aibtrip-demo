@@ -1,4 +1,225 @@
+/* Navan风格AI预订主页面 - 固定标签页 */
+
 .ai-booking {
-  padding: 24px;
+  min-height: calc(100vh - 80px);
+  background: var(--navan-bg);
+  display: flex;
+  flex-direction: column;
+  padding: 0 var(--navan-container-padding-desktop);
 }
 
+/* 返回按钮样式 */
+.ai-booking-back-btn {
+  margin: var(--navan-space-4) 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--navan-space-2);
+  height: auto;
+  padding: var(--navan-space-2) var(--navan-space-4);
+  font-size: var(--navan-body);
+  color: var(--navan-gray-700);
+  border-color: var(--navan-gray-300);
+  border-radius: var(--navan-radius-md);
+  transition: all var(--navan-duration-normal) var(--navan-ease-out);
+}
+
+.ai-booking-back-btn:hover {
+  color: var(--navan-purple);
+  border-color: var(--navan-purple);
+  background: var(--navan-white);
+}
+
+.ai-booking-back-btn .anticon {
+  font-size: 16px;
+}
+
+/* 固定标签页头部 */
+.ai-booking-header {
+  position: sticky;
+  top: 80px; /* MainLayout header高度 */
+  z-index: 90;
+  background: var(--navan-white);
+  border-bottom: 1px solid var(--navan-gray-200);
+  box-shadow: var(--navan-shadow-sm);
+  padding: 0 var(--navan-container-padding-desktop);
+}
+
+.ai-booking-tabs {
+  max-width: var(--navan-container-max);
+  margin: 0 auto;
+}
+
+/* 标签页样式定制 */
+.ai-booking-tabs :global(.ant-tabs-nav) {
+  margin: 0;
+  padding: 0;
+}
+
+.ai-booking-tabs :global(.ant-tabs-tab) {
+  padding: var(--navan-space-4) var(--navan-space-6);
+  margin: 0 var(--navan-space-2);
+  font-size: var(--navan-body);
+  font-weight: var(--navan-font-medium);
+  color: var(--navan-gray-600);
+  transition: all var(--navan-duration-normal) var(--navan-ease-out);
+  border-bottom: 2px solid transparent;
+  font-family: var(--navan-font-family);
+}
+
+.ai-booking-tabs :global(.ant-tabs-tab:hover) {
+  color: var(--navan-purple);
+}
+
+.ai-booking-tabs :global(.ant-tabs-tab-active) {
+  color: var(--navan-purple);
+  font-weight: var(--navan-font-semibold);
+}
+
+.ai-booking-tabs :global(.ant-tabs-tab-active .ant-tabs-tab-btn) {
+  color: var(--navan-purple);
+}
+
+.ai-booking-tabs :global(.ant-tabs-ink-bar) {
+  background: var(--navan-purple);
+  height: 3px;
+  border-radius: 2px 2px 0 0;
+}
+
+.ai-booking-tabs :global(.ant-tabs-tab) .ai-tab-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--navan-space-2);
+}
+
+.ai-booking-tabs :global(.ant-tabs-tab) .ai-tab-label .anticon {
+  font-size: 18px;
+}
+
+.ai-booking-tabs :global(.ant-tabs-tab-active) .ai-tab-label .anticon {
+  color: var(--navan-purple);
+}
+
+/* 内容区域 */
+.ai-booking-content {
+  flex: 1;
+  overflow-y: auto;
+  background: var(--navan-bg);
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+  .ai-booking-header {
+    padding: 0 var(--navan-container-padding-tablet);
+  }
+
+  .ai-booking-tabs :global(.ant-tabs-tab) {
+    padding: var(--navan-space-3) var(--navan-space-4);
+    font-size: var(--navan-body-small);
+  }
+
+  .ai-booking-tabs :global(.ant-tabs-tab) .ai-tab-label .anticon {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .ai-booking {
+    padding: 0 var(--navan-container-padding-mobile);
+  }
+
+  .ai-booking-back-btn {
+    margin: var(--navan-space-3) 0;
+    padding: var(--navan-space-2) var(--navan-space-4);
+    height: 40px;
+    font-size: var(--navan-body-small);
+    width: 100%;
+    justify-content: center;
+    border: 1px solid var(--navan-gray-300);
+    background: var(--navan-white);
+    color: var(--navan-gray-700);
+    border-radius: var(--navan-radius-md);
+    font-weight: var(--navan-font-medium);
+    display: flex;
+    align-items: center;
+    gap: var(--navan-space-2);
+    transition: all var(--navan-duration-normal) var(--navan-ease-out);
+  }
+
+  .ai-booking-back-btn:hover {
+    border-color: var(--navan-purple);
+    color: var(--navan-purple);
+    background: var(--navan-white);
+  }
+
+  .ai-booking-back-btn .anticon {
+    font-size: 14px;
+  }
+
+  .ai-booking-header {
+    padding: 0;
+    top: 80px;
+    border-bottom: 1px solid var(--navan-gray-200);
+  }
+
+  .ai-booking-tabs {
+    width: 100%;
+  }
+
+  .ai-booking-tabs :global(.ant-tabs-nav) {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: 0 var(--navan-container-padding-mobile);
+  }
+
+  .ai-booking-tabs :global(.ant-tabs-nav)::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ai-booking-tabs :global(.ant-tabs-tab) {
+    padding: var(--navan-space-3) var(--navan-space-3);
+    margin: 0;
+    white-space: nowrap;
+    font-size: var(--navan-body-small);
+    min-width: auto;
+    flex: 0 0 auto;
+  }
+
+  .ai-booking-tabs :global(.ant-tabs-tab) .ai-tab-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .ai-booking-tabs :global(.ant-tabs-tab) .ai-tab-label .anticon {
+    font-size: 18px;
+    margin: 0;
+  }
+
+  .ai-booking-tabs :global(.ant-tabs-tab) .ai-tab-label span {
+    font-size: 12px;
+    line-height: 1.2;
+  }
+
+  .ai-booking-tabs :global(.ant-tabs-ink-bar) {
+    height: 2px;
+  }
+}
+
+/* 确保标签页在滚动时保持固定 */
+@media (max-width: 480px) {
+  .ai-booking-tabs :global(.ant-tabs-tab) {
+    padding: var(--navan-space-2) var(--navan-space-2);
+  }
+
+  .ai-booking-tabs :global(.ant-tabs-tab) .ai-tab-label .anticon {
+    font-size: 16px;
+  }
+
+  .ai-booking-tabs :global(.ant-tabs-tab) .ai-tab-label span {
+    font-size: 11px;
+  }
+}

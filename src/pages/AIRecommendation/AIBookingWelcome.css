@@ -1,0 +1,382 @@
+/* AI预订欢迎/选择页面 - 过渡页面样式 */
+
+.ai-booking-welcome {
+  min-height: calc(100vh - 80px);
+  background: linear-gradient(135deg, var(--navan-purple-light) 0%, var(--navan-white) 100%);
+  padding: var(--navan-space-10) var(--navan-container-padding-desktop);
+  max-width: var(--navan-container-max);
+  margin: 0 auto;
+}
+
+/* 顶部欢迎区域 */
+.welcome-header {
+  text-align: center;
+  margin-bottom: var(--navan-space-10);
+  padding: var(--navan-space-8) 0;
+}
+
+.welcome-icon-wrapper {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto var(--navan-space-6);
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--navan-purple) 0%, var(--navan-purple-hover) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(147, 51, 234, 0.3);
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.welcome-main-icon {
+  font-size: 56px;
+  color: var(--navan-white);
+}
+
+.welcome-title {
+  font-size: var(--navan-h1);
+  font-weight: var(--navan-font-bold);
+  color: var(--navan-text-primary);
+  margin: 0 0 var(--navan-space-3) 0;
+  font-family: var(--navan-font-family);
+  line-height: 1.2;
+}
+
+.welcome-subtitle {
+  font-size: var(--navan-h5);
+  color: var(--navan-gray-600);
+  margin: 0;
+  line-height: 1.5;
+  font-family: var(--navan-font-family);
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  font-weight: var(--navan-font-medium);
+}
+
+/* 选择卡片区域 */
+.welcome-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--navan-space-6);
+  margin-bottom: var(--navan-space-10);
+}
+
+.welcome-option-card {
+  background: var(--navan-white);
+  border-radius: var(--navan-radius-lg);
+  border: 2px solid var(--navan-gray-200);
+  padding: var(--navan-space-8);
+  cursor: pointer;
+  transition: all var(--navan-duration-normal) var(--navan-ease-out);
+  box-shadow: var(--navan-shadow-md);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.welcome-option-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--navan-purple) 0%, var(--navan-purple-hover) 100%);
+  opacity: 0;
+  transition: opacity var(--navan-duration-normal) var(--navan-ease-out);
+}
+
+.welcome-card-purple::before {
+  background: linear-gradient(90deg, var(--navan-purple) 0%, var(--navan-purple-hover) 100%);
+}
+
+.welcome-card-green::before {
+  background: linear-gradient(90deg, #10B981 0%, #059669 100%);
+}
+
+.welcome-card-blue::before {
+  background: linear-gradient(90deg, #3B82F6 0%, #2563EB 100%);
+}
+
+.welcome-option-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--navan-shadow-xl);
+  border-color: var(--navan-purple-light);
+}
+
+.welcome-option-card:hover::before {
+  opacity: 1;
+}
+
+/* 卡片头部 */
+.option-card-header {
+  margin-bottom: var(--navan-space-6);
+}
+
+.option-icon-wrapper {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--navan-radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--navan-space-5);
+  font-size: 36px;
+  color: var(--navan-white);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: transform var(--navan-duration-normal) var(--navan-ease-out);
+}
+
+.welcome-option-card:hover .option-icon-wrapper {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.option-icon-purple {
+  background: linear-gradient(135deg, var(--navan-purple) 0%, var(--navan-purple-hover) 100%);
+}
+
+.option-icon-green {
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+}
+
+.option-icon-blue {
+  background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+}
+
+.option-card-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--navan-space-4);
+  margin-bottom: var(--navan-space-3);
+}
+
+.option-title {
+  font-size: var(--navan-h4);
+  font-weight: var(--navan-font-bold);
+  color: var(--navan-text-primary);
+  margin: 0;
+  flex: 1;
+  line-height: 1.3;
+  font-family: var(--navan-font-family);
+}
+
+.option-action-btn {
+  height: 36px;
+  padding: 0 var(--navan-space-5);
+  border-radius: var(--navan-radius-md);
+  font-size: var(--navan-body-small);
+  font-weight: var(--navan-font-semibold);
+  border: none;
+  flex-shrink: 0;
+  white-space: nowrap;
+  transition: all var(--navan-duration-normal) var(--navan-ease-out);
+}
+
+.option-btn-purple {
+  background: var(--navan-purple);
+  color: var(--navan-white);
+}
+
+.option-btn-purple:hover {
+  background: var(--navan-purple-hover);
+  box-shadow: 0 4px 12px rgba(147, 51, 234, 0.4);
+  transform: translateX(2px);
+}
+
+.option-btn-green {
+  background: #10B981;
+  color: var(--navan-white);
+}
+
+.option-btn-green:hover {
+  background: #059669;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+  transform: translateX(2px);
+}
+
+.option-btn-blue {
+  background: #3B82F6;
+  color: var(--navan-white);
+}
+
+.option-btn-blue:hover {
+  background: #2563EB;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+  transform: translateX(2px);
+}
+
+/* 卡片内容 */
+.option-card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--navan-space-3);
+}
+
+.option-highlight {
+  font-size: var(--navan-body-small);
+  font-weight: var(--navan-font-semibold);
+  color: var(--navan-purple);
+  margin: 0 0 var(--navan-space-3) 0;
+  padding: var(--navan-space-2) var(--navan-space-3);
+  background: var(--navan-purple-light);
+  border-radius: var(--navan-radius-md);
+  border-left: 3px solid var(--navan-purple);
+  line-height: 1.4;
+  display: inline-block;
+}
+
+.welcome-card-green .option-highlight {
+  color: #10B981;
+  background: #D1FAE5;
+  border-left-color: #10B981;
+}
+
+.welcome-card-blue .option-highlight {
+  color: #3B82F6;
+  background: #DBEAFE;
+  border-left-color: #3B82F6;
+}
+
+.option-description {
+  font-size: var(--navan-body);
+  color: var(--navan-gray-600);
+  margin: 0;
+  line-height: 1.6;
+  flex: 1;
+  font-weight: var(--navan-font-normal);
+}
+
+/* 底部提示 */
+.welcome-footer {
+  text-align: center;
+  padding: var(--navan-space-6);
+  background: var(--navan-white);
+  border-radius: var(--navan-radius-lg);
+  box-shadow: var(--navan-shadow-sm);
+  border: 1px solid var(--navan-gray-200);
+}
+
+.footer-tip {
+  font-size: var(--navan-body);
+  color: var(--navan-gray-600);
+  margin: 0;
+  line-height: 1.6;
+  font-family: var(--navan-font-family);
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+  .ai-booking-welcome {
+    padding: var(--navan-space-8) var(--navan-container-padding-tablet);
+  }
+
+  .welcome-options {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--navan-space-5);
+  }
+
+  .welcome-title {
+    font-size: var(--navan-h2);
+  }
+
+  .welcome-subtitle {
+    font-size: var(--navan-body);
+  }
+}
+
+@media (max-width: 768px) {
+  .ai-booking-welcome {
+    padding: var(--navan-space-6) var(--navan-container-padding-mobile);
+    background: var(--navan-white);
+  }
+
+  .welcome-header {
+    margin-bottom: var(--navan-space-6);
+    padding: var(--navan-space-6) 0;
+  }
+
+  .welcome-icon-wrapper {
+    width: 80px;
+    height: 80px;
+    margin-bottom: var(--navan-space-4);
+  }
+
+  .welcome-main-icon {
+    font-size: 44px;
+  }
+
+  .welcome-title {
+    font-size: var(--navan-h3);
+    margin-bottom: var(--navan-space-3);
+  }
+
+  .welcome-subtitle {
+    font-size: var(--navan-body-small);
+    padding: 0 var(--navan-space-4);
+  }
+
+  .welcome-options {
+    grid-template-columns: 1fr;
+    gap: var(--navan-space-4);
+    margin-bottom: var(--navan-space-6);
+  }
+
+  .welcome-option-card {
+    padding: var(--navan-space-6);
+  }
+
+  .option-icon-wrapper {
+    width: 64px;
+    height: 64px;
+    font-size: 32px;
+    margin-bottom: var(--navan-space-4);
+  }
+
+  .option-card-title-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--navan-space-3);
+  }
+
+  .option-title {
+    font-size: var(--navan-h5);
+  }
+
+  .option-action-btn {
+    width: 100%;
+    height: 44px;
+    font-size: var(--navan-body);
+  }
+
+  .option-highlight {
+    font-size: var(--navan-body-small);
+    padding: var(--navan-space-2);
+  }
+
+  .option-description {
+    font-size: var(--navan-body-small);
+  }
+
+  .welcome-footer {
+    padding: var(--navan-space-4);
+  }
+
+  .footer-tip {
+    font-size: var(--navan-body-small);
+  }
+}
+

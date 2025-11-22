@@ -1,0 +1,139 @@
+/* 通用页面容器样式 - Navan风格 */
+
+/* 页面容器 - 统一的最大宽度、内边距和背景 */
+.page-container {
+  width: 100%;
+  max-width: var(--navan-container-max);
+  margin: 0 auto;
+  padding: var(--navan-space-6) var(--navan-container-padding-mobile);
+  background: var(--navan-bg);
+  min-height: calc(100vh - 80px); /* 减去header高度 */
+}
+
+@media (min-width: 768px) {
+  .page-container {
+    padding: var(--navan-space-8) var(--navan-container-padding-tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  .page-container {
+    padding: var(--navan-space-8) var(--navan-container-padding-desktop);
+  }
+}
+
+@media (max-width: 768px) {
+  .page-container {
+    min-height: calc(100vh - 64px); /* 移动端header高度为64px */
+  }
+}
+
+/* 页面标题区域 */
+.page-header {
+  margin-bottom: var(--navan-space-8);
+  padding-bottom: var(--navan-space-6);
+  border-bottom: 1px solid var(--navan-gray-200);
+}
+
+.page-title {
+  font-size: var(--navan-h3);
+  font-weight: var(--navan-font-bold);
+  color: var(--navan-gray-900);
+  margin: 0 0 var(--navan-space-2) 0;
+  line-height: 1.2;
+}
+
+.page-subtitle {
+  font-size: var(--navan-body);
+  color: var(--navan-gray-600);
+  margin: 0;
+}
+
+/* 页面内容区域 */
+.page-content {
+  background: var(--navan-white);
+  border-radius: var(--navan-radius-lg);
+  padding: var(--navan-space-8);
+  box-shadow: var(--navan-shadow-sm);
+}
+
+/* 页面操作栏（页面右上角） */
+.page-actions {
+  display: flex;
+  gap: var(--navan-space-4);
+  align-items: center;
+  margin-bottom: var(--navan-space-6);
+}
+
+/* 表单容器 */
+.form-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* 卡片列表容器 */
+.card-list-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--navan-space-6);
+  margin-top: var(--navan-space-6);
+}
+
+/* 空状态容器 */
+.empty-container {
+  text-align: center;
+  padding: var(--navan-space-20) var(--navan-space-8);
+  background: var(--navan-white);
+  border-radius: var(--navan-radius-lg);
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+  .page-container {
+    padding: var(--navan-space-6) var(--navan-space-6);
+  }
+
+  .page-title {
+    font-size: var(--navan-h4);
+  }
+
+  .page-content {
+    padding: var(--navan-space-6);
+  }
+
+  .card-list-container {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--navan-space-4);
+  }
+}
+
+@media (max-width: 768px) {
+  .page-container {
+    padding: var(--navan-space-4) var(--navan-space-4);
+  }
+
+  .page-title {
+    font-size: var(--navan-h5);
+  }
+
+  .page-content {
+    padding: var(--navan-space-4);
+    border-radius: var(--navan-radius-md);
+  }
+
+  .page-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--navan-space-2);
+  }
+
+  .card-list-container {
+    grid-template-columns: 1fr;
+    gap: var(--navan-space-4);
+  }
+
+  .form-container {
+    max-width: 100%;
+  }
+}
+

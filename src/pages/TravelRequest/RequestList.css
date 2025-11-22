@@ -1,8 +1,398 @@
+/* Navan风格 - 出差申请列表页面 */
+
 .request-list {
-  /* 样式 */
+  min-height: calc(100vh - 80px);
+  background: var(--navan-bg);
+  padding: var(--navan-space-4) var(--navan-container-padding-mobile);
 }
 
+.request-list .ant-card {
+  border-radius: var(--navan-radius-lg);
+  box-shadow: var(--navan-shadow-md);
+  border: 1px solid var(--navan-gray-200);
+  margin: 0 auto;
+  max-width: var(--navan-container-max);
+  background: var(--navan-white);
+}
 
+.request-list .ant-card-head {
+  border-bottom: 1px solid var(--navan-gray-200);
+  padding: var(--navan-space-6) var(--navan-space-8);
+  background: var(--navan-white);
+}
 
+.request-list .ant-card-head-title {
+  font-size: var(--navan-h4);
+  font-weight: var(--navan-font-semibold);
+  color: var(--navan-gray-900);
+  display: flex;
+  align-items: center;
+  gap: var(--navan-space-3);
+}
 
+.request-list .ant-card-head-title .anticon {
+  color: var(--navan-accent);
+  font-size: 20px;
+}
 
+.request-list .ant-card-extra .ant-btn-primary {
+  height: 48px;
+  border-radius: var(--navan-radius-md);
+  background: var(--navan-accent);
+  border: none;
+  font-size: var(--navan-button);
+  font-weight: var(--navan-font-medium);
+  padding: 0 var(--navan-space-6);
+  transition: all var(--navan-duration-normal) var(--navan-ease-out);
+}
+
+.request-list .ant-card-extra .ant-btn-primary:hover {
+  background: var(--navan-accent-hover);
+  box-shadow: var(--navan-shadow-button);
+  transform: translateY(-1px);
+}
+
+.request-list .ant-card-body {
+  padding: var(--navan-space-6) var(--navan-space-8);
+}
+
+/* Tabs样式 */
+.request-list .ant-tabs {
+  margin-bottom: var(--navan-space-6);
+}
+
+.request-list .ant-tabs-tab {
+  padding: var(--navan-space-3) var(--navan-space-5);
+  font-size: var(--navan-body);
+  font-weight: var(--navan-font-medium);
+  color: var(--navan-gray-600);
+  transition: color var(--navan-duration-normal);
+}
+
+.request-list .ant-tabs-tab:hover {
+  color: var(--navan-accent);
+}
+
+.request-list .ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: var(--navan-accent);
+  font-weight: var(--navan-font-semibold);
+}
+
+.request-list .ant-tabs-ink-bar {
+  background: var(--navan-accent);
+  height: 3px;
+}
+
+/* 桌面端表格样式 */
+.desktop-table-wrapper {
+  display: block;
+}
+
+.request-list .ant-table {
+  background: var(--navan-white);
+  border-radius: var(--navan-radius-md);
+}
+
+.request-list .ant-table-thead > tr > th {
+  background: var(--navan-gray-50);
+  border-bottom: 2px solid var(--navan-gray-200);
+  font-size: var(--navan-body-small);
+  font-weight: var(--navan-font-semibold);
+  color: var(--navan-gray-700);
+  padding: 10px 16px;
+  height: 44px;
+}
+
+.request-list .ant-table-tbody > tr > td {
+  border-bottom: 1px solid var(--navan-gray-100);
+  padding: 12px 16px;
+  font-size: var(--navan-body);
+  color: var(--navan-gray-900);
+  height: 48px;
+  vertical-align: middle;
+}
+
+.request-list .ant-table-tbody > tr:hover > td {
+  background: var(--navan-gray-50);
+}
+
+.request-list .ant-table-tbody > tr > td:last-child {
+  text-align: right;
+}
+
+/* 移动端卡片列表样式 */
+.mobile-cards-list {
+  display: none;
+}
+
+.mobile-record-card {
+  margin-bottom: var(--navan-space-4);
+  border-radius: var(--navan-radius-lg);
+  border: 1px solid var(--navan-gray-200);
+  box-shadow: var(--navan-shadow-sm);
+  cursor: pointer;
+  transition: all var(--navan-duration-normal) var(--navan-ease-out);
+  background: var(--navan-white);
+  overflow: hidden;
+}
+
+.mobile-record-card:hover {
+  box-shadow: var(--navan-shadow-md);
+  transform: translateY(-2px);
+  border-color: var(--navan-purple-light);
+}
+
+.mobile-card-header {
+  padding: var(--navan-space-4);
+  border-bottom: 1px solid var(--navan-gray-100);
+  background: var(--navan-gray-50);
+}
+
+.mobile-card-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--navan-space-3);
+}
+
+.mobile-card-id {
+  font-family: 'monospace';
+  font-size: var(--navan-body-small);
+  font-weight: var(--navan-font-semibold);
+  color: var(--navan-gray-900);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobile-card-content {
+  padding: var(--navan-space-4);
+}
+
+.mobile-card-info-row {
+  display: flex;
+  align-items: center;
+  gap: var(--navan-space-2);
+  margin-bottom: var(--navan-space-3);
+  flex-wrap: wrap;
+}
+
+.mobile-card-info-row:last-child {
+  margin-bottom: 0;
+}
+
+.mobile-card-icon {
+  color: var(--navan-purple);
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.mobile-card-label {
+  font-size: var(--navan-body-small);
+  color: var(--navan-gray-500);
+  font-weight: var(--navan-font-medium);
+  min-width: 48px;
+  flex-shrink: 0;
+}
+
+.mobile-card-value {
+  font-size: var(--navan-body-small);
+  color: var(--navan-gray-900);
+  flex: 1;
+  min-width: 0;
+}
+
+.mobile-card-footer {
+  padding: var(--navan-space-4);
+  border-top: 1px solid var(--navan-gray-100);
+  background: var(--navan-gray-50);
+}
+
+.mobile-card-footer .ant-btn {
+  height: 44px;
+  border-radius: var(--navan-radius-md);
+  font-size: var(--navan-body);
+  font-weight: var(--navan-font-medium);
+}
+
+/* Tag样式 */
+.request-list .ant-tag {
+  margin: 0;
+  padding: 2px 8px;
+  height: 22px;
+  line-height: 18px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 4px;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+.request-list .ant-tag.ant-tag-orange {
+  background: #FEF3C7;
+  color: #F59E0B;
+}
+
+.request-list .ant-tag.ant-tag-blue {
+  background: var(--navan-purple-light);
+  color: var(--navan-accent);
+}
+
+.request-list .ant-tag.ant-tag-green {
+  background: #D1FAE5;
+  color: #10B981;
+}
+
+.request-list .ant-tag.ant-tag-red {
+  background: #FEE2E2;
+  color: #EF4444;
+}
+
+/* 页码样式 */
+.request-list .ant-pagination {
+  margin-top: var(--navan-space-6);
+  text-align: right;
+}
+
+.request-list .ant-pagination .ant-pagination-item {
+  border-radius: var(--navan-radius-md);
+  border: 1px solid var(--navan-gray-300);
+}
+
+.request-list .ant-pagination .ant-pagination-item-active {
+  background: var(--navan-accent);
+  border-color: var(--navan-accent);
+}
+
+.request-list .ant-pagination .ant-pagination-item-active a {
+  color: var(--navan-white);
+}
+
+.request-list .ant-pagination .ant-pagination-item:hover {
+  border-color: var(--navan-accent);
+}
+
+.request-list .ant-pagination .ant-pagination-item:hover a {
+  color: var(--navan-accent);
+}
+
+/* 响应式设计 */
+@media (min-width: 768px) {
+  .request-list {
+    padding: var(--navan-space-6) var(--navan-container-padding-tablet);
+  }
+  
+  .request-list .ant-card {
+    margin: var(--navan-space-8) auto;
+  }
+}
+
+@media (min-width: 1024px) {
+  .request-list {
+    padding: var(--navan-space-6) var(--navan-container-padding-desktop);
+  }
+}
+
+@media (max-width: 768px) {
+  .request-list {
+    padding: 0;
+    background: var(--navan-bg);
+    min-height: calc(100vh - 64px);
+  }
+
+  .request-list .ant-card {
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
+    border-bottom: 1px solid var(--navan-gray-200);
+  }
+
+  .request-list .ant-card-head {
+    padding: var(--navan-space-4);
+    position: sticky;
+    top: 64px;
+    z-index: 10;
+    background: var(--navan-white);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  }
+
+  .request-list .ant-card-head-title {
+    font-size: var(--navan-h5);
+  }
+
+  .request-list .ant-card-body {
+    padding: var(--navan-space-4);
+  }
+  
+  /* 移动端显示卡片列表，隐藏表格 */
+  .mobile-cards-list {
+    display: block;
+  }
+  
+  .desktop-table-wrapper {
+    display: none;
+  }
+  
+  /* 移动端卡片优化 */
+  .mobile-record-card {
+    margin-bottom: var(--navan-space-4);
+  }
+  
+  .mobile-card-content {
+    padding: var(--navan-space-4);
+  }
+  
+  .mobile-card-info-row {
+    font-size: var(--navan-body-small);
+  }
+  
+  .mobile-card-footer {
+    padding: var(--navan-space-4);
+  }
+  
+  /* 移动端Tabs优化 */
+  .request-list .ant-tabs {
+    margin-bottom: var(--navan-space-4);
+  }
+  
+  .request-list .ant-tabs-tab {
+    padding: var(--navan-space-2) var(--navan-space-3);
+    font-size: var(--navan-body-small);
+  }
+  
+  /* 移动端按钮 */
+  .request-list .ant-card-extra {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 100;
+  }
+  
+  .request-list .ant-card-extra .ant-btn-primary {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    box-shadow: var(--navan-shadow-lg);
+    font-size: 24px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .request-list .ant-card-extra .ant-btn-primary .anticon {
+    display: none;
+  }
+  
+  .request-list .ant-card-extra .ant-btn-primary::before {
+    content: '+';
+    font-size: 28px;
+    line-height: 1;
+  }
+}

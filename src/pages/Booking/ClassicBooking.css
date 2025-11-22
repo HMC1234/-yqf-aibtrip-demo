@@ -1,9 +1,322 @@
+/* Navan风格 - 经典预订搜索页面 */
+
 .classic-booking {
-  max-width: 800px;
+  max-width: 1000px;
   margin: 0 auto;
+  padding: var(--navan-space-8);
+  background: var(--navan-gray-50);
+  min-height: calc(100vh - 80px);
 }
 
+.classic-booking .ant-card {
+  border-radius: var(--navan-radius-lg);
+  box-shadow: var(--navan-shadow-md);
+  border: 1px solid var(--navan-gray-200);
+  background: var(--navan-white);
+  margin-bottom: var(--navan-space-6);
+}
 
+.classic-booking .ant-card-head {
+  border-bottom: 1px solid var(--navan-gray-200);
+  padding: var(--navan-space-6) var(--navan-space-8);
+  background: var(--navan-white);
+}
 
+.classic-booking .ant-card-head-title {
+  font-size: var(--navan-h4);
+  font-weight: var(--navan-font-semibold);
+  color: var(--navan-gray-900);
+  display: flex;
+  align-items: center;
+  gap: var(--navan-space-3);
+}
 
+.classic-booking .ant-card-head-title .anticon {
+  color: var(--navan-accent);
+  font-size: 20px;
+}
 
+.classic-booking .ant-card-body {
+  padding: var(--navan-space-8);
+}
+
+/* Radio样式 */
+.classic-booking .ant-radio-group {
+  display: flex;
+  gap: var(--navan-space-4);
+  margin-bottom: var(--navan-space-6);
+  flex-wrap: wrap;
+}
+
+.classic-booking .ant-radio-button-wrapper {
+  height: 48px;
+  border-radius: var(--navan-radius-md);
+  border: 1px solid var(--navan-gray-300);
+  font-size: var(--navan-body);
+  font-weight: var(--navan-font-medium);
+  padding: 0 var(--navan-space-6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--navan-transition-normal) var(--navan-ease-out);
+}
+
+.classic-booking .ant-radio-button-wrapper:hover {
+  border-color: var(--navan-accent);
+  color: var(--navan-accent);
+}
+
+.classic-booking .ant-radio-button-wrapper-checked {
+  background: var(--navan-accent);
+  border-color: var(--navan-accent);
+  color: var(--navan-white);
+  box-shadow: var(--navan-shadow-button);
+}
+
+.classic-booking .ant-radio-button-wrapper-checked:hover {
+  background: var(--navan-accent-hover);
+  border-color: var(--navan-accent-hover);
+  box-shadow: var(--navan-shadow-button-hover);
+}
+
+/* 表单样式 */
+.classic-booking .ant-form {
+  max-width: 100%;
+}
+
+.classic-booking .ant-form-item {
+  margin-bottom: var(--navan-space-6);
+}
+
+.classic-booking .ant-form-item-label > label {
+  font-size: var(--navan-label);
+  font-weight: var(--navan-font-medium);
+  color: var(--navan-gray-700);
+  height: auto;
+  line-height: 1.5;
+  margin-bottom: var(--navan-space-2);
+}
+
+.classic-booking .ant-form-item-label > label.ant-form-item-required::before {
+  color: var(--navan-error);
+}
+
+/* 输入框样式 */
+.classic-booking .ant-input,
+.classic-booking .ant-input-affix-wrapper,
+.classic-booking .ant-picker,
+.classic-booking .ant-select-selector,
+.classic-booking .ant-input-number {
+  height: 48px;
+  border-radius: var(--navan-radius-md);
+  border: 1px solid var(--navan-gray-300);
+  font-size: var(--navan-body);
+  padding: var(--navan-space-3) var(--navan-space-4);
+  transition: all var(--navan-transition-normal) var(--navan-ease-out);
+}
+
+.classic-booking .ant-input:focus,
+.classic-booking .ant-input-affix-wrapper-focused,
+.classic-booking .ant-picker-focused,
+.classic-booking .ant-select-focused .ant-select-selector {
+  border-color: var(--navan-accent);
+  box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1);
+  outline: none;
+}
+
+.classic-booking .ant-input:hover,
+.classic-booking .ant-input-affix-wrapper:hover,
+.classic-booking .ant-picker:hover,
+.classic-booking .ant-select-selector:hover {
+  border-color: var(--navan-gray-400);
+}
+
+.classic-booking .ant-input::placeholder,
+.classic-booking .ant-input-affix-wrapper input::placeholder {
+  color: var(--navan-gray-400);
+  font-size: var(--navan-body);
+}
+
+/* Select样式 */
+.classic-booking .ant-select-selector {
+  height: 48px !important;
+}
+
+.classic-booking .ant-select-selection-item,
+.classic-booking .ant-select-selection-placeholder {
+  line-height: 46px !important;
+  font-size: var(--navan-body);
+}
+
+/* DatePicker样式 */
+.classic-booking .ant-picker {
+  width: 100%;
+}
+
+.classic-booking .ant-picker-input > input {
+  font-size: var(--navan-body);
+  height: 46px;
+}
+
+/* 错误提示样式 */
+.classic-booking .ant-form-item-has-error .ant-input,
+.classic-booking .ant-form-item-has-error .ant-input-affix-wrapper,
+.classic-booking .ant-form-item-has-error .ant-picker,
+.classic-booking .ant-form-item-has-error .ant-select-selector {
+  border-color: var(--navan-error);
+}
+
+.classic-booking .ant-form-item-has-error .ant-input:focus,
+.classic-booking .ant-form-item-has-error .ant-input-affix-wrapper-focused,
+.classic-booking .ant-form-item-has-error .ant-picker-focused,
+.classic-booking .ant-form-item-has-error .ant-select-focused .ant-select-selector {
+  border-color: var(--navan-error);
+  box-shadow: 0 0 0 3px rgba(234, 67, 53, 0.1);
+}
+
+.classic-booking .ant-form-item-explain-error {
+  color: var(--navan-error);
+  font-size: var(--navan-body-small);
+  margin-top: var(--navan-space-2);
+  line-height: 1.5;
+}
+
+/* 按钮样式 */
+.classic-booking .ant-form-item:last-child {
+  margin-bottom: 0;
+  margin-top: var(--navan-space-8);
+}
+
+.classic-booking .ant-btn {
+  height: 48px;
+  border-radius: var(--navan-radius-md);
+  font-size: var(--navan-button);
+  font-weight: var(--navan-font-medium);
+  padding: 0 var(--navan-space-8);
+  transition: all var(--navan-transition-normal) var(--navan-ease-out);
+}
+
+.classic-booking .ant-btn-primary {
+  background: var(--navan-accent);
+  border: none;
+  box-shadow: var(--navan-shadow-button);
+}
+
+.classic-booking .ant-btn-primary:hover {
+  background: var(--navan-accent-hover);
+  box-shadow: var(--navan-shadow-button-hover);
+  transform: translateY(-1px);
+}
+
+.classic-booking .ant-btn-primary:active {
+  transform: translateY(0);
+  box-shadow: var(--navan-shadow-sm);
+}
+
+.classic-booking .ant-btn-default {
+  border-color: var(--navan-gray-300);
+  color: var(--navan-gray-700);
+}
+
+.classic-booking .ant-btn-default:hover {
+  border-color: var(--navan-accent);
+  color: var(--navan-accent);
+}
+
+.classic-booking .ant-btn[disabled] {
+  background: var(--navan-gray-200);
+  border-color: var(--navan-gray-200);
+  color: var(--navan-gray-400);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* 按钮组 */
+.classic-booking .ant-space {
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.classic-booking .ant-space-item {
+  display: flex;
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+  .classic-booking {
+    padding: var(--navan-space-6);
+  }
+
+  .classic-booking .ant-card-body {
+    padding: var(--navan-space-6);
+  }
+}
+
+@media (max-width: 768px) {
+  .classic-booking {
+    padding: var(--navan-space-4);
+    background: var(--navan-white);
+  }
+
+  .classic-booking .ant-card {
+    border-radius: var(--navan-radius-md);
+    box-shadow: none;
+    border: none;
+    border-bottom: 1px solid var(--navan-gray-200);
+  }
+
+  .classic-booking .ant-card-head {
+    padding: var(--navan-space-4);
+  }
+
+  .classic-booking .ant-card-head-title {
+    font-size: var(--navan-h5);
+  }
+
+  .classic-booking .ant-card-body {
+    padding: var(--navan-space-4);
+  }
+
+  .classic-booking .ant-radio-group {
+    flex-direction: column;
+    gap: var(--navan-space-2);
+  }
+
+  .classic-booking .ant-radio-button-wrapper {
+    width: 100%;
+    height: 44px;
+    font-size: var(--navan-body-small);
+  }
+
+  .classic-booking .ant-form-item {
+    margin-bottom: var(--navan-space-5);
+  }
+
+  .classic-booking .ant-input,
+  .classic-booking .ant-input-affix-wrapper,
+  .classic-booking .ant-picker,
+  .classic-booking .ant-select-selector {
+    height: 44px;
+    font-size: var(--navan-body-small);
+  }
+
+  .classic-booking .ant-btn {
+    height: 44px;
+    font-size: var(--navan-body);
+    padding: 0 var(--navan-space-6);
+  }
+
+  .classic-booking .ant-space {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .classic-booking .ant-space-item {
+    width: 100%;
+  }
+
+  .classic-booking .ant-space-item .ant-btn {
+    width: 100%;
+  }
+}

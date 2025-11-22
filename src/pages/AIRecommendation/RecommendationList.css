@@ -1,46 +1,314 @@
+/* Navan风格 - AI推荐方案列表页面 */
+
 .recommendation-list {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
+  padding: var(--navan-space-8);
+  background: var(--navan-gray-50);
+  min-height: calc(100vh - 80px);
 }
 
+/* 返回按钮样式 */
+.recommendation-list .detail-back-btn {
+  margin-bottom: var(--navan-space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--navan-space-2);
+  height: auto;
+  padding: var(--navan-space-2) var(--navan-space-4);
+  font-size: var(--navan-body);
+  color: var(--navan-gray-700);
+  border-color: var(--navan-gray-300);
+  border-radius: var(--navan-radius-md);
+  transition: all var(--navan-duration-normal) var(--navan-ease-out);
+}
+
+.recommendation-list .detail-back-btn:hover {
+  color: var(--navan-purple);
+  border-color: var(--navan-purple);
+  background: var(--navan-white);
+}
+
+.recommendation-list .detail-back-btn .anticon {
+  font-size: 16px;
+}
+
+.recommendation-list .ant-card {
+  border-radius: var(--navan-radius-lg);
+  box-shadow: var(--navan-shadow-md);
+  border: 1px solid var(--navan-gray-200);
+  background: var(--navan-white);
+  margin-bottom: var(--navan-space-6);
+}
+
+.recommendation-list .ant-card-head {
+  border-bottom: 1px solid var(--navan-gray-200);
+  padding: var(--navan-space-6) var(--navan-space-8);
+  background: var(--navan-white);
+}
+
+.recommendation-list .ant-card-head-title {
+  font-size: var(--navan-h4);
+  font-weight: var(--navan-font-semibold);
+  color: var(--navan-gray-900);
+}
+
+.recommendation-list .ant-card-body {
+  padding: var(--navan-space-8);
+}
+
+/* 推荐卡片网格 */
+.recommendations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--navan-space-6);
+  margin-top: var(--navan-space-6);
+}
+
+/* 推荐卡片 */
 .recommendation-card {
   height: 100%;
   display: flex;
   flex-direction: column;
+  border-radius: var(--navan-radius-lg);
+  box-shadow: var(--navan-shadow-md);
+  border: 1px solid var(--navan-gray-200);
+  background: var(--navan-white);
+  transition: all var(--navan-transition-normal) var(--navan-ease-out);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.recommendation-card:hover {
+  border-color: var(--navan-accent);
+  box-shadow: var(--navan-shadow-lg);
+  transform: translateY(-4px);
 }
 
 .recommendation-card .ant-card-body {
   flex: 1;
   display: flex;
   flex-direction: column;
+  padding: var(--navan-space-6);
 }
 
+/* 卡片头部 */
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: var(--navan-space-4);
+  padding-bottom: var(--navan-space-4);
+  border-bottom: 1px solid var(--navan-gray-200);
 }
 
+.card-header-title {
+  font-size: var(--navan-h6);
+  font-weight: var(--navan-font-semibold);
+  color: var(--navan-gray-900);
+  margin: 0;
+}
+
+/* 评分样式 */
 .score {
-  color: #faad14;
-  font-weight: bold;
+  color: var(--navan-warning);
+  font-weight: var(--navan-font-bold);
+  font-size: var(--navan-h6);
+  display: flex;
+  align-items: center;
+  gap: var(--navan-space-1);
 }
 
+.score-icon {
+  color: var(--navan-warning);
+  font-size: 18px;
+}
+
+/* 卡片内容 */
 .card-content {
   flex: 1;
+  margin-bottom: var(--navan-space-4);
 }
 
+/* 关键词标签 */
 .keywords {
   min-height: 40px;
+  margin-bottom: var(--navan-space-4);
 }
 
+.keywords .ant-tag {
+  margin: 0 4px 4px 0;
+  padding: 2px 8px;
+  height: 22px;
+  line-height: 18px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 4px;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  background: var(--navan-purple-light);
+  color: var(--navan-accent);
+}
+
+/* 推荐理由 */
 .reason {
   min-height: 60px;
   line-height: 1.6;
+  font-size: var(--navan-body);
+  color: var(--navan-gray-600);
+  margin-bottom: var(--navan-space-4);
+  padding: var(--navan-space-3);
+  background: var(--navan-gray-50);
+  border-radius: var(--navan-radius-md);
+  border-left: 3px solid var(--navan-accent);
 }
 
+/* 卡片底部 */
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: var(--navan-space-4);
+  border-top: 1px solid var(--navan-gray-200);
+  margin-top: auto;
+}
 
+.card-footer-info {
+  font-size: var(--navan-body-small);
+  color: var(--navan-gray-500);
+}
 
+.card-footer-button {
+  height: 40px;
+  border-radius: var(--navan-radius-md);
+  font-size: var(--navan-body);
+  font-weight: var(--navan-font-medium);
+  padding: 0 var(--navan-space-5);
+  background: var(--navan-accent);
+  border: none;
+  color: var(--navan-white);
+  transition: all var(--navan-transition-normal) var(--navan-ease-out);
+}
 
+.card-footer-button:hover {
+  background: var(--navan-accent-hover);
+  box-shadow: var(--navan-shadow-button);
+  transform: translateY(-1px);
+}
 
+/* 空状态 */
+.recommendation-list .ant-empty {
+  padding: var(--navan-space-20) var(--navan-space-8);
+  background: var(--navan-white);
+  border-radius: var(--navan-radius-lg);
+  margin-top: var(--navan-space-6);
+}
+
+/* 加载状态 */
+.recommendation-list .ant-spin {
+  padding: var(--navan-space-20) 0;
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+  .recommendation-list {
+    padding: var(--navan-space-6);
+  }
+
+  .recommendations-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--navan-space-4);
+  }
+
+  .recommendation-list .ant-card-body {
+    padding: var(--navan-space-6);
+  }
+}
+
+@media (max-width: 768px) {
+  .recommendation-list {
+    padding: var(--navan-space-4);
+    background: var(--navan-white);
+  }
+
+  .recommendation-list .ant-card {
+    border-radius: var(--navan-radius-md);
+    box-shadow: none;
+    border: none;
+    border-bottom: 1px solid var(--navan-gray-200);
+    margin-bottom: var(--navan-space-4);
+  }
+
+  .recommendation-list .ant-card-head {
+    padding: var(--navan-space-4);
+  }
+
+  .recommendation-list .ant-card-head-title {
+    font-size: var(--navan-h5);
+  }
+
+  .recommendations-grid {
+    grid-template-columns: 1fr;
+    gap: var(--navan-space-4);
+    margin-top: var(--navan-space-4);
+  }
+
+  .recommendation-card .ant-card-body {
+    padding: var(--navan-space-4);
+  }
+
+  .card-header-title {
+    font-size: var(--navan-body);
+  }
+
+  .score {
+    font-size: var(--navan-body);
+  }
+
+  .reason {
+    font-size: var(--navan-body-small);
+    padding: var(--navan-space-2);
+  }
+
+  .card-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--navan-space-2);
+  }
+
+  .card-footer-button {
+    width: 100%;
+  }
+
+  /* 返回按钮优化 - 移动端 */
+  .recommendation-list .detail-back-btn {
+    margin-bottom: var(--navan-space-3);
+    padding: var(--navan-space-2) var(--navan-space-4);
+    height: 40px;
+    font-size: var(--navan-body-small);
+    width: 100%;
+    justify-content: center;
+    border: 1px solid var(--navan-gray-300);
+    background: var(--navan-white);
+    color: var(--navan-gray-700);
+    border-radius: var(--navan-radius-md);
+    font-weight: var(--navan-font-medium);
+    display: flex;
+    align-items: center;
+    gap: var(--navan-space-2);
+    transition: all var(--navan-duration-normal) var(--navan-ease-out);
+  }
+
+  .recommendation-list .detail-back-btn:hover {
+    border-color: var(--navan-purple);
+    color: var(--navan-purple);
+    background: var(--navan-white);
+  }
+
+  .recommendation-list .detail-back-btn .anticon {
+    font-size: 14px;
+  }
+}

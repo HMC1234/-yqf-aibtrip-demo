@@ -1,61 +1,361 @@
+/* Navan风格主布局 */
+
 .main-layout {
   min-height: 100vh;
+  background: var(--navan-bg);
 }
 
-.layout-sider {
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
-}
-
-.logo {
-  height: 64px;
+/* 顶部导航栏（Navan风格） */
+.layout-header {
+  height: 80px;
+  background: var(--navan-white);
+  border-bottom: 1px solid var(--navan-gray-200);
+  padding: 0 32px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 16px;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.logo-text {
-  margin-left: 8px;
-  font-size: 16px;
-  font-weight: bold;
-  color: #1890ff;
-}
-
-.layout-header {
-  background: #fff;
-  padding: 0 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .header-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 100%;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
-.header-title {
-  margin: 0;
-  font-size: 18px;
+/* Logo区域 */
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.header-logo-icon {
+  font-size: 28px;
+  color: var(--navan-purple);
+  flex-shrink: 0;
+}
+
+.header-logo-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.header-logo-text {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--navan-text-primary);
+  letter-spacing: 1px;
+  font-family: var(--navan-font-family);
+  line-height: 1.2;
+}
+
+.header-logo-subtitle {
+  font-size: 14px;
   font-weight: 500;
-  color: #1890ff;
+  color: var(--navan-gray-600);
+  font-family: var(--navan-font-family);
+  line-height: 1.2;
+}
+
+/* 导航菜单（水平排列） */
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex: 1;
+  justify-content: center;
+}
+
+.header-nav-item {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--navan-gray-700);
+  text-decoration: none;
+  transition: color 0.3s ease;
+  cursor: pointer;
+  padding: 8px 0;
+  position: relative;
+}
+
+.header-nav-item:hover {
+  color: var(--navan-purple);
+}
+
+.header-nav-item.active {
+  color: var(--navan-purple);
+}
+
+.header-nav-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--navan-purple);
+}
+
+/* 右侧区域 */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--navan-space-4);
+}
+
+/* 用户菜单 */
+.header-user {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .user-menu {
   display: flex;
   align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  height: auto;
+  line-height: 1.5;
 }
 
+.user-menu:hover {
+  background: var(--navan-gray-50);
+}
+
+/* 精美的用户图标容器 */
+.user-menu-icon-wrapper {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--navan-purple) 0%, var(--navan-purple-hover) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(147, 51, 234, 0.25);
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.user-menu:hover .user-menu-icon-wrapper {
+  box-shadow: 0 4px 12px rgba(147, 51, 234, 0.4);
+  transform: scale(1.05);
+}
+
+.user-menu-icon {
+  font-size: 16px;
+  color: #ffffff;
+  margin: 0;
+}
+
+.user-menu-text {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--navan-gray-700);
+  transition: color 0.3s ease;
+}
+
+.user-menu:hover .user-menu-text {
+  color: var(--navan-purple);
+}
+
+/* 移动端菜单按钮 */
+.mobile-menu-btn {
+  display: none;
+  font-size: 20px;
+  padding: 8px;
+  color: var(--navan-gray-700);
+}
+
+.mobile-menu-btn:hover {
+  color: var(--navan-purple);
+  background: var(--navan-gray-50);
+}
+
+/* 内容区域 */
 .layout-content {
-  margin: 24px;
-  padding: 24px;
-  background: #fff;
-  min-height: calc(100vh - 112px);
-  border-radius: 4px;
+  background: var(--navan-bg);
+  min-height: calc(100vh - 80px);
+  padding: 0;
 }
 
+/* 移除侧边栏样式 */
+.layout-sider {
+  display: none;
+}
 
+/* 移动端抽屉菜单 */
+.mobile-drawer :global(.ant-drawer-header) {
+  padding: var(--navan-space-5);
+  border-bottom: 1px solid var(--navan-gray-200);
+}
 
+.mobile-drawer :global(.ant-drawer-body) {
+  padding: 0;
+}
 
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--navan-h5);
+  font-weight: var(--navan-font-semibold);
+  color: var(--navan-text-primary);
+}
 
+.drawer-close-btn {
+  color: var(--navan-gray-500);
+}
+
+.drawer-close-btn:hover {
+  color: var(--navan-purple);
+}
+
+.mobile-nav {
+  display: flex;
+  flex-direction: column;
+  padding: var(--navan-space-4) 0;
+}
+
+.mobile-nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--navan-space-4);
+  padding: var(--navan-space-4) var(--navan-space-5);
+  color: var(--navan-gray-700);
+  text-decoration: none;
+  transition: all var(--navan-duration-normal) var(--navan-ease-out);
+  border-left: 3px solid transparent;
+  cursor: pointer;
+}
+
+.mobile-nav-item:hover {
+  background: var(--navan-gray-50);
+  color: var(--navan-purple);
+}
+
+.mobile-nav-item.active {
+  background: var(--navan-purple-light);
+  color: var(--navan-purple);
+  border-left-color: var(--navan-purple);
+  font-weight: var(--navan-font-semibold);
+}
+
+.mobile-nav-icon {
+  font-size: 20px;
+  width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-nav-label {
+  font-size: var(--navan-body);
+}
+
+.mobile-user-info {
+  display: flex;
+  align-items: center;
+  gap: var(--navan-space-4);
+  padding: var(--navan-space-5);
+  border-top: 1px solid var(--navan-gray-200);
+  border-bottom: 1px solid var(--navan-gray-200);
+  margin-top: var(--navan-space-4);
+}
+
+.mobile-user-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.mobile-user-name {
+  font-size: var(--navan-body);
+  font-weight: var(--navan-font-semibold);
+  color: var(--navan-text-primary);
+  margin-bottom: var(--navan-space-1);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobile-user-email {
+  font-size: var(--navan-body-small);
+  color: var(--navan-gray-500);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobile-user-actions {
+  padding: var(--navan-space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--navan-space-2);
+}
+
+.mobile-action-btn {
+  text-align: left;
+  height: 44px;
+  padding: 0 var(--navan-space-4);
+  border-radius: var(--navan-radius-md);
+  transition: all var(--navan-duration-normal) var(--navan-ease-out);
+}
+
+.mobile-action-btn:hover {
+  background: var(--navan-gray-50);
+}
+
+/* 移动端响应式 */
+@media (max-width: 1024px) {
+  .header-nav {
+    display: none; /* 移动端隐藏导航，使用抽屉菜单 */
+  }
+
+  .layout-header {
+    padding: 0 var(--navan-space-4);
+  }
+
+  .mobile-menu-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .user-menu-text {
+    display: none; /* 移动端隐藏用户名文本，只显示头像 */
+  }
+}
+
+@media (max-width: 768px) {
+  .layout-header {
+    height: 64px;
+    padding: 0 var(--navan-space-3);
+  }
+
+  .header-logo {
+    font-size: 18px;
+  }
+
+  .header-logo-icon {
+    font-size: 22px;
+  }
+
+  .header-logo-text {
+    letter-spacing: 0.5px;
+  }
+
+  .mobile-user-info {
+    padding: var(--navan-space-4);
+  }
+}

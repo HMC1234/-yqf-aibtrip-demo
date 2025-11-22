@@ -1,23 +1,60 @@
-// AI预订主页面（包含3个标签页）
-import React, { useState } from 'react'
-import { Tabs } from 'antd'
+// AI预订主页面（包含3个固定标签页）
+import React, { useState, useEffect } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { Tabs, Button } from 'antd'
 import type { TabsProps } from 'antd'
-import { RobotOutlined, FileTextOutlined, ThunderboltOutlined } from '@ant-design/icons'
+import { RobotOutlined, FileTextOutlined, ThunderboltOutlined, ArrowLeftOutlined } from '@ant-design/icons'
 import AIChat from './AIChat'
 import AllRecommendations from './AllRecommendations'
 import ApprovedRequests from './ApprovedRequests'
 import './AIBooking.css'
 
-const AIBooking: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('chat')
+interface AIBookingProps {
+  defaultTab?: 'chat' | 'recommendations' | 'approved-requests'
+}
+
+const AIBooking: React.FC<AIBookingProps> = ({ defaultTab = 'chat' }) => {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const [activeTab, setActiveTab] = useState(defaultTab)
+
+  // 根据当前路径确定activeTab
+  useEffect(() => {
+    const path = location.pathname
+    if (path.includes('/chat')) {
+      setActiveTab('chat')
+    } else if (path.includes('/recommendations')) {
+      setActiveTab('recommendations')
+    } else if (path.includes('/approved-requests')) {
+      setActiveTab('approved-requests')
+    } else {
+      setActiveTab(defaultTab)
+    }
+  }, [location.pathname, defaultTab])
+
+  // 当activeTab变化时更新路由
+  const handleTabChange = (key: string) => {
+    // 类型检查，确保key是有效的tab值
+    if (key === 'chat' || key === 'recommendations' || key === 'approved-requests') {
+      setActiveTab(key)
+      // 根据key更新路由
+      if (key === 'chat') {
+        navigate('/ai-booking/chat', { replace: true })
+      } else if (key === 'recommendations') {
+        navigate('/ai-booking/recommendations', { replace: true })
+      } else if (key === 'approved-requests') {
+        navigate('/ai-booking/approved-requests', { replace: true })
+      }
+    }
+  }
 
   const tabItems: TabsProps['items'] = [
     {
       key: 'chat',
       label: (
-        <span>
+        <span className="ai-tab-label">
           <RobotOutlined />
-          智能对话预订
+          <span>智能对话预订</span>
         </span>
       ),
       children: <AIChat />,
@@ -25,9 +62,9 @@ const AIBooking: React.FC = () => {
     {
       key: 'recommendations',
       label: (
-        <span>
+        <span className="ai-tab-label">
           <ThunderboltOutlined />
-          AI推荐方案
+          <span>AI推荐方案</span>
         </span>
       ),
       children: <AllRecommendations />,
@@ -35,9 +72,9 @@ const AIBooking: React.FC = () => {
     {
       key: 'approved-requests',
       label: (
-        <span>
+        <span className="ai-tab-label">
           <FileTextOutlined />
-          已审批申请列表
+          <span>已审批申请列表</span>
         </span>
       ),
       children: <ApprovedRequests />,
@@ -46,15 +83,27 @@ const AIBooking: React.FC = () => {
 
   return (
     <div className="ai-booking">
-      <Tabs
-        activeKey={activeTab}
-        items={tabItems}
-        onChange={setActiveTab}
-        size="large"
-      />
+      <Button
+        icon={<ArrowLeftOutlined />}
+        onClick={() => navigate('/ai-booking')}
+        className="ai-booking-back-btn"
+      >
+        返回选择
+      </Button>
+      <div className="ai-booking-header">
+        <Tabs
+          activeKey={activeTab}
+          items={tabItems}
+          onChange={handleTabChange}
+          size="large"
+          className="ai-booking-tabs"
+        />
+      </div>
+      <div className="ai-booking-content">
+        {tabItems.find((item) => item.key === activeTab)?.children}
+      </div>
     </div>
   )
 }
 
 export default AIBooking
-

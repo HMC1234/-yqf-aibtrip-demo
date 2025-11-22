@@ -13,6 +13,8 @@ import {
 } from 'antd'
 import { CheckOutlined, EyeOutlined } from '@ant-design/icons'
 import { supabase } from '../../lib/supabase'
+import { FlightAPI, validateConfig } from '../../lib/yqf-air'
+import { adaptFlightSearchResult, cityToAirportCode } from '../../lib/yqf-air/adapter'
 import './ProductList.css'
 
 interface Product {
@@ -46,15 +48,93 @@ const ProductList: React.FC = () => {
   const loadProducts = async () => {
     setLoading(true)
     try {
-      // 模拟产品数据（实际应该从API获取）
-      await new Promise(resolve => setTimeout(resolve, 1000))
-
-      const mockProducts: Product[] = generateMockProducts(productType, searchParams)
-      setProducts(mockProducts)
+      // 如果是机票类型且配置了中航服API，则使用真实API
+      if (productType === 'flight' && validateConfig()) {
+        await loadFlightsFromAPI()
+      } else {
+        // 否则使用Mock数据
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        const mockProducts: Product[] = generateMockProducts(productType, searchParams)
+        setProducts(mockProducts)
+      }
     } catch (error: any) {
       message.error('加载产品失败：' + error.message)
+      // 如果API调用失败，回退到Mock数据
+      if (productType === 'flight') {
+        console.warn('API调用失败，使用Mock数据:', error)
+        const mockProducts: Product[] = generateMockProducts(productType, searchParams)
+        setProducts(mockProducts)
+      }
     } finally {
       setLoading(false)
+    }
+  }
+
+  const loadFlightsFromAPI = async () => {
+    const origin = searchParams.origin || '北京'
+    const destination = searchParams.destination || '上海'
+    const departureDate = searchParams.date_range?.[0]?.format('YYYY-MM-DD') || 
+                          searchParams.departure_date || 
+                          new Date().toISOString().split('T')[0]
+    const returnDate = searchParams.date_range?.[1]?.format('YYYY-MM-DD') || 
+                       searchParams.return_date
+
+    // 构建查询参数
+    const flightParams: any = {
+      Passengers: [
+        { PassengerType: 'ADT' }
+      ],
+      Routings: [
+        {
+          Departure: cityToAirportCode(origin),
+          Arrival: cityToAirportCode(destination),
+          DepartureDate: departureDate,
+          DepartureType: 1,
+          ArrivalType: 1,
+        },
+      ],
+      OnlyDirectFlight: false,
+      BerthType: searchParams.cabin_class === 'business' ? 'C' : 
+                 searchParams.cabin_class === 'first' ? 'F' : 'Y',
+      Type: 'D', // D国内/A国际，可以根据需要判断
+      IsQueryRule: false,
+      IsQueryAirline: false,
+      CodeShare: false,
+      IsQueryAirport: false,
+    }
+
+    // 如果是往返，添加回程航段
+    if (returnDate) {
+      flightParams.Routings.push({
+        Departure: cityToAirportCode(destination),
+        Arrival: cityToAirportCode(origin),
+        DepartureDate: returnDate,
+        DepartureType: 1,
+        ArrivalType: 1,
+      })
+    }
+
+    // 调用API
+    const response = await FlightAPI.searchFlights(flightParams)
+
+    if (response.Code === 0 && response.Data) {
+      // 转换响应格式
+      const apiProducts = adaptFlightSearchResult(
+        response.Data,
+        origin,
+        destination
+      )
+
+      if (apiProducts.length > 0) {
+        setProducts(apiProducts)
+      } else {
+        // 如果没有结果，使用Mock数据
+        message.warning('未查询到航班，显示模拟数据')
+        const mockProducts: Product[] = generateMockProducts(productType, searchParams)
+        setProducts(mockProducts)
+      }
+    } else {
+      throw new Error(response.Msg || '查询失败')
     }
   }
 

@@ -1,14 +1,218 @@
+/* Navan风格 - 产品列表页面 */
+
 .product-list {
-  max-width: 1000px;
+  max-width: 1400px;
   margin: 0 auto;
+  padding: var(--navan-space-8);
+  background: var(--navan-gray-50);
+  min-height: calc(100vh - 80px);
 }
 
 .product-list .ant-list-item.selected {
-  background: #e6f7ff;
-  border: 2px solid #1890ff;
+  background: var(--navan-purple-light);
+  border: 2px solid var(--navan-accent);
+  border-radius: var(--navan-radius-md);
+  padding: var(--navan-space-4);
+  margin-bottom: var(--navan-space-2);
+  box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1);
+  transition: all var(--navan-transition-normal) var(--navan-ease-out);
+}
+
+.product-list .ant-list-item {
+  background: var(--navan-white);
+  border: 1px solid var(--navan-gray-200);
+  border-radius: var(--navan-radius-md);
+  padding: var(--navan-space-6);
+  margin-bottom: var(--navan-space-4);
+  transition: all var(--navan-transition-normal) var(--navan-ease-out);
+  cursor: pointer;
+}
+
+.product-list .ant-list-item:hover {
+  border-color: var(--navan-accent);
+  box-shadow: var(--navan-shadow-md);
+  transform: translateY(-2px);
+}
+
+/* 产品卡片样式 */
+.product-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.product-info {
+  flex: 1;
+}
+
+.product-name {
+  font-size: var(--navan-h5);
+  font-weight: var(--navan-font-semibold);
+  color: var(--navan-gray-900);
+  margin-bottom: var(--navan-space-2);
+}
+
+.product-description {
+  font-size: var(--navan-body);
+  color: var(--navan-gray-600);
+  margin-bottom: var(--navan-space-3);
+}
+
+.product-details {
+  display: flex;
+  gap: var(--navan-space-4);
+  flex-wrap: wrap;
+  margin-bottom: var(--navan-space-3);
+}
+
+.product-detail-item {
+  font-size: var(--navan-body-small);
+  color: var(--navan-gray-500);
+}
+
+.product-price {
+  text-align: right;
+  margin-left: var(--navan-space-4);
+}
+
+.price-amount {
+  font-size: var(--navan-h4);
+  font-weight: var(--navan-font-bold);
+  color: var(--navan-accent);
+  margin-bottom: var(--navan-space-1);
+}
+
+.price-currency {
+  font-size: var(--navan-body-small);
+  color: var(--navan-gray-500);
+  margin-left: var(--navan-space-1);
+}
+
+.product-actions {
+  display: flex;
+  gap: var(--navan-space-3);
+  align-items: center;
+  margin-top: var(--navan-space-4);
+}
+
+/* 标签样式 */
+.product-list .ant-tag {
+  margin: 0 4px 4px 0;
+  padding: 2px 8px;
+  height: 22px;
+  line-height: 18px;
+  font-size: 12px;
+  font-weight: 500;
   border-radius: 4px;
-  padding: 16px;
-  margin-bottom: 8px;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+/* 按钮样式 */
+.product-list .ant-btn {
+  height: 48px;
+  border-radius: var(--navan-radius-md);
+  font-size: var(--navan-button);
+  font-weight: var(--navan-font-medium);
+  padding: 0 var(--navan-space-6);
+  transition: all var(--navan-transition-normal) var(--navan-ease-out);
+}
+
+.product-list .ant-btn-primary {
+  background: var(--navan-accent);
+  border: none;
+}
+
+.product-list .ant-btn-primary:hover {
+  background: var(--navan-accent-hover);
+  box-shadow: var(--navan-shadow-button);
+  transform: translateY(-1px);
+}
+
+.product-list .ant-btn-default {
+  border-color: var(--navan-gray-300);
+  color: var(--navan-gray-700);
+}
+
+.product-list .ant-btn-default:hover {
+  border-color: var(--navan-accent);
+  color: var(--navan-accent);
+}
+
+/* 空状态样式 */
+.product-list .ant-empty {
+  padding: var(--navan-space-20) var(--navan-space-8);
+  background: var(--navan-white);
+  border-radius: var(--navan-radius-lg);
+  margin-top: var(--navan-space-6);
+}
+
+/* 加载状态样式 */
+.product-list .ant-spin {
+  padding: var(--navan-space-20) 0;
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+  .product-list {
+    padding: var(--navan-space-6);
+  }
+
+  .product-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .product-price {
+    text-align: left;
+    margin-left: 0;
+    margin-top: var(--navan-space-4);
+    width: 100%;
+  }
+
+  .product-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .product-actions .ant-btn {
+    flex: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .product-list {
+    padding: var(--navan-space-4);
+    background: var(--navan-white);
+  }
+
+  .product-list .ant-list-item {
+    padding: var(--navan-space-4);
+  }
+
+  .product-name {
+    font-size: var(--navan-h6);
+  }
+
+  .product-description {
+    font-size: var(--navan-body-small);
+  }
+
+  .price-amount {
+    font-size: var(--navan-h5);
+  }
+
+  .product-actions {
+    flex-direction: column;
+  }
+
+  .product-actions .ant-btn {
+    width: 100%;
+  }
 }
 
 

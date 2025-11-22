@@ -1,0 +1,14 @@
+.yqf-api-test {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.yqf-api-test .ant-card {
+  margin-bottom: 16px;
+}
+
+.yqf-api-test .ant-form-item {
+  margin-bottom: 16px;
+}
+

@@ -1,8 +1,8 @@
 // 已审批出差申请列表页面
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Card, Table, Tag, Button, Space, message, Spin } from 'antd'
-import { EyeOutlined, RobotOutlined, ShoppingOutlined, FileTextOutlined } from '@ant-design/icons'
+import { Card, Table, Tag, Button, Space, message, Spin, Empty } from 'antd'
+import { EyeOutlined, RobotOutlined, ShoppingOutlined, FileTextOutlined, EnvironmentOutlined, CalendarOutlined } from '@ant-design/icons'
 import { supabase } from '../../lib/supabase'
 import { TravelRequest } from '../../types'
 import './ApprovedRequests.css'
@@ -132,20 +132,97 @@ const ApprovedRequests: React.FC = () => {
         title={
           <Space>
             <FileTextOutlined style={{ fontSize: 20, color: '#1890ff' }} />
-            <span>已审批出差申请列表</span>
+            <span className="navan-desktop-only">已审批出差申请列表</span>
+            <span className="navan-mobile-only">已审批申请</span>
           </Space>
         }
       >
-        <Table
-          columns={columns}
-          dataSource={requests}
-          rowKey="id"
-          loading={loading}
-          pagination={{
-            pageSize: 10,
-            showTotal: (total) => `共 ${total} 条记录`,
-          }}
-        />
+        {/* 移动端卡片列表 */}
+        <div className="mobile-cards-list">
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '40px 0' }}>
+              <Spin size="large" />
+            </div>
+          ) : requests.length === 0 ? (
+            <Empty description="暂无已审批申请" style={{ padding: '40px 0' }} />
+          ) : (
+            requests.map((request) => (
+              <Card
+                key={request.id}
+                className="mobile-record-card"
+                onClick={() => navigate(`/travel-request/${request.id}`)}
+              >
+                <div className="mobile-card-header">
+                  <div className="mobile-card-title-row">
+                    <span className="mobile-card-id">{request.request_no}</span>
+                    <Tag color="green">已审批</Tag>
+                  </div>
+                  <div className="mobile-card-route">
+                    {request.origin} → {request.destination}
+                  </div>
+                </div>
+                <div className="mobile-card-content">
+                  <div className="mobile-card-item">
+                    <CalendarOutlined className="mobile-card-icon" />
+                    <span className="item-label">出发日期:</span>
+                    <span className="item-value">{new Date(request.departure_date).toLocaleDateString()}</span>
+                  </div>
+                  {request.return_date && (
+                    <div className="mobile-card-item">
+                      <CalendarOutlined className="mobile-card-icon" />
+                      <span className="item-label">回程日期:</span>
+                      <span className="item-value">{new Date(request.return_date).toLocaleDateString()}</span>
+                    </div>
+                  )}
+                  <div className="mobile-card-item">
+                    <ShoppingOutlined className="mobile-card-icon" />
+                    <span className="item-label">产品:</span>
+                    <span className="item-value">
+                      <Space size={[0, 4]} wrap>
+                        {request.products.map((p) => (
+                          <Tag key={p} style={{ margin: 0 }}>
+                            {getProductTypeName(p)}
+                          </Tag>
+                        ))}
+                      </Space>
+                    </span>
+                  </div>
+                </div>
+                <div className="mobile-card-footer">
+                  <Button
+                    type="link"
+                    icon={<EyeOutlined />}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      navigate(`/travel-request/${request.id}`)
+                    }}
+                    block
+                  >
+                    查看详情
+                  </Button>
+                </div>
+              </Card>
+            ))
+          )}
+        </div>
+
+        {/* PC端表格 */}
+        <div className="navan-desktop-only">
+          <div className="table-responsive-wrapper">
+            <Table
+              columns={columns}
+              dataSource={requests}
+              rowKey="id"
+              loading={loading}
+              scroll={{ x: 'max-content' }}
+              pagination={{
+                pageSize: 10,
+                showTotal: (total) => `共 ${total} 条记录`,
+                responsive: true,
+              }}
+            />
+          </div>
+        </div>
       </Card>
     </div>
   )

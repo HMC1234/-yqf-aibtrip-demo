@@ -1,13 +1,699 @@
-.dashboard h1 {
-  margin-bottom: 24px;
+/* Navan风格Dashboard首页样式（参考图片的模块布局） */
+
+.dashboard-new {
+  min-height: calc(100vh - 80px);
+  background: var(--navan-bg);
+  padding: 0;
+  margin: 0;
+}
+
+/* 顶部Header区域 */
+.dashboard-header {
+  background: var(--navan-white);
+  padding: var(--navan-space-6) var(--navan-container-padding-desktop);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid var(--navan-gray-200);
+  margin: 0;
+}
+
+.dashboard-header-left {
+  flex: 1;
+}
+
+.dashboard-app-title {
+  font-size: var(--navan-h3);
+  font-weight: var(--navan-font-bold);
+  color: var(--navan-text-primary);
+  margin: 0 0 var(--navan-space-2) 0;
+  line-height: 1.2;
+  font-family: var(--navan-font-family);
+}
+
+.dashboard-welcome-text {
+  font-size: var(--navan-body);
+  color: var(--navan-gray-500);
+  margin: 0;
+  line-height: 1.5;
+  font-family: var(--navan-font-family);
+}
+
+/* 主欢迎横幅 */
+.dashboard-banner {
+  background: linear-gradient(135deg, var(--navan-purple) 0%, var(--navan-purple-hover) 100%);
+  padding: var(--navan-space-20) var(--navan-container-padding-desktop);
+  text-align: center;
+  color: var(--navan-white);
+  margin: 0;
+}
+
+.dashboard-banner-title {
+  font-size: var(--navan-h1);
+  font-weight: var(--navan-font-bold);
+  color: var(--navan-white);
+  margin: 0 0 var(--navan-space-4) 0;
+  line-height: 1.2;
+  font-family: var(--navan-font-family);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-banner-subtitle {
+  font-size: var(--navan-h5);
+  font-weight: var(--navan-font-regular);
+  color: var(--navan-white);
+  margin: 0;
+  opacity: 0.95;
+  line-height: 1.5;
+  font-family: var(--navan-font-family);
+}
+
+/* 功能卡片（上排3个） */
+.dashboard-feature-cards {
+  max-width: var(--navan-container-max);
+  margin: 0 auto;
+  padding: var(--navan-space-10) var(--navan-container-padding-desktop);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--navan-space-6);
+}
+
+.feature-card {
+  background: var(--navan-white);
+  border-radius: var(--navan-radius-lg);
+  border: 1px solid var(--navan-gray-200);
+  padding: var(--navan-space-8);
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--navan-duration-normal) var(--navan-ease-out);
+  box-shadow: var(--navan-shadow-sm);
+}
+
+.feature-card:hover {
+  box-shadow: var(--navan-shadow-lg);
+  transform: translateY(-4px);
+  border-color: var(--navan-purple-light);
+}
+
+.feature-card-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--navan-radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--navan-space-5);
+  font-size: 32px;
+  color: var(--navan-white);
+  transition: transform var(--navan-duration-normal) var(--navan-ease-out);
+}
+
+.feature-card:hover .feature-card-icon {
+  transform: scale(1.1);
+}
+
+.feature-icon-orange {
+  background: linear-gradient(135deg, #FFB74D 0%, #FFA726 100%);
+  box-shadow: 0 2px 8px rgba(255, 183, 77, 0.3);
+}
+
+.feature-icon-green {
+  background: linear-gradient(135deg, #66BB6A 0%, #4CAF50 100%);
+  box-shadow: 0 2px 8px rgba(102, 187, 106, 0.3);
+}
+
+.feature-icon-purple {
+  background: linear-gradient(135deg, var(--navan-purple) 0%, var(--navan-purple-hover) 100%);
+  box-shadow: 0 2px 8px rgba(147, 51, 234, 0.3);
+}
+
+.feature-icon-blue {
+  background: linear-gradient(135deg, #1890FF 0%, #096DD9 100%);
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
+}
+
+.feature-icon-blue .anticon {
+  color: #ffffff;
+}
+
+.feature-card-title {
+  font-size: var(--navan-h5);
+  font-weight: var(--navan-font-semibold);
+  color: var(--navan-text-primary);
+  margin: 0 0 var(--navan-space-3) 0;
+  line-height: 1.3;
+  font-family: var(--navan-font-family);
+}
+
+.feature-card-desc {
+  font-size: var(--navan-body-small);
+  color: var(--navan-gray-500);
+  margin: 0;
+  line-height: 1.6;
+  font-family: var(--navan-font-family);
+}
+
+/* 预订选项卡片（下排2个） */
+.dashboard-booking-cards {
+  max-width: var(--navan-container-max);
+  margin: 0 auto;
+  padding: 0 var(--navan-container-padding-desktop) var(--navan-space-10);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--navan-space-6);
+}
+
+.booking-card {
+  background: var(--navan-white);
+  border-radius: var(--navan-radius-lg);
+  border: 1px solid var(--navan-gray-200);
+  padding: var(--navan-space-8);
+  cursor: pointer;
+  transition: all var(--navan-duration-normal) var(--navan-ease-out);
+  box-shadow: var(--navan-shadow-sm);
+}
+
+.booking-card:hover {
+  box-shadow: var(--navan-shadow-lg);
+  transform: translateY(-4px);
+  border-color: var(--navan-purple-light);
+}
+
+.booking-card-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--navan-space-6);
+}
+
+.booking-card-left {
+  display: flex;
+  align-items: center;
+  gap: var(--navan-space-6);
+  flex: 1;
+}
+
+.booking-card-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  color: var(--navan-white);
+  flex-shrink: 0;
+  transition: transform var(--navan-duration-normal) var(--navan-ease-out);
+}
+
+.booking-card:hover .booking-card-icon {
+  transform: scale(1.05);
+}
+
+.booking-icon-blue {
+  background: linear-gradient(135deg, #42A5F5 0%, #1E88E5 100%);
+  box-shadow: 0 4px 12px rgba(66, 165, 245, 0.3);
+}
+
+.booking-icon-pink {
+  background: linear-gradient(135deg, #EC4899 0%, #DB2777 100%);
+  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+}
+
+.booking-card-text {
+  flex: 1;
+}
+
+.booking-card-title {
+  font-size: var(--navan-h4);
+  font-weight: var(--navan-font-semibold);
+  color: var(--navan-text-primary);
+  margin: 0 0 var(--navan-space-3) 0;
+  line-height: 1.3;
+  font-family: var(--navan-font-family);
+}
+
+.booking-card-desc {
+  font-size: var(--navan-body-small);
+  color: var(--navan-gray-500);
+  margin: 0;
+  line-height: 1.6;
+  font-family: var(--navan-font-family);
+}
+
+.booking-card-btn {
+  height: 48px;
+  border-radius: var(--navan-radius-md);
+  font-size: var(--navan-body);
+  font-weight: var(--navan-font-medium);
+  padding: 0 var(--navan-space-8);
+  border: none;
+  transition: all var(--navan-duration-normal) var(--navan-ease-out);
+  flex-shrink: 0;
+  font-family: var(--navan-font-family);
+  background: var(--navan-purple);
+  color: var(--navan-white);
+}
+
+.booking-card-btn:hover {
+  background: var(--navan-purple-hover);
+  box-shadow: var(--navan-shadow-button-hover);
+  transform: translateY(-2px);
+}
+
+.booking-btn-ai {
+  background: var(--navan-success);
+}
+
+.booking-btn-ai:hover {
+  background: #00B868;
+  box-shadow: 0 4px 12px rgba(0, 200, 83, 0.4);
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+  .dashboard-banner-title {
+    font-size: var(--navan-h2);
+  }
+
+  .dashboard-banner-subtitle {
+    font-size: var(--navan-h6);
+  }
+
+  .dashboard-feature-cards {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--navan-space-4);
+    padding: var(--navan-space-8) var(--navan-container-padding-tablet);
+  }
+
+  .dashboard-booking-cards {
+    grid-template-columns: 1fr;
+    padding: 0 var(--navan-container-padding-tablet) var(--navan-space-8);
+  }
+
+  .booking-card-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .booking-card-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-header {
+    flex-direction: column;
+    gap: var(--navan-space-4);
+    padding: var(--navan-space-5) var(--navan-container-padding-mobile);
+  }
+
+  .dashboard-app-title {
+    font-size: var(--navan-h4);
+  }
+
+  .dashboard-welcome-text {
+    font-size: var(--navan-body-small);
+  }
+
+  .dashboard-banner {
+    padding: var(--navan-space-12) var(--navan-container-padding-mobile);
+  }
+
+  .dashboard-banner-title {
+    font-size: var(--navan-h3);
+  }
+
+  .dashboard-banner-subtitle {
+    font-size: var(--navan-body);
+  }
+
+  .dashboard-feature-cards {
+    grid-template-columns: 1fr;
+    gap: var(--navan-space-4);
+    padding: var(--navan-space-6) var(--navan-container-padding-mobile);
+  }
+
+  .feature-card {
+    padding: var(--navan-space-6);
+  }
+
+  .feature-card-icon {
+    width: 56px;
+    height: 56px;
+    font-size: 28px;
+  }
+
+  .feature-card-title {
+    font-size: var(--navan-h6);
+  }
+
+  .dashboard-booking-cards {
+    padding: 0 var(--navan-container-padding-mobile) var(--navan-space-6);
+  }
+
+  .booking-card {
+    padding: var(--navan-space-6);
+  }
+
+  .booking-card-left {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--navan-space-4);
+  }
+
+  .booking-card-icon {
+    width: 64px;
+    height: 64px;
+    font-size: 32px;
+  }
+
+  .booking-card-title {
+    font-size: var(--navan-h5);
+  }
+
+  .booking-card-desc {
+    font-size: 13px;
+  }
+}
+
+/* ===== 我的订单模块 ===== */
+.dashboard-orders-section {
+  max-width: var(--navan-container-max);
+  margin: 0 auto;
+  padding: var(--navan-space-10) var(--navan-container-padding-desktop);
+  background: var(--navan-bg);
+}
+
+.dashboard-orders-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--navan-space-6);
+}
+
+.dashboard-orders-title {
+  font-size: var(--navan-h3);
+  font-weight: var(--navan-font-bold);
+  color: var(--navan-text-primary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--navan-space-2);
+  font-family: var(--navan-font-family);
+}
+
+.dashboard-orders-view-all {
+  font-size: var(--navan-body);
+  font-weight: var(--navan-font-medium);
+  color: var(--navan-purple);
+  padding: 0;
+  height: auto;
+}
+
+.dashboard-orders-view-all:hover {
+  color: var(--navan-purple-hover);
+}
+
+.dashboard-orders-empty {
+  background: var(--navan-white);
+  border-radius: var(--navan-radius-lg);
+  border: 1px solid var(--navan-gray-200);
+  padding: var(--navan-space-12);
+  text-align: center;
+  box-shadow: var(--navan-shadow-sm);
+}
+
+.dashboard-orders-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--navan-space-6);
+}
+
+.dashboard-orders-group {
+  background: var(--navan-white);
+  border-radius: var(--navan-radius-lg);
+  border: 1px solid var(--navan-gray-200);
+  padding: var(--navan-space-6);
+  box-shadow: var(--navan-shadow-sm);
+}
+
+.dashboard-orders-group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--navan-space-4);
+  padding-bottom: var(--navan-space-4);
+  border-bottom: 2px solid var(--navan-gray-200);
+}
+
+.dashboard-orders-count {
+  font-size: var(--navan-body-small);
+  color: var(--navan-gray-500);
+  font-weight: var(--navan-font-medium);
+}
+
+.dashboard-orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--navan-space-3);
+}
+
+/* 桌面端订单项样式 */
+.desktop-orders-list {
+  display: block;
+}
+
+.dashboard-order-item {
+  border-radius: var(--navan-radius-md);
+  border: 1px solid var(--navan-gray-200);
+  cursor: pointer;
+  transition: all var(--navan-duration-normal) var(--navan-ease-out);
+  margin-bottom: var(--navan-space-2);
+}
+
+.dashboard-order-item:hover {
+  box-shadow: var(--navan-shadow-md);
+  transform: translateY(-2px);
+  border-color: var(--navan-purple-light);
+}
+
+.dashboard-order-item-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--navan-space-4);
+  gap: var(--navan-space-4);
+}
+
+.dashboard-order-item-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.dashboard-order-item-id {
+  font-family: 'monospace';
+  font-size: var(--navan-body-small);
+  font-weight: var(--navan-font-semibold);
+  color: var(--navan-gray-900);
+  margin-bottom: var(--navan-space-2);
+}
+
+.dashboard-order-item-info {
+  display: flex;
+  align-items: center;
+  gap: var(--navan-space-4);
+  flex-wrap: wrap;
+}
+
+.dashboard-order-item-product {
+  font-size: var(--navan-body);
+  color: var(--navan-gray-700);
+  font-weight: var(--navan-font-medium);
+}
+
+.dashboard-order-item-route {
+  font-size: var(--navan-body);
+  color: var(--navan-gray-600);
+}
+
+.dashboard-order-item-date {
+  font-size: var(--navan-body-small);
+  color: var(--navan-gray-500);
+}
+
+.dashboard-order-item-right {
+  display: flex;
+  align-items: center;
+  gap: var(--navan-space-4);
+  flex-shrink: 0;
+}
+
+.dashboard-order-item-amount {
+  font-size: var(--navan-h6);
+  font-weight: var(--navan-font-bold);
   color: #1890ff;
 }
 
-.quick-actions {
-  padding: 16px 0;
+/* 移动端订单列表（默认隐藏） */
+.mobile-orders-list {
+  display: none;
 }
 
+.mobile-order-card {
+  margin-bottom: var(--navan-space-4);
+  border-radius: var(--navan-radius-lg);
+  border: 1px solid var(--navan-gray-200);
+  box-shadow: var(--navan-shadow-sm);
+  cursor: pointer;
+  transition: all var(--navan-duration-normal) var(--navan-ease-out);
+  background: var(--navan-white);
+  overflow: hidden;
+}
 
+.mobile-order-card:hover {
+  box-shadow: var(--navan-shadow-md);
+  transform: translateY(-2px);
+  border-color: var(--navan-purple-light);
+}
 
+.mobile-order-card-header {
+  padding: var(--navan-space-4);
+  border-bottom: 1px solid var(--navan-gray-100);
+  background: var(--navan-gray-50);
+}
 
+.mobile-order-card-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--navan-space-3);
+}
 
+.mobile-order-card-id {
+  font-family: 'monospace';
+  font-size: var(--navan-body-small);
+  font-weight: var(--navan-font-semibold);
+  color: var(--navan-gray-900);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobile-order-card-content {
+  padding: var(--navan-space-4);
+}
+
+.mobile-order-card-info-row {
+  display: flex;
+  align-items: center;
+  gap: var(--navan-space-2);
+  margin-bottom: var(--navan-space-3);
+  flex-wrap: wrap;
+}
+
+.mobile-order-card-info-row.mobile-order-card-highlight {
+  background: var(--navan-gray-50);
+  padding: var(--navan-space-3);
+  border-radius: var(--navan-radius-md);
+  margin: var(--navan-space-3) 0;
+}
+
+.mobile-order-card-info-row:last-child {
+  margin-bottom: 0;
+}
+
+.mobile-order-card-icon {
+  color: var(--navan-purple);
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.mobile-order-card-label {
+  font-size: var(--navan-body-small);
+  color: var(--navan-gray-500);
+  font-weight: var(--navan-font-medium);
+  min-width: 48px;
+  flex-shrink: 0;
+}
+
+.mobile-order-card-value {
+  font-size: var(--navan-body-small);
+  color: var(--navan-gray-900);
+  flex: 1;
+  min-width: 0;
+}
+
+/* Tag样式 */
+.dashboard-orders-section .ant-tag {
+  margin: 0;
+  padding: 2px 8px;
+  height: 22px;
+  line-height: 18px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 4px;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+/* 响应式设计 - 我的订单模块 */
+@media (max-width: 1024px) {
+  .dashboard-orders-section {
+    padding: var(--navan-space-8) var(--navan-container-padding-tablet);
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-orders-section {
+    padding: var(--navan-space-6) var(--navan-container-padding-mobile);
+  }
+
+  .dashboard-orders-header {
+    margin-bottom: var(--navan-space-4);
+  }
+
+  .dashboard-orders-title {
+    font-size: var(--navan-h4);
+  }
+
+  .dashboard-orders-view-all {
+    font-size: var(--navan-body-small);
+  }
+
+  .dashboard-orders-group {
+    padding: var(--navan-space-4);
+  }
+
+  .dashboard-orders-group-header {
+    margin-bottom: var(--navan-space-3);
+    padding-bottom: var(--navan-space-3);
+  }
+
+  /* 移动端显示卡片列表，隐藏桌面端列表 */
+  .mobile-orders-list {
+    display: block;
+  }
+
+  .desktop-orders-list {
+    display: none;
+  }
+
+  /* 移动端订单卡片优化 */
+  .mobile-order-card {
+    margin-bottom: var(--navan-space-4);
+  }
+
+  .mobile-order-card-content {
+    padding: var(--navan-space-4);
+  }
+
+  .mobile-order-card-info-row {
+    font-size: var(--navan-body-small);
+  }
+}

@@ -1,12 +1,663 @@
+/* Navan风格 - 个人中心页面 */
+
 .profile {
-  padding: 24px;
+  padding: var(--navan-space-4) var(--navan-container-padding-mobile);
+  background: var(--navan-bg);
+  min-height: calc(100vh - 80px);
+  max-width: var(--navan-container-max);
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .profile {
+    padding: var(--navan-space-6) var(--navan-container-padding-tablet);
+  }
+}
+
+@media (min-width: 1024px) {
+  .profile {
+    padding: var(--navan-space-8) var(--navan-container-padding-desktop);
+  }
+}
+
+@media (max-width: 768px) {
+  .profile {
+    padding: 0;
+    background: var(--navan-white);
+    min-height: calc(100vh - 64px);
+  }
 }
 
 .profile .ant-card {
+  border-radius: var(--navan-radius-lg);
+  box-shadow: var(--navan-shadow-md);
+  border: 1px solid var(--navan-gray-200);
+  background: var(--navan-white);
+  margin-bottom: var(--navan-space-6);
   min-height: 500px;
 }
 
-.profile .ant-descriptions {
-  margin-top: 16px;
+.profile .ant-card-head {
+  border-bottom: 1px solid var(--navan-gray-200);
+  padding: var(--navan-space-6) var(--navan-space-8);
+  background: var(--navan-white);
 }
 
+.profile .ant-card-head-title {
+  font-size: var(--navan-h4);
+  font-weight: var(--navan-font-semibold);
+  color: var(--navan-gray-900);
+  display: flex;
+  align-items: center;
+  gap: var(--navan-space-3);
+}
+
+.profile .ant-card-head-title .anticon {
+  color: var(--navan-accent);
+  font-size: 20px;
+}
+
+.profile .ant-card-body {
+  padding: var(--navan-space-8);
+}
+
+/* ===== 个人信息标签页 ===== */
+
+/* 移动端个人信息卡片 */
+.mobile-profile-info {
+  display: none;
+}
+
+.mobile-profile-header {
+  text-align: center;
+  padding: var(--navan-space-5) 0;
+}
+
+.mobile-profile-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--navan-purple-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--navan-space-4);
+  border: 3px solid var(--navan-purple);
+}
+
+.mobile-profile-name {
+  font-size: var(--navan-h5);
+  font-weight: var(--navan-font-bold);
+  color: var(--navan-gray-900);
+  margin-bottom: var(--navan-space-2);
+}
+
+.mobile-profile-email {
+  font-size: var(--navan-body-small);
+  color: var(--navan-gray-500);
+}
+
+.mobile-profile-info-list {
+  padding: var(--navan-space-4) 0;
+}
+
+.mobile-profile-info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--navan-space-4);
+  padding: var(--navan-space-3) 0;
+}
+
+.mobile-profile-icon {
+  color: var(--navan-purple);
+  font-size: 20px;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.mobile-profile-info-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.mobile-profile-info-label {
+  font-size: var(--navan-body-small);
+  color: var(--navan-gray-500);
+  font-weight: var(--navan-font-medium);
+  margin-bottom: var(--navan-space-1);
+}
+
+.mobile-profile-info-value {
+  font-size: var(--navan-body);
+  color: var(--navan-gray-900);
+  line-height: 1.6;
+  word-break: break-word;
+}
+
+/* 桌面端Descriptions */
+.desktop-profile-info {
+  display: block;
+}
+
+.profile .ant-descriptions {
+  margin-top: var(--navan-space-4);
+}
+
+.profile .ant-descriptions-item-label {
+  font-size: var(--navan-body);
+  font-weight: var(--navan-font-semibold);
+  color: var(--navan-gray-700);
+  width: 140px;
+  background: var(--navan-gray-50);
+  padding: var(--navan-space-3) var(--navan-space-4);
+}
+
+.profile .ant-descriptions-item-content {
+  font-size: var(--navan-body);
+  color: var(--navan-gray-900);
+  padding: var(--navan-space-3) var(--navan-space-4);
+}
+
+.profile .ant-descriptions-row {
+  border-bottom: 1px solid var(--navan-gray-200);
+}
+
+.profile .ant-descriptions-row:last-child {
+  border-bottom: none;
+}
+
+/* ===== UI主题设置标签页 ===== */
+
+.theme-settings-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.theme-alert {
+  margin-bottom: 24px;
+}
+
+.theme-selection {
+  margin-bottom: 16px;
+}
+
+.theme-title {
+  margin-bottom: 12px;
+  font-size: var(--navan-h5);
+  font-weight: var(--navan-font-semibold);
+  color: var(--navan-gray-900);
+}
+
+.theme-radio-group {
+  width: 100%;
+}
+
+.theme-radio-option {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--navan-gray-300);
+  border-radius: var(--navan-radius-md);
+  transition: all var(--navan-duration-normal) var(--navan-ease-out);
+}
+
+.theme-radio-option:hover {
+  border-color: var(--navan-purple);
+  background: var(--navan-purple-light);
+}
+
+.theme-radio-option.ant-radio-wrapper-checked {
+  border-color: var(--navan-purple);
+  background: var(--navan-purple-light);
+}
+
+.theme-radio-disabled {
+  opacity: 0.6;
+}
+
+.theme-radio-name {
+  font-weight: var(--navan-font-semibold);
+  margin-bottom: 4px;
+  font-size: var(--navan-body);
+}
+
+.theme-radio-desc {
+  font-size: 12px;
+  color: var(--navan-gray-600);
+}
+
+.theme-current {
+  margin-top: 24px;
+  padding: 16px;
+  background: var(--navan-gray-50);
+  border-radius: var(--navan-radius-md);
+}
+
+.theme-current-label {
+  font-weight: var(--navan-font-semibold);
+  margin-bottom: 8px;
+  font-size: var(--navan-body);
+  color: var(--navan-gray-700);
+}
+
+.theme-current-info {
+  color: var(--navan-gray-600);
+  font-size: var(--navan-body);
+}
+
+.theme-current-info strong {
+  color: var(--navan-gray-900);
+}
+
+.theme-current-desc {
+  font-size: 12px;
+  margin-top: 4px;
+  color: var(--navan-gray-500);
+}
+
+/* ===== 出差申请/我的订单标签页 ===== */
+
+/* 移动端卡片列表（默认隐藏） */
+.mobile-cards-list {
+  display: none;
+}
+
+/* 桌面端表格（默认显示） */
+.desktop-table-wrapper {
+  display: block;
+}
+
+.profile .ant-table {
+  background: var(--navan-white);
+  border-radius: var(--navan-radius-md);
+}
+
+.profile .ant-table-thead > tr > th {
+  background: var(--navan-gray-50);
+  border-bottom: 2px solid var(--navan-gray-200);
+  font-size: var(--navan-body-small);
+  font-weight: var(--navan-font-semibold);
+  color: var(--navan-gray-700);
+  padding: 10px 16px;
+  height: 44px;
+}
+
+.profile .ant-table-tbody > tr > td {
+  border-bottom: 1px solid var(--navan-gray-100);
+  padding: 12px 16px;
+  font-size: var(--navan-body);
+  color: var(--navan-gray-900);
+  height: 48px;
+  vertical-align: middle;
+}
+
+.profile .ant-table-tbody > tr:hover > td {
+  background: var(--navan-gray-50);
+}
+
+/* 移动端卡片样式 */
+.mobile-record-card {
+  margin-bottom: var(--navan-space-4);
+  border-radius: var(--navan-radius-lg);
+  border: 1px solid var(--navan-gray-200);
+  box-shadow: var(--navan-shadow-sm);
+  cursor: pointer;
+  transition: all var(--navan-duration-normal) var(--navan-ease-out);
+  background: var(--navan-white);
+  overflow: hidden;
+}
+
+.mobile-record-card:hover {
+  box-shadow: var(--navan-shadow-md);
+  transform: translateY(-2px);
+  border-color: var(--navan-purple-light);
+}
+
+.mobile-card-header {
+  padding: var(--navan-space-4);
+  border-bottom: 1px solid var(--navan-gray-100);
+  background: var(--navan-gray-50);
+}
+
+.mobile-card-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--navan-space-3);
+}
+
+.mobile-card-id {
+  font-family: 'monospace';
+  font-size: var(--navan-body-small);
+  font-weight: var(--navan-font-semibold);
+  color: var(--navan-gray-900);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobile-card-content {
+  padding: var(--navan-space-4);
+}
+
+.mobile-card-info-row {
+  display: flex;
+  align-items: center;
+  gap: var(--navan-space-2);
+  margin-bottom: var(--navan-space-3);
+  flex-wrap: wrap;
+}
+
+.mobile-card-info-row.mobile-card-highlight {
+  background: var(--navan-gray-50);
+  padding: var(--navan-space-3);
+  border-radius: var(--navan-radius-md);
+  margin: var(--navan-space-3) 0;
+}
+
+.mobile-card-info-row:last-child {
+  margin-bottom: 0;
+}
+
+.mobile-card-icon {
+  color: var(--navan-purple);
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.mobile-card-label {
+  font-size: var(--navan-body-small);
+  color: var(--navan-gray-500);
+  font-weight: var(--navan-font-medium);
+  min-width: 48px;
+  flex-shrink: 0;
+}
+
+.mobile-card-value {
+  font-size: var(--navan-body-small);
+  color: var(--navan-gray-900);
+  flex: 1;
+  min-width: 0;
+}
+
+.mobile-card-footer {
+  padding: var(--navan-space-4);
+  border-top: 1px solid var(--navan-gray-100);
+  background: var(--navan-gray-50);
+}
+
+.mobile-card-footer .ant-btn {
+  height: 44px;
+  border-radius: var(--navan-radius-md);
+  font-size: var(--navan-body);
+  font-weight: var(--navan-font-medium);
+}
+
+/* 移动端查看全部按钮 */
+.mobile-view-all {
+  display: none;
+  margin-top: var(--navan-space-4);
+}
+
+/* Tabs样式 */
+.profile .ant-tabs {
+  margin-top: var(--navan-space-6);
+}
+
+.profile .ant-tabs-tab {
+  padding: var(--navan-space-3) var(--navan-space-5);
+  font-size: var(--navan-body);
+  font-weight: var(--navan-font-medium);
+  color: var(--navan-gray-600);
+  transition: color var(--navan-duration-normal);
+}
+
+.profile .ant-tabs-tab:hover {
+  color: var(--navan-accent);
+}
+
+.profile .ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: var(--navan-accent);
+  font-weight: var(--navan-font-semibold);
+}
+
+.profile .ant-tabs-ink-bar {
+  background: var(--navan-accent);
+  height: 3px;
+}
+
+.profile .ant-tabs-content-holder {
+  padding: var(--navan-space-6) 0;
+}
+
+/* Tag样式 */
+.profile .ant-tag {
+  margin: 0;
+  padding: 2px 8px;
+  height: 22px;
+  line-height: 18px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 4px;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+.profile .ant-tag.ant-tag-orange {
+  background: #FEF3C7;
+  color: #F59E0B;
+}
+
+.profile .ant-tag.ant-tag-blue {
+  background: var(--navan-purple-light);
+  color: var(--navan-accent);
+}
+
+.profile .ant-tag.ant-tag-green {
+  background: #D1FAE5;
+  color: #10B981;
+}
+
+.profile .ant-tag.ant-tag-red {
+  background: #FEE2E2;
+  color: #EF4444;
+}
+
+/* Button样式 */
+.profile .ant-btn-link {
+  color: var(--navan-accent);
+  font-size: var(--navan-body);
+  font-weight: var(--navan-font-medium);
+  padding: 0;
+  height: auto;
+  transition: color var(--navan-duration-normal);
+}
+
+.profile .ant-btn-link:hover {
+  color: var(--navan-accent-hover);
+}
+
+.profile .ant-btn-link .anticon {
+  margin-right: var(--navan-space-2);
+}
+
+/* 加载状态 */
+.profile .ant-spin {
+  padding: var(--navan-space-20) 0;
+}
+
+/* 空状态 */
+.profile .ant-empty {
+  padding: var(--navan-space-12) var(--navan-space-8);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .profile .ant-card {
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
+    border-bottom: 1px solid var(--navan-gray-200);
+    margin-bottom: 0;
+    min-height: auto;
+  }
+
+  .profile .ant-card-head {
+    padding: var(--navan-space-4);
+    position: sticky;
+    top: 64px;
+    z-index: 10;
+    background: var(--navan-white);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  }
+
+  .profile .ant-card-head-title {
+    font-size: var(--navan-h5);
+  }
+
+  .profile .ant-card-body {
+    padding: var(--navan-space-4);
+  }
+
+  /* 移动端显示个人信息卡片，隐藏Descriptions */
+  .mobile-profile-info {
+    display: block;
+  }
+
+  .desktop-profile-info {
+    display: none;
+  }
+
+  /* 移动端个人信息优化 */
+  .mobile-profile-header {
+    padding: var(--navan-space-4) 0;
+  }
+
+  .mobile-profile-avatar {
+    width: 72px;
+    height: 72px;
+  }
+
+  .mobile-profile-name {
+    font-size: var(--navan-h6);
+  }
+
+  .mobile-profile-info-item {
+    padding: var(--navan-space-2) 0;
+  }
+
+  .mobile-profile-icon {
+    font-size: 18px;
+  }
+
+  .mobile-profile-info-label {
+    font-size: 12px;
+  }
+
+  .mobile-profile-info-value {
+    font-size: var(--navan-body-small);
+  }
+
+  /* 移动端主题设置优化 */
+  .theme-alert {
+    margin-bottom: var(--navan-space-4);
+  }
+
+  .theme-alert .ant-alert-message {
+    font-size: var(--navan-body-small);
+  }
+
+  .theme-alert .ant-alert-description {
+    font-size: 12px;
+  }
+
+  .theme-title {
+    font-size: var(--navan-h6);
+    margin-bottom: var(--navan-space-3);
+  }
+
+  .theme-radio-option {
+    padding: var(--navan-space-3);
+  }
+
+  .theme-radio-name {
+    font-size: var(--navan-body-small);
+  }
+
+  .theme-radio-desc {
+    font-size: 11px;
+  }
+
+  .theme-current {
+    margin-top: var(--navan-space-4);
+    padding: var(--navan-space-4);
+  }
+
+  .theme-current-label {
+    font-size: var(--navan-body-small);
+    margin-bottom: var(--navan-space-2);
+  }
+
+  .theme-current-info {
+    font-size: var(--navan-body-small);
+  }
+
+  .theme-current-desc {
+    font-size: 11px;
+  }
+
+  /* 移动端显示卡片列表，隐藏表格 */
+  .mobile-cards-list {
+    display: block;
+  }
+
+  .desktop-table-wrapper {
+    display: none;
+  }
+
+  /* 移动端卡片优化 */
+  .mobile-record-card {
+    margin-bottom: var(--navan-space-4);
+  }
+
+  .mobile-card-content {
+    padding: var(--navan-space-4);
+  }
+
+  .mobile-card-info-row {
+    font-size: var(--navan-body-small);
+  }
+
+  .mobile-card-footer {
+    padding: var(--navan-space-4);
+  }
+
+  /* 移动端查看全部按钮 */
+  .mobile-view-all {
+    display: block;
+  }
+
+  .mobile-view-all .ant-btn {
+    height: 44px;
+    font-size: var(--navan-body);
+    font-weight: var(--navan-font-medium);
+  }
+
+  /* 移动端Tabs优化 */
+  .profile .ant-tabs {
+    margin-top: var(--navan-space-4);
+  }
+
+  .profile .ant-tabs-tab {
+    font-size: var(--navan-body-small);
+    padding: var(--navan-space-2) var(--navan-space-3);
+  }
+
+  .profile .ant-tabs-content-holder {
+    padding: var(--navan-space-4) 0;
+  }
+}

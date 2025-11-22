@@ -1,8 +1,8 @@
-// 订单列表页面
+// 订单列表页面（支持移动端卡片布局）
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Table, Button, Tag, Space, Card, Tabs, message } from 'antd'
-import { EyeOutlined, ShoppingOutlined } from '@ant-design/icons'
+import { Table, Button, Tag, Space, Card, Tabs, message, Empty, Spin } from 'antd'
+import { EyeOutlined, ShoppingOutlined, CalendarOutlined, EnvironmentOutlined, DollarOutlined } from '@ant-design/icons'
 import type { TabsProps } from 'antd'
 import { supabase } from '../../lib/supabase'
 import './OrderList.css'
@@ -181,6 +181,7 @@ const OrderList: React.FC = () => {
           <Button
             type="primary"
             onClick={() => navigate('/booking/classic')}
+            className="navan-desktop-only"
           >
             新建预订
           </Button>
@@ -191,16 +192,105 @@ const OrderList: React.FC = () => {
           items={tabItems}
           onChange={setActiveTab}
         />
-        <Table
-          columns={columns}
-          dataSource={orders}
-          rowKey="id"
-          loading={loading}
-          pagination={{
-            pageSize: 10,
-            showTotal: (total) => `共 ${total} 条记录`,
-          }}
-        />
+        
+        {/* 移动端卡片列表 */}
+        <div className="mobile-cards-list">
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '40px 0' }}>
+              <Spin size="large" />
+            </div>
+          ) : orders.length === 0 ? (
+            <Empty description="暂无订单记录" style={{ padding: '40px 0' }} />
+          ) : (
+            orders.map((order) => (
+              <Card
+                key={order.id}
+                className="mobile-record-card"
+                onClick={() => navigate(`/booking/orders/${order.id}`)}
+              >
+                <div className="mobile-card-header">
+                  <div className="mobile-card-title-row">
+                    <span className="mobile-card-id">{order.order_no}</span>
+                    {getStatusTag(order.status)}
+                  </div>
+                </div>
+                
+                <div className="mobile-card-content">
+                  <div className="mobile-card-info-row">
+                    <ShoppingOutlined className="mobile-card-icon" />
+                    <span className="mobile-card-label">产品：</span>
+                    <span className="mobile-card-value">
+                      {getProductTypeName(order.product_type)} - {order.product_details?.name || '-'}
+                    </span>
+                  </div>
+                  
+                  <div className="mobile-card-info-row">
+                    <EnvironmentOutlined className="mobile-card-icon" />
+                    <span className="mobile-card-label">行程：</span>
+                    <span className="mobile-card-value">
+                      {order.origin} → {order.destination}
+                    </span>
+                  </div>
+                  
+                  {order.departure_date && (
+                    <div className="mobile-card-info-row">
+                      <CalendarOutlined className="mobile-card-icon" />
+                      <span className="mobile-card-label">出发：</span>
+                      <span className="mobile-card-value">
+                        {new Date(order.departure_date).toLocaleDateString()}
+                      </span>
+                    </div>
+                  )}
+                  
+                  <div className="mobile-card-info-row mobile-card-highlight">
+                    <DollarOutlined className="mobile-card-icon" style={{ color: '#1890ff' }} />
+                    <span className="mobile-card-label">金额：</span>
+                    <span className="mobile-card-value" style={{ color: '#1890ff', fontWeight: 'bold', fontSize: '16px' }}>
+                      ¥{order.total_amount.toLocaleString()}
+                    </span>
+                  </div>
+                  
+                  <div className="mobile-card-info-row">
+                    <span className="mobile-card-label">来源：</span>
+                    <Tag color={order.booking_source === 'ai_recommendation' ? 'purple' : 'blue'}>
+                      {order.booking_source === 'ai_recommendation' ? 'AI推荐' : '经典预订'}
+                    </Tag>
+                  </div>
+                </div>
+                
+                <div className="mobile-card-footer">
+                  <Button
+                    type="primary"
+                    block
+                    icon={<EyeOutlined />}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      navigate(`/booking/orders/${order.id}`)
+                    }}
+                  >
+                    查看详情
+                  </Button>
+                </div>
+              </Card>
+            ))
+          )}
+        </div>
+
+        {/* 桌面端表格 */}
+        <div className="desktop-table-wrapper">
+          <Table
+            columns={columns}
+            dataSource={orders}
+            rowKey="id"
+            loading={loading}
+            scroll={{ x: 'max-content' }}
+            pagination={{
+              pageSize: 10,
+              showTotal: (total) => `共 ${total} 条记录`,
+              responsive: true,
+            }}
+          />
+        </div>
       </Card>
     </div>
   )

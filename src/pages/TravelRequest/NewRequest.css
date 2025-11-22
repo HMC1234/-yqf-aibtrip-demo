@@ -1,9 +1,303 @@
+/* Navan风格 - 提交出差申请表单页面 */
+
 .new-request {
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
+  padding: var(--navan-space-8);
+  background: var(--navan-gray-50);
+  min-height: calc(100vh - 80px);
 }
 
+.new-request .ant-card {
+  border-radius: var(--navan-radius-lg);
+  box-shadow: var(--navan-shadow-md);
+  border: 1px solid var(--navan-gray-200);
+  background: var(--navan-white);
+}
 
+.new-request .ant-card-head {
+  border-bottom: 1px solid var(--navan-gray-200);
+  padding: var(--navan-space-6) var(--navan-space-8);
+  background: var(--navan-white);
+}
 
+.new-request .ant-card-head-title {
+  font-size: var(--navan-h4);
+  font-weight: var(--navan-font-semibold);
+  color: var(--navan-gray-900);
+}
 
+.new-request .ant-card-body {
+  padding: var(--navan-space-8);
+}
 
+/* 表单样式 */
+.new-request .ant-form {
+  max-width: 100%;
+}
+
+.new-request .ant-form-item {
+  margin-bottom: var(--navan-space-6);
+}
+
+.new-request .ant-form-item-label > label {
+  font-size: var(--navan-label);
+  font-weight: var(--navan-font-medium);
+  color: var(--navan-gray-700);
+  height: auto;
+  line-height: 1.5;
+  margin-bottom: var(--navan-space-2);
+}
+
+.new-request .ant-form-item-label > label.ant-form-item-required::before {
+  color: var(--navan-error);
+}
+
+/* 输入框样式 */
+.new-request .ant-input,
+.new-request .ant-input-affix-wrapper,
+.new-request .ant-picker,
+.new-request .ant-select-selector,
+.new-request .ant-input-number {
+  height: 48px;
+  border-radius: var(--navan-radius-md);
+  border: 1px solid var(--navan-gray-300);
+  font-size: var(--navan-body);
+  padding: var(--navan-space-3) var(--navan-space-4);
+  transition: all var(--navan-transition-normal) var(--navan-ease-out);
+}
+
+.new-request .ant-input:focus,
+.new-request .ant-input-affix-wrapper-focused,
+.new-request .ant-picker-focused,
+.new-request .ant-select-focused .ant-select-selector {
+  border-color: var(--navan-accent);
+  box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1);
+  outline: none;
+}
+
+.new-request .ant-input:hover,
+.new-request .ant-input-affix-wrapper:hover,
+.new-request .ant-picker:hover,
+.new-request .ant-select-selector:hover {
+  border-color: var(--navan-gray-400);
+}
+
+.new-request .ant-input::placeholder,
+.new-request .ant-input-affix-wrapper input::placeholder {
+  color: var(--navan-gray-400);
+  font-size: var(--navan-body);
+}
+
+/* TextArea样式 */
+.new-request .ant-input {
+  min-height: 48px;
+}
+
+.new-request textarea.ant-input {
+  min-height: 120px;
+  padding: var(--navan-space-4);
+  resize: vertical;
+}
+
+/* Select样式 */
+.new-request .ant-select-selector {
+  height: 48px !important;
+}
+
+.new-request .ant-select-selection-item,
+.new-request .ant-select-selection-placeholder {
+  line-height: 46px !important;
+  font-size: var(--navan-body);
+}
+
+/* DatePicker样式 */
+.new-request .ant-picker {
+  width: 100%;
+}
+
+.new-request .ant-picker-input > input {
+  font-size: var(--navan-body);
+  height: 46px;
+}
+
+/* Checkbox样式 */
+.new-request .ant-checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--navan-space-4);
+}
+
+.new-request .ant-checkbox-wrapper {
+  font-size: var(--navan-body);
+  color: var(--navan-gray-700);
+  margin: 0;
+}
+
+.new-request .ant-checkbox-inner {
+  width: 20px;
+  height: 20px;
+  border-radius: var(--navan-radius-sm);
+  border: 2px solid var(--navan-gray-300);
+}
+
+.new-request .ant-checkbox-checked .ant-checkbox-inner {
+  background: var(--navan-accent);
+  border-color: var(--navan-accent);
+}
+
+.new-request .ant-checkbox-wrapper:hover .ant-checkbox-inner {
+  border-color: var(--navan-accent);
+}
+
+/* 错误提示样式 */
+.new-request .ant-form-item-has-error .ant-input,
+.new-request .ant-form-item-has-error .ant-input-affix-wrapper,
+.new-request .ant-form-item-has-error .ant-picker,
+.new-request .ant-form-item-has-error .ant-select-selector {
+  border-color: var(--navan-error);
+}
+
+.new-request .ant-form-item-has-error .ant-input:focus,
+.new-request .ant-form-item-has-error .ant-input-affix-wrapper-focused,
+.new-request .ant-form-item-has-error .ant-picker-focused,
+.new-request .ant-form-item-has-error .ant-select-focused .ant-select-selector {
+  border-color: var(--navan-error);
+  box-shadow: 0 0 0 3px rgba(234, 67, 53, 0.1);
+}
+
+.new-request .ant-form-item-explain-error {
+  color: var(--navan-error);
+  font-size: var(--navan-body-small);
+  margin-top: var(--navan-space-2);
+  line-height: 1.5;
+}
+
+/* 按钮样式 */
+.new-request .ant-form-item:last-child {
+  margin-bottom: 0;
+  margin-top: var(--navan-space-8);
+}
+
+.new-request .ant-btn {
+  height: 48px;
+  border-radius: var(--navan-radius-md);
+  font-size: var(--navan-button);
+  font-weight: var(--navan-font-medium);
+  padding: 0 var(--navan-space-8);
+  transition: all var(--navan-transition-normal) var(--navan-ease-out);
+}
+
+.new-request .ant-btn-primary {
+  background: var(--navan-accent);
+  border: none;
+  box-shadow: var(--navan-shadow-button);
+}
+
+.new-request .ant-btn-primary:hover {
+  background: var(--navan-accent-hover);
+  box-shadow: var(--navan-shadow-button-hover);
+  transform: translateY(-1px);
+}
+
+.new-request .ant-btn-primary:active {
+  transform: translateY(0);
+  box-shadow: var(--navan-shadow-sm);
+}
+
+.new-request .ant-btn-default {
+  border-color: var(--navan-gray-300);
+  color: var(--navan-gray-700);
+}
+
+.new-request .ant-btn-default:hover {
+  border-color: var(--navan-accent);
+  color: var(--navan-accent);
+}
+
+.new-request .ant-btn[disabled] {
+  background: var(--navan-gray-200);
+  border-color: var(--navan-gray-200);
+  color: var(--navan-gray-400);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* 按钮组 */
+.new-request .ant-space {
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.new-request .ant-space-item {
+  display: flex;
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+  .new-request {
+    padding: var(--navan-space-6);
+  }
+
+  .new-request .ant-card-body {
+    padding: var(--navan-space-6);
+  }
+}
+
+@media (max-width: 768px) {
+  .new-request {
+    padding: var(--navan-space-4);
+    background: var(--navan-white);
+  }
+
+  .new-request .ant-card {
+    border-radius: var(--navan-radius-md);
+    box-shadow: none;
+    border: none;
+    border-bottom: 1px solid var(--navan-gray-200);
+  }
+
+  .new-request .ant-card-head {
+    padding: var(--navan-space-4);
+  }
+
+  .new-request .ant-card-head-title {
+    font-size: var(--navan-h5);
+  }
+
+  .new-request .ant-card-body {
+    padding: var(--navan-space-4);
+  }
+
+  .new-request .ant-form-item {
+    margin-bottom: var(--navan-space-5);
+  }
+
+  .new-request .ant-input,
+  .new-request .ant-input-affix-wrapper,
+  .new-request .ant-picker,
+  .new-request .ant-select-selector {
+    height: 44px;
+    font-size: var(--navan-body-small);
+  }
+
+  .new-request .ant-btn {
+    height: 44px;
+    font-size: var(--navan-body);
+    padding: 0 var(--navan-space-6);
+  }
+
+  .new-request .ant-space {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .new-request .ant-space-item {
+    width: 100%;
+  }
+
+  .new-request .ant-space-item .ant-btn {
+    width: 100%;
+  }
+}

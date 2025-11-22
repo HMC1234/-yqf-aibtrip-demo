@@ -1,8 +1,8 @@
-// 登录页面
-import React, { useState } from 'react'
+// Navan风格登录页面
+import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Form, Input, Button, Card, message } from 'antd'
-import { UserOutlined, LockOutlined } from '@ant-design/icons'
+import { Form, Input, Button, message } from 'antd'
+import { UserOutlined, LockOutlined, RobotOutlined } from '@ant-design/icons'
 import { useAuthStore } from '../../store/authStore'
 import './Login.css'
 
@@ -24,16 +24,35 @@ const Login: React.FC = () => {
 
   return (
     <div className="login-container">
-      <Card className="login-card" title="YQFAIBTRIP 一起飞智能商旅系统">
+      {/* Navan风格Logo（顶部中心） */}
+      <div className="login-logo">
+        <div className="login-logo-text">YQFAIBTRIP</div>
+      </div>
+
+      <div className="login-card">
+        {/* Logo和标题区域 */}
+        <div className="login-card-header">
+          <div className="login-card-logo">
+            <div className="login-card-logo-icon">
+              <RobotOutlined />
+            </div>
+          </div>
+          <h1 className="login-card-title">一起飞智能商旅</h1>
+          <p className="login-card-subtitle">Business Travel Solutions</p>
+        </div>
+
+        {/* 登录表单 */}
         <Form
           form={form}
           name="login"
           onFinish={onFinish}
           autoComplete="off"
-          size="large"
+          className="login-form"
+          layout="vertical"
         >
           <Form.Item
             name="email"
+            label="邮箱"
             rules={[
               { required: true, message: '请输入邮箱！' },
               { type: 'email', message: '请输入有效的邮箱地址！' },
@@ -41,37 +60,36 @@ const Login: React.FC = () => {
           >
             <Input
               prefix={<UserOutlined />}
-              placeholder="邮箱"
+              placeholder="请输入您的邮箱"
+              size="large"
             />
           </Form.Item>
 
           <Form.Item
             name="password"
+            label="密码"
             rules={[{ required: true, message: '请输入密码！' }]}
           >
             <Input.Password
               prefix={<LockOutlined />}
-              placeholder="密码"
+              placeholder="请输入您的密码"
+              size="large"
             />
           </Form.Item>
 
-          <Form.Item>
+          <Form.Item style={{ marginTop: 32 }}>
             <Button
               type="primary"
               htmlType="submit"
               block
               loading={loading}
+              size="large"
             >
               登录
             </Button>
           </Form.Item>
-
-          <div className="login-tip">
-            <p>测试账号：test@example.com</p>
-            <p>测试密码：123456</p>
-          </div>
         </Form>
-      </Card>
+      </div>
     </div>
   )
 }

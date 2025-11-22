@@ -6,6 +6,14 @@ import zhCN from 'antd/locale/zh_CN'
 import MainLayout from './components/Layout/MainLayout'
 import Login from './pages/Login/Login'
 import Dashboard from './pages/Dashboard/Dashboard'
+import { navanTheme } from './styles/navan-theme'
+import { useThemeStore } from './store/themeStore'
+// UI1主题样式（当前默认主题 - Navan风格）
+import './styles/navan-variables.css'
+import './styles/responsive.css'
+import './styles/navan-components.css'
+import './styles/page-container.css'
+import './styles/tag-optimized.css'
 import NewRequest from './pages/TravelRequest/NewRequest'
 import RequestList from './pages/TravelRequest/RequestList'
 import RequestDetail from './pages/TravelRequest/RequestDetail'
@@ -13,12 +21,14 @@ import GenerateRecommendation from './pages/AIRecommendation/GenerateRecommendat
 import RecommendationDetail from './pages/AIRecommendation/RecommendationDetail'
 import RecommendationList from './pages/AIRecommendation/RecommendationList'
 import AIBooking from './pages/AIRecommendation/AIBooking'
+import AIBookingWelcome from './pages/AIRecommendation/AIBookingWelcome'
 import ClassicBooking from './pages/Booking/ClassicBooking'
 import ProductList from './pages/Booking/ProductList'
 import OrderConfirm from './pages/Booking/OrderConfirm'
 import OrderList from './pages/Booking/OrderList'
 import OrderDetail from './pages/Booking/OrderDetail'
 import Profile from './pages/Profile/Profile'
+import YQFAPITest from './pages/Test/YQFAPITest'
 import { useAuthStore } from './store/authStore'
 import './App.css'
 
@@ -64,13 +74,31 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
 function App() {
   const { initialize } = useAuthStore()
+  const { currentTheme } = useThemeStore()
 
   useEffect(() => {
     initialize()
   }, [initialize])
 
+  // 根据当前主题应用对应的Ant Design主题配置
+  // 目前UI1使用navanTheme，未来可以为UI2、UI3创建不同的主题配置
+  const getAntdTheme = () => {
+    switch (currentTheme) {
+      case 'UI1':
+        return navanTheme
+      case 'UI2':
+        // TODO: 未来添加UI2主题配置
+        return navanTheme
+      case 'UI3':
+        // TODO: 未来添加UI3主题配置
+        return navanTheme
+      default:
+        return navanTheme
+    }
+  }
+
   return (
-    <ConfigProvider locale={zhCN}>
+    <ConfigProvider locale={zhCN} theme={getAntdTheme()}>
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
@@ -87,7 +115,10 @@ function App() {
             <Route path="travel-request/new" element={<NewRequest />} />
             <Route path="travel-request/list" element={<RequestList />} />
             <Route path="travel-request/:id" element={<RequestDetail />} />
-            <Route path="ai-booking" element={<AIBooking />} />
+            <Route path="ai-booking" element={<AIBookingWelcome />} />
+            <Route path="ai-booking/chat" element={<AIBooking defaultTab="chat" />} />
+            <Route path="ai-booking/recommendations" element={<AIBooking defaultTab="recommendations" />} />
+            <Route path="ai-booking/approved-requests" element={<AIBooking defaultTab="approved-requests" />} />
             <Route path="ai-recommendation/generate/:id" element={<GenerateRecommendation />} />
             <Route path="ai-recommendation/:recommendationId/list" element={<RecommendationList />} />
             <Route path="ai-recommendation/:recommendationId/option/:optionIndex" element={<RecommendationDetail />} />
@@ -97,6 +128,7 @@ function App() {
             <Route path="booking/orders" element={<OrderList />} />
             <Route path="booking/orders/:id" element={<OrderDetail />} />
             <Route path="profile" element={<Profile />} />
+            <Route path="test/yqf-api" element={<YQFAPITest />} />
           </Route>
         </Routes>
       </BrowserRouter>

@@ -1,0 +1,264 @@
+/* Navan风格组件样式 */
+
+/* ===== 导航栏（Header）===== */
+.navan-header {
+  height: 80px;
+  background: var(--navan-white);
+  border-bottom: 1px solid var(--navan-gray-200);
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.navan-header-logo {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--navan-text-primary);
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.navan-header-nav {
+  display: flex;
+  gap: 32px;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--navan-gray-700);
+}
+
+.navan-header-nav a {
+  color: var(--navan-gray-700);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.navan-header-nav a:hover {
+  color: var(--navan-purple);
+}
+
+/* ===== Hero区域 ===== */
+.navan-hero {
+  padding: 120px 32px 80px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.navan-hero-rating {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--navan-gray-500);
+  margin-bottom: 24px;
+}
+
+.navan-hero-title {
+  font-size: 64px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--navan-text-primary);
+  margin-bottom: 24px;
+  letter-spacing: -0.5px;
+}
+
+.navan-hero-subtitle {
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--navan-gray-700);
+  margin-bottom: 48px;
+  line-height: 1.3;
+}
+
+/* ===== 交互式卡片 ===== */
+.navan-interactive-card {
+  background: var(--navan-white);
+  border: 1px solid var(--navan-gray-200);
+  border-radius: 12px;
+  padding: 24px 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 80px;
+}
+
+.navan-interactive-card:hover {
+  border-color: var(--navan-purple);
+  box-shadow: 0 4px 12px rgba(147, 51, 234, 0.1);
+  transform: translateY(-2px);
+}
+
+.navan-interactive-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  background: var(--navan-purple-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--navan-purple);
+  font-size: 24px;
+}
+
+.navan-interactive-card-text {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--navan-gray-900);
+  flex: 1;
+}
+
+.navan-interactive-card-checkbox {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--navan-gray-300);
+  border-radius: 4px;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.navan-interactive-card:hover .navan-interactive-card-checkbox {
+  border-color: var(--navan-purple);
+}
+
+/* ===== 统计卡片 ===== */
+.navan-stat-card {
+  background: var(--navan-white);
+  border: 1px solid var(--navan-gray-200);
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 0.3s ease;
+}
+
+.navan-stat-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.navan-stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  background: var(--navan-purple-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--navan-purple);
+  font-size: 24px;
+}
+
+.navan-stat-value {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--navan-gray-900);
+  line-height: 1.2;
+}
+
+.navan-stat-label {
+  font-size: 14px;
+  color: var(--navan-gray-500);
+  font-weight: 400;
+}
+
+/* ===== 网格布局 ===== */
+.navan-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.navan-cards-grid-small {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 1024px) {
+  .navan-cards-grid,
+  .navan-cards-grid-small {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== 主按钮 ===== */
+.navan-btn-primary {
+  background: var(--navan-purple);
+  color: var(--navan-white);
+  border: none;
+  border-radius: 8px;
+  padding: 16px 24px;
+  height: 48px;
+  font-size: 16px;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(147, 51, 234, 0.3);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navan-btn-primary:hover {
+  background: var(--navan-purple-hover);
+  box-shadow: 0 6px 16px rgba(147, 51, 234, 0.4);
+  transform: translateY(-1px);
+}
+
+.navan-btn-primary:active {
+  transform: translateY(0);
+}
+
+/* ===== 容器 ===== */
+.navan-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+@media (max-width: 768px) {
+  .navan-container {
+    padding: 0 16px;
+  }
+  
+  .navan-hero {
+    padding: 80px 16px 60px;
+  }
+  
+  .navan-hero-title {
+    font-size: 40px;
+  }
+  
+  .navan-hero-subtitle {
+    font-size: 20px;
+  }
+}
+
+/* ===== 动画 ===== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.navan-fade-in-up {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+

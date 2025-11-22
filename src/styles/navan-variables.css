@@ -1,0 +1,151 @@
+/* Navan风格设计系统 - CSS变量 */
+
+:root {
+  /* ===== Navan主色板（基于实际首页）===== */
+  --navan-text-primary: #1A1A2E;    /* 深紫色 - 主标题文字 */
+  --navan-text-secondary: #4C1D95;  /* 次要紫色文字 */
+  
+  --navan-purple: #9333EA;          /* 紫色 - CTA按钮、强调元素 */
+  --navan-purple-hover: #7C3AED;    /* 悬停紫色 */
+  --navan-purple-light: #E9D5FF;    /* 浅紫色背景 */
+  
+  /* 兼容旧变量名 */
+  --navan-primary: #1A1A2E;
+  --navan-accent: #9333EA;
+  --navan-accent-hover: #7C3AED;
+  --navan-accent-light: #E9D5FF;
+  
+  /* 渐变蓝色 */
+  --navan-gradient-start: #0A2540;
+  --navan-gradient-end: #1A3A5C;
+  
+  /* ===== 中性色 ===== */
+  --navan-white: #FFFFFF;
+  --navan-gray-50: #F8F9FA;        /* 最浅灰 - 页面背景 */
+  --navan-gray-100: #F5F7FA;       /* 浅灰 - 卡片背景 */
+  --navan-gray-200: #E5E7EB;       /* 边框、分割线 */
+  --navan-gray-300: #D1D5DB;       /* 输入框边框 */
+  --navan-gray-400: #9CA3AF;       /* 禁用文本 */
+  --navan-gray-500: #6B7280;       /* 次要文本 */
+  --navan-gray-600: #4B5563;       /* 正文文本 */
+  --navan-gray-700: #374151;       /* 强调文本 */
+  --navan-gray-800: #1F2937;       /* 标题文本 */
+  --navan-gray-900: #111827;       /* 主标题 */
+  
+  /* ===== 语义化颜色 ===== */
+  --navan-success: #00C853;
+  --navan-success-light: #E8F5E9;
+  --navan-warning: #FF9800;
+  --navan-warning-light: #FFF3E0;
+  --navan-error: #EA4335;
+  --navan-error-light: #FCE8E6;
+  --navan-info: #0066FF;
+  --navan-info-light: #E6F2FF;
+  
+  /* ===== 字体系统 ===== */
+  --navan-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 
+                       'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif,
+                       'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  --navan-font-mono: 'SF Mono', 'Monaco', 'Cascadia Code', 
+                     'Courier New', monospace;
+  
+  /* ===== 字号 ===== */
+  --navan-hero: 64px;
+  --navan-h1: 48px;
+  --navan-h2: 36px;
+  --navan-h3: 28px;
+  --navan-h4: 24px;
+  --navan-h5: 20px;
+  --navan-h6: 18px;
+  --navan-body-large: 18px;
+  --navan-body: 16px;
+  --navan-body-small: 14px;
+  --navan-caption: 12px;
+  --navan-label: 14px;
+  --navan-button: 16px;
+  
+  /* ===== 字重 ===== */
+  --navan-font-light: 300;
+  --navan-font-regular: 400;
+  --navan-font-medium: 500;
+  --navan-font-semibold: 600;
+  --navan-font-bold: 700;
+  
+  /* ===== 间距系统（基于8px网格）===== */
+  --navan-space-1: 4px;
+  --navan-space-2: 8px;
+  --navan-space-3: 12px;
+  --navan-space-4: 16px;
+  --navan-space-5: 20px;
+  --navan-space-6: 24px;
+  --navan-space-8: 32px;
+  --navan-space-10: 40px;
+  --navan-space-12: 48px;
+  --navan-space-16: 64px;
+  --navan-space-20: 80px;
+  --navan-space-24: 96px;
+  --navan-space-32: 128px;
+  
+  /* 大间距（区块之间）*/
+  --navan-section-padding: 60px;
+  --navan-section-padding-lg: 100px;
+  
+  /* ===== 圆角系统 ===== */
+  --navan-radius-sm: 4px;
+  --navan-radius-md: 8px;
+  --navan-radius-lg: 12px;
+  --navan-radius-xl: 16px;
+  --navan-radius-2xl: 24px;
+  --navan-radius-full: 9999px;
+  
+  /* ===== 阴影系统（Navan风格 - 更柔和）===== */
+  --navan-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --navan-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --navan-shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --navan-shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --navan-shadow-xl: 0 8px 16px rgba(0, 0, 0, 0.12);
+  --navan-shadow-2xl: 0 12px 24px rgba(0, 0, 0, 0.15);
+  
+  /* 按钮阴影 */
+  --navan-shadow-button: 0 4px 12px rgba(0, 102, 255, 0.3);
+  --navan-shadow-button-hover: 0 6px 16px rgba(0, 102, 255, 0.4);
+  
+  /* ===== 动画系统 ===== */
+  --navan-duration-fast: 150ms;
+  --navan-duration-normal: 300ms;
+  --navan-duration-slow: 500ms;
+  --navan-ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --navan-ease-in-out: cubic-bezier(0.42, 0, 0.58, 1);
+  --navan-ease-spring: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  /* ===== 响应式断点 ===== */
+  --navan-breakpoint-xs: 0px;
+  --navan-breakpoint-sm: 640px;
+  --navan-breakpoint-md: 768px;
+  --navan-breakpoint-lg: 1024px;
+  --navan-breakpoint-xl: 1280px;
+  --navan-breakpoint-2xl: 1440px;
+  
+  /* ===== 布局 ===== */
+  --navan-container-max: 1400px;
+  --navan-container-padding-mobile: 16px;
+  --navan-container-padding-tablet: 24px;
+  --navan-container-padding-desktop: 32px;
+  
+  /* ===== Z-index层级 ===== */
+  --navan-z-dropdown: 1000;
+  --navan-z-sticky: 1020;
+  --navan-z-fixed: 1030;
+  --navan-z-modal-backdrop: 1040;
+  --navan-z-modal: 1050;
+  --navan-z-popover: 1060;
+  --navan-z-tooltip: 1070;
+}
+
+/* 深色模式支持（未来扩展） */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* 可以在这里添加深色模式变量 */
+  }
+}
+

@@ -1,0 +1,1003 @@
+# 广州中航服机票文档 v1.2
+
+## 1. 接口调用原理
+调用一起飞的API接口，是客户端与服务端进行数据交互的过程。客户端（你的应用程序）通过发送HTTP请求，调用一起飞服务端提供的API接口，实现数据的查询和操作。
+
+## 2. 开始使用前的准备
+调用API前需获取应用凭证：
+- app_key（应用密钥）：一起飞开放平台为每个应用分配的唯一标识ID，在应用列表中创建应用后获取。
+- app_secret（应用密钥）：用于数据加密的密钥，需妥善保管，切勿泄露，将用于加密请求数据。
+
+## 3. API 调用地址
+所有API接口统一通过以下地址调用：
+https://bizapi.yiqifei.cn/servings
+
+## 4. 参数说明
+调用API需传递两类参数：
+- 系统级参数：通过URL查询字符串传递，用于标识应用和接口。
+- 应用级参数：通过HTTP Body传递，包含业务数据（需加密）。
+
+## 5. 系统级参数详解
+系统级参数通过URL查询字符串传递，用于指定接口版本、应用身份和调用方法。
+
+### 示例
+https://bizapi.yiqifei.cn/servings?version=2.0&app_key=9999&method=test
+
+### 参数说明表
+| 参数名  | 类型   | 必填 | 说明                                  |
+|---------|--------|------|---------------------------------------|
+| version | string | 是   | API版本号，当前固定填写2.0            |
+| app_key | string | 是   | 应用标识（AppKey），在应用列表中获取  |
+| method  | string | 是   | 要调用的API接口名称，如：Messaging.MailSend |
+
+## 6. 应用级参数详解
+应用级参数为业务数据，需按以下步骤处理：
+1. 将业务参数组织成符合JSON规范的格式。
+2. 用app_secret作为密钥，对JSON字符串进行AES加密。
+3. 对加密后的字节数据进行Base64编码。
+4. 将编码后的字符串作为HTTP Body发送。
+
+### 加密算法说明
+- 加密算法：AES/CBC/PKCS5Padding
+- 初始化向量（IV）：长度为16的空字节数组（即：\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0）
+- 加密密钥：使用app_secret（长度必须为16或32字节）
+- 字符编码：UTF-8
+
+### 测试示例
+- 测试密钥：1234567890123456
+- 原始文本：abcdefghigklmnopqrstuvwxyz0123456789
+- 加密后的Base64结果：8Z3dZzqn05FmiuBLowExK0CAbs4TY2GorC2dDPVlsn/tP+VuJGePqIMv1uSaVErr
+提示：若加密结果与上述一致，说明加密实现正确。
+
+## 7. 发送 HTTP 请求
+将加密后的应用级参数作为HTTP Body，通过POST方式发送到完整API地址。
+
+### 重要：HTTP 请求头设置
+请求时必须设置以下HTTP Header：
+Content-Type: text/plain
+
+### 完整调用示例
+#### 步骤1：准备参数
+- 接口名称：Messaging.MailSend
+- app_key：99999
+- app_secret：08212a1694c64992
+
+#### 步骤2：准备业务参数（JSON格式）
+{
+  "DisplayName": "一起飞团队",
+  "To": "xxxx@163.com",
+  "Subject": "邮件测试",
+  "Body": "xxxxxxx"
+}
+
+#### 步骤3：加密并编码
+用app_secret（08212a1694c64992）作为密钥，对上述JSON进行AES加密，再Base64编码，结果如下：
+vDUMMYIpg+c1Idzbnwt0JLOXc7jhkLSlH/Bd8k2TqQSMIzbHLOJwtU05T8sjobCHNL21lzWpX7FaELY8dcfhxpb5/fzrnXYIXSYfJUEzqG25TcDCI8W1xhhc7Dl0UGCaWkLA/+7c0J/Cwb+GGUSnEMPGl8BnyTmptS78EmmpITA=
+
+#### 步骤4：发送HTTP POST请求
+- 请求URL：
+https://bizapi.yiqifei.cn/servings?version=2.0&app_key=99999&method=Messaging.MailSend
+- 请求Header：
+Content-Type: text/plain
+Accept-Encoding: gzip, deflate
+- 请求Body：上述编码后的字符串
+
+## 8. 响应结果
+API调用后返回JSON格式响应数据，包含以下字段：
+
+| 字段名 | 类型   | 说明                                      |
+|--------|--------|-------------------------------------------|
+| Code   | int    | 响应代码，0表示成功，非0表示失败          |
+| Msg    | string | 响应消息，描述调用结果或错误信息          |
+| Data   | object | 业务数据，成功时含返回数据，失败时为null  |
+
+### 成功响应示例
+{
+  "Code": 0,
+  "Msg": "调用成功",
+  "Data": {
+    // 返回的业务数据
+  }
+}
+
+### 错误响应示例
+{
+  "Code": 1001,
+  "Msg": "参数错误",
+  "Data": null
+}
+
+## 9. 重要注意事项
+- 字符编码：所有请求和响应数据编码均为UTF-8格式。
+- 数据压缩：服务器支持gzip、deflate压缩，可设置Header Accept-Encoding: gzip, deflate 启用，减少传输量。
+- 密钥安全：妥善保管app_secret，切勿在客户端代码中硬编码或泄露。
+- 请求头设置：必须设Content-Type: text/plain，否则请求失败。
+- 请求超时：建议设合理超时时间（推荐30秒）。
+- 重试机制：网络异常或超时错误，建议实现自动重试（最多3次）。
+- 错误处理：根据返回的Code和Msg进行相应错误处理。
+
+## 10. 接口列表
+| 序号 | 接口名                                  | 接口说明          |
+|------|-----------------------------------------|-------------------|
+| 1    | ShoppingServer.EasyShopping_V2          | 机票查询接口      |
+| 2    | ShoppingServer.VerifyPriceServing       | 机票验价接口      |
+| 3    | OpenAPI.CreateOrder                     | 下单接口          |
+| 4    | OpenAPI.SubmitOrder                     | 确认提交订单      |
+| 5    | OpenAPI.VerifyCabin                     | 验舱并补位接口    |
+| 6    | OpenAPI.GetOrderList                    | 获取订单详情接口  |
+| 7    | ShoppingServer.PNRCancelByPSONr         | 取消PNR接口       |
+| 8    | ShoppingServer.AirReshopServing         | 改期航班查询      |
+| 9    | ShoppingServer.AirRefundPriceServing    | 查询退票费        |
+| 10   | FareRuleServer.GetFareRule              | 获取退改条款      |
+| 11   | OpenAPI.Dest.GetAirportList             | 目的地列表        |
+
+## 11. 业务流程图
+### 11.1 国际机票查询、预订、确认出票流程
+1. 用户输入查询条件
+2. 调用 BizApi.OpenAPI.Shopping.EasyShopping_V2
+3. 选择航班
+4. 调用 BizApi.AirTickets.Shopping.VerifyPriceServing
+5. 填写资料
+6. 调用 BizApi.OpenAPI.CreateOrder 下单
+7. 用户发起支付（注：下单到支付有时间差，可能出现座位被取消，需核验）
+8. 调用 BizApi.OpenAPI.Shopping.VerifyCabin 核验座位
+9. 支付成功
+10. 调用 BizApi.OpenAPI.SubmitOrder 确认
+
+### 11.2 国际机票改期流程
+1. 选择需变更的票号
+2. 选择需变更航段
+3. 调用 BizApi.OpenAPI.Shopping.AirReshopServing 查改期航班
+4. 选择新航段
+5. 调用 BizApi.HBTrips.GetVerifyAirReshopServing 校验改期费
+6. 调用 BizApi.OpenAPI.CreateChangeOrder 提交改期
+7. 调用 BizApi.OpenAPI.SubmitOrder 确认出票
+8. 调用 BizApi.HBTrips.Order.GetOrderList
+9. 回调/刷新改期新票号
+10. 对接方接口接收票号推送
+
+### 11.3 退票流程
+1. 选择需退票票号
+2. 区分退票类型：
+   - 自愿退票：调用 BizApi.AirTickets.Shopping.AirRefundPriceServing 查退票费
+   - 非自愿退票：调用 BizApi.OpenAPI.CreateReturnOrder 提交退票单
+3. 调用 BizApi.OpenAPI.SubmitOrder 确认退票
+4. 调用 BizApi.HBTrips.Order.GetOrderList
+5. 回调退票状态和费用
+6. 对接方接口接收状态推送
+
+## 12. 接口说明
+### 12.1 BizApi.OpenAPI.Shopping.EasyShopping_V2（机票查询）
+#### 请求参数
+| 名称                | 类型                | 必须 | 示例                | 说明                                  |
+|---------------------|---------------------|------|---------------------|---------------------------------------|
+| Routings            | List<Routing>       | 是   | -                   | 查询行程路线                          |
+| -Departure          | String              | 是   | -                   | 出发地                                |
+| -DepartureDate      | DateTime            | 是   | -                   | 出发日期                              |
+| -Arrival            | String              | 是   | -                   | 目的地                                |
+| -DepartureType      | Int32               | 是   | -                   | 出发地类型（1:机场，默认1）           |
+| -ArrivalType        | Int32               | 是   | -                   | 目的地类型（1:机场，默认1）           |
+| OfficeIds           | List<String>        | 是   | -                   | 注册公司                              |
+| Type                | String              | 是   | A/D                 | 机票类型（A:国际，D:国内）            |
+| Airlines            | List<String>        | 否   | -                   | 指定航司                              |
+| BerthType           | String              | 否   | Y                   | 舱位等级（Y:经济舱，C:公务舱，F:头等舱；国际必传） |
+| Passengers          | List<SimplePassenger> | 否  | -                   | 旅客列表                              |
+| PassengerType       | String              | 是   | ADT/CHD/INF/STU     | 旅客类型（ADT:成人，CHD:儿童，INF:婴儿，STU:学生） |
+| IsQueryAirport      | Boolean             | 否   | -                   | 是否查询机场信息                      |
+| IsQueryEquipment    | Boolean             | 否   | -                   | 是否查询机型信息                      |
+| IsQueryAirline      | Boolean             | 否   | -                   | 是否查询航司信息                      |
+| IsQueryRule         | Boolean             | 否   | -                   | 是否查询退改签条款                    |
+| IsQueryHappyRoute   | Boolean             | 否   | -                   | 是否查询舒适度                        |
+| IsBrand             | Boolean             | 否   | -                   | 是否品牌模式                          |
+| IsOnBusiness        | Boolean             | 否   | TRUE                | 是否因公（true:因公，false:因私）     |
+| Currency            | String              | 否   | CNY                 | 转换货币（默认CNY）                   |
+| Language            | String              | 否   | ZH-CN/EN-US         | 语言（ZH-CN:简体中文，EN-US:英文）    |
+| User                | UserInfo            | 否   | -                   | 用户信息                              |
+
+#### 请求参数示例
+{
+  "Passengers": [{"PassengerType": "ADT"}],
+  "OnlyDirectFlight": false,
+  "BerthType": "Y",
+  "IsQueryRule": false,
+  "IsQueryAirline": false,
+  "CodeShare": false,
+  "IsQueryAirport": false,
+  "Routings": [
+    {
+      "Departure": "CAN",
+      "Arrival": "SIN",
+      "ArrivalType": 1,
+      "DepartureDate": "2023-03-27",
+      "DepartureType": 1
+    },
+    {
+      "Departure": "SIN",
+      "Arrival": "CAN",
+      "ArrivalType": 1,
+      "DepartureDate": "2023-03-30",
+      "DepartureType": 1
+    }
+  ],
+  "Type": "A",
+  "ChildQty": 0,
+  "Currency": "CNY",
+  "IsQueryEquipment": true,
+  "OfficeIds": ["EI00D"]
+}
+
+#### 响应参数
+| 名称                  | 类型                | 示例 | 说明                                  |
+|-----------------------|---------------------|------|---------------------------------------|
+| Segment               | List<SegmentBiz>     | -    | 航段集合                              |
+| -SegmentCode          | String              | -    | 航段代码                              |
+| -Departure            | String              | -    | 出发地                                |
+| -Arrival              | String              | -    | 目的地                                |
+| -DepartureDate        | DateTime            | -    | 出发日期                              |
+| -NumberOfStops        | Int32               | -    | 经停数                                |
+| -TotalFlightTime      | String              | -    | 总飞行时间                            |
+| -Route                | String              | -    | 路线                                  |
+| -TotalMiles           | Int32               | -    | 总里程                                |
+| -ClassAvail           | List<ClassAvailBiz>  | -    | 舱位状态集合                          |
+| --ResBookDesigCode    | String              | -    | 舱位状态                              |
+| --Agency              | String              | -    | 数据代理商                            |
+| --LastDate            | DateTime            | -    | 最后更新时间                          |
+| --Flight              | FlightBiz           | -    | 航班详情                              |
+| ---FlightCode         | String              | -    | 航班代码                              |
+| ---Departure          | String              | -    | 出发地                                |
+| ---Arrival            | String              | -    | 目的地                                |
+| ---DepartureDate      | DateTime            | -    | 出发时间                              |
+| ---ArrivalDate        | DateTime            | -    | 抵达时间                              |
+| ---MarketingAirline   | String              | -    | 行销航司                              |
+| ---OperatingAirline   | String              | -    | 承运航司                              |
+| ---FlightNumber       | String              | -    | 航班号                                |
+| ---DepartureTerminal  | String              | -    | 出发航站楼                            |
+| ---ArrivalTerminal    | String              | -    | 到达航站楼                            |
+| ---Equipment          | String              | -    | 机型                                  |
+| ---OnTimeRate         | String              | -    | 准点率                                |
+| ---ElapsedTime        | String              | -    | 飞行时间                              |
+| ---Miles              | String              | -    | 公里数                                |
+| ---StopQuantity       | Int32               | -    | 经停数                                |
+| ---Meal               | String              | -    | 餐食类型                              |
+| ---OperationTimes     | String              | -    | 飞行周期                              |
+| ---StopAirport        | String              | -    | 经停机场                              |
+| ---OpFltno            | String              | -    | 承运航班号                            |
+| ---ShareCode          | Boolean             | -    | 是否共享航班                          |
+| ---StopSites          | List<StopSite>      | -    | 经停详情集合                          |
+| ----Airport           | String              | -    | 经停机场                              |
+| ----ArrivalTime       | DateTime            | -    | 到达经停机场时间                      |
+| ----LeaveTime         | DateTime            | -    | 离开经停机场时间                      |
+| ----Duration          | String              | -    | 停留时长                              |
+| Fare                  | List<FareResult>    | -    | 基础票价集合                          |
+| -FareCode             | String              | -    | 票价代码                              |
+| -Departure            | String              | -    | 出发地                                |
+| -Arrival              | String              | -    | 目的地                                |
+| -Carrier              | String              | -    | 航司                                  |
+| -FBC                  | String              | -    | 票价基础代码                          |
+| -Price                | Decimal             | -    | 成人价格                              |
+| -ChildPrice           | String              | -    | 儿童价格                              |
+| -FareType             | String              | -    | 票价类型                              |
+| -BookingClass         | String              | -    | 订座舱位                              |
+| -BillBerth            | String              | -    | 舱位等级                              |
+| -LeastStayTerm        | String              | -    | 最短停留                              |
+| -MostStayTerm         | String              | -    | 最长停留                              |
+| -Mark1                | String              | -    | 提前出票                              |
+| -First                | String              | -    | 周中                                  |
+| -Last                 | String              | -    | 周末                                  |
+| -TravelFirstDate      | String              | -    | 开始旅行日期                          |
+| -TravelLastDate       | String              | -    | 结束旅行日期                          |
+| -BillID               | String              | -    | 票价单号                              |
+| -AccountCode          | String              | -    | 帐号代码                              |
+| -ABFareId             | String              | -    | 条款ID                                |
+| -Course               | String              | -    | 航线                                  |
+| -CommendModel         | String              | -    | 小飞飞推荐模块（A:最优票价，C:综合推荐） |
+| -CommendDetail        | String              | -    | 推荐说明                              |
+| -Agency               | String              | -    | 数据代理商                            |
+| -CondBaggage          | String              | -    | 行李政策                              |
+| -StoredId             | String              | -    | 库存编号                              |
+| Journey               | List<JourneyBiz>    | -    | 行程集合                              |
+| Penalty               | List<PenaltyResult> | -    | 退改签条款集合                        |
+| -FareCode             | String              | -    | 基础票价代码                          |
+| -Refundable           | String              | -    | 退票规则                              |
+| -Changeable           | String              | -    | 改期规则                              |
+| -Baggage              | String              | -    | 行李政策                              |
+| -Remark               | String              | -    | 备注                                  |
+| Policy                | List<PolicyBiz>     | -    | 差旅政策集合                          |
+| AirportInfo           | List<Airport>       | -    | 机场集合                              |
+| -airportCode          | String              | -    | 机场三字码                            |
+| -airportNameEn        | String              | -    | 机场英文名                            |
+| -airportNameCn        | String              | -    | 机场中文名                            |
+| -cityCode             | String              | -    | 城市代码                              |
+| -CitylataCode         | String              | -    | 城市LATA码                            |
+| -cityNameEn           | String              | -    | 城市英文名                            |
+| -cityNameCn           | String              | -    | 城市中文名                            |
+| -isinternal           | Boolean             | -    | 是否国内                              |
+| -countryCode          | String              | -    | 国家代码                              |
+| -countryNameEn        | String              | -    | 国家英文名                            |
+| -countryNameCn        | String              | -    | 国家中文名                            |
+| -continentCode        | String              | -    | 大洲代码                              |
+| -continentNameEn      | String              | -    | 大洲英文名                            |
+| -continentNameCn      | String              | -    | 大洲中文名                            |
+| -timeZone             | String              | -    | 时区                                  |
+| AirlineInfo           | List<Airline>       | -    | 航司集合                              |
+| -Code                 | String              | -    | 航司代码                              |
+| -ShortName            | String              | -    | 航司简称                              |
+| -CName                | String              | -    | 航司中文名                            |
+| -EName                | String              | -    | 航司英文名                            |
+| EquipmentInfo         | List<EquipmentInfo> | -    | 机型集合                              |
+| -equipment            | String              | -    | 机型编号                              |
+| -cName                | String              | -    | 机型名称                              |
+| -Intro                | String              | -    | 机型描述                              |
+| HappyRoutes           | List<HappyRouteInfo>| -    | 舒适度集合                            |
+| -HappyRouteCode       | String              | -    | 舒适度代码                            |
+| -Airline              | String              | -    | 承运航司                              |
+| -Equipment            | String              | -    | 机型                                  |
+| -CabinType            | String              | -    | 舱等                                  |
+| -SeatPitch            | Int32               | -    | 座位间距（单位：cm）                  |
+| -Entertainment        | Enum                | -    | 娱乐设施（音视频点播）                |
+| -Wifi                 | Enum                | -    | 机上Wifi                              |
+| -Power                | Enum                | -    | 电源                                  |
+| Brand                 | List<BrandResult>   | -    | 品牌集合                              |
+| -BrandCode            | String              | -    | 推荐/品牌/商旅优选代码                |
+| -Type                 | Int32               | -    | 类型（1:推荐信息，2:品牌信息）        |
+| -BrandName            | String              | -    | 英文名称                              |
+| -BrandCName           | String              | -    | 中文名称                              |
+| -Info                 | String              | -    | 中文详细说明                          |
+| -EInfo                | String              | -    | 英文详细说明                          |
+| -IconPath             | String              | -    | Icon存放路径                          |
+| -Address              | String              | -    | 跳转/显示网页地址                     |
+| -Services             | List<BrandServiceResult> | - | 服务列表                        |
+| --ServiceCode         | String              | -    | 服务代码                              |
+| --CName               | String              | -    | 服务中文名                            |
+| --EName               | String              | -    | 服务英文名                            |
+| --CInfo               | String              | -    | 服务中文说明                          |
+| --EInfo               | String              | -    | 服务英文说明                          |
+| --IconPath            | String              | -    | 服务Icon路径                          |
+| --Address             | String              | -    | 服务跳转地址                          |
+| Commend               | List<CommendResult> | -    | 推荐集合                              |
+| -JourneyCode          | String              | -    | 行程代码                              |
+| -CommendModel         | String              | -    | 小飞飞推荐                            |
+| -CommendDetail        | String              | -    | 推荐说明（代号）                      |
+| -Info                 | String              | -    | 推荐详情                              |
+| -Title                | String              | -    | 标题                                  |
+| -Address              | String              | -    | 地址                                  |
+| CacheInfo             | List<CacheInfoResult>| -   | 缓存信息                              |
+| -SessionId            | String              | -    | 查询标识符                            |
+| -CacheCode            | String              | -    | 缓存代码                              |
+| -JourneyInfo          | String              | -    | 行程信息                              |
+| -Agency               | String              | -    | 数据代理商                            |
+| -CabinType            | String              | -    | 舱位类型                              |
+| -CacheDate            | DateTime            | -    | 缓存时间                              |
+| -Finish               | Boolean             | -    | 结果是否为异步计算最后结果            |
+
+#### 关联对象定义
+1. JourneyBiz
+| 名称                | 类型                | 示例 | 说明                                  |
+|---------------------|---------------------|------|---------------------------------------|
+| JourneyCode          | String              | -    | 行程代码                              |
+| Currency             | String              | -    | 币种                                  |
+| BasePrice            | Decimal             | -    | 基本价格                              |
+| Tax                  | Decimal             | -    | 税费                                  |
+| TotalPrice           | Decimal             | -    | 总价                                  |
+| FQKey                | String              | -    | FQ路由Key                             |
+| SourceCurrency       | String              | -    | 供应商原货币                          |
+| SourceBasePrice      | Decimal             | -    | 供应商原底价                          |
+| SourceTotalPrice     | Decimal             | -    | 供应商总价                            |
+| Bestbuy              | String              | -    | 库存状态（S:有，N:无）                |
+| RebatePercent        | String              | -    | 返点比例                              |
+| RebateAdd            | String              | -    | 额外返点                              |
+| SpecialBasePrice     | String              | -    | 特惠基本价格                          |
+| SpecialTotalPrice    | String              | -    | 特惠总价                              |
+| BigCustomerCode      | String              | -    | 大客户编码                            |
+| DiscountRate         | Decimal             | -    | 折扣率                                |
+| IsConformPolicy      | Boolean             | -    | 是否遵守差旅政策                      |
+| BreachPolicyId       | String              | -    | 违背政策编号                          |
+| NonAgreedPrice       | Decimal             | -    | 非协议价                              |
+| ReissueAmt           | Decimal             | -    | 改期总费用（手续费+票价差额）         |
+| ReissueFee           | Decimal             | -    | 改期手续费                            |
+| DifferFare           | Decimal             | -    | 改期票价差额                          |
+| Score                | Int32               | -    | 计分                                  |
+| ExclusiveCabin       | Int32               | -    | 航司会员专享座位（0:普通，1:专享）    |
+| BriefRule            | BriefRuleResult     | -    | 退改签简要规则                        |
+| JourneySegment       | List<JourneySegmentResult> | - | 行程-航段集合                |
+| JourneyTicket        | List<JourneyTicketResult> | - | 行程-机票集合                |
+| JourneyBrand         | List<JourneyBrandResult> | - | 行程-品牌集合                |
+
+2. BriefRuleResult
+| 名称        | 类型   | 示例 | 说明        |
+|-------------|--------|------|-------------|
+| Refund      | String | -    | 退票规则    |
+| Change      | String | -    | 改期规则    |
+| Endorsement | String | -    | 签转规则    |
+| Baggage     | String | -    | 行李政策    |
+
+3. JourneySegmentResult
+| 名称        | 类型   | 示例 | 说明          |
+|-------------|--------|------|---------------|
+| SegmentCode | String | -    | 行程-航段代码 |
+| No.         | Int32  | -    | 航段顺序      |
+
+4. JourneyTicketResult
+| 名称              | 类型                | 示例 | 说明                          |
+|-------------------|---------------------|------|-------------------------------|
+| JourneyTicketCode  | String              | -    | 行程-机票代码                  |
+| TicketId           | Int32               | -    | 机票序号                      |
+| MarketingAirline   | String              | -    | 行销航司                      |
+| TicketAgency       | List<TicketAgencyResult> | - | 机票-代理商集合            |
+
+5. TicketAgencyResult
+| 名称                | 类型                | 示例 | 说明                          |
+|---------------------|---------------------|------|-------------------------------|
+| TicketAgencyCode     | String              | -    | 机票-代理商代码                |
+| Agency               | String              | -    | 数据代理商                    |
+| PCC                  | String              | -    | 供应商账号                    |
+| OfficeId             | String              | -    | 注册公司                      |
+| AgencyRay            | String              | -    | 代理公司                      |
+| TicketPricing        | List<TicketPricingResult> | - | 机票-票价集合            |
+| TicketFare           | List<TicketFareResult> | - | 机票-基础票价集合        |
+
+6. TicketPricingResult
+| 名称                | 类型   | 示例 | 说明                                  |
+|---------------------|--------|------|---------------------------------------|
+| PassengerType        | String | -    | 旅客类型                              |
+| Currency             | String | -    | 币种                                  |
+| BasePrice            | Decimal| -    | 基本价格                              |
+| Tax                  | Decimal| -    | 税费                                  |
+| TotalPrice           | Decimal| -    | 总价                                  |
+| PriceBreakdown       | String | -    | 价格明细                              |
+| TaxAgency            | String | -    | 税费数据代理商                        |
+| LastTaxDate          | DateTime| -   | 税费最后更新时间                      |
+| fareCalculation      | String | -    | IATA字段                              |
+| latestTicketingTime  | String | -    | 出票期限                              |
+| SourceCurrency       | String | -    | 供应商原货币                          |
+| SourceBasePrice      | Decimal| -    | 供应商原底价                          |
+| SourceTotalPrice     | Decimal| -    | 供应商总价                            |
+| ReissueAmt           | Decimal| -    | 改期总费用（手续费+差额）             |
+| ReissueFee           | Decimal| -    | 改期手续费                            |
+| DifferFare           | Decimal| -    | 改期票价差额                          |
+| Commission           | Decimal| -    | 佣金                                  |
+| AgencyFee            | Decimal| -    | 代理费                                |
+| EncourageFee         | Decimal| -    | 后返费                                |
+| TicketFee            | Int32  | -    | 开票费                                |
+
+7. TicketFareResult
+| 名称                | 类型                | 示例 | 说明                          |
+|---------------------|---------------------|------|-------------------------------|
+| TicketFareCode       | String              | -    | 机票-基础票价代码              |
+| FareCode             | String              | -    | 基础票价代码                  |
+| CabinType            | String              | -    | 舱位类型                      |
+| No.                  | Int32               | -    | 票价顺序                      |
+| TicketFareFlight     | List<TicketFareFlightResult> | - | 机票-基础票价-航班集合        |
+
+8. TicketFareFlightResult
+| 名称        | 类型   | 示例 | 说明                  |
+|-------------|--------|------|-----------------------|
+| SegmentCode | String | -    | 航段代码              |
+| FlightCode  | String | -    | 航班代码              |
+| FlightCOS   | String | -    | 订座舱位              |
+| Availability| String | -    | 舱位状态              |
+| LastDate    | DateTime| -   | 最后更新时间          |
+| CountNow    | Int32  | -    | 库存剩余数量          |
+| HappyRouteCode | String | -  | 舒适度代码            |
+
+9. JourneyBrandResult
+| 名称              | 类型   | 示例 | 说明                  |
+|-------------------|--------|------|-----------------------|
+| JourneyBrandCode   | String | -    | 行程-品牌代码         |
+| BrandCode          | String | -    | 品牌代码              |
+
+### 12.2 BizApi.AirTickets.Shopping.VerifyPriceServing（机票验价）
+#### 应用场景
+预订前验价和验舱
+
+#### 请求参数
+| 名称                | 类型                | 必须 | 示例     | 说明                                  |
+|---------------------|---------------------|------|----------|---------------------------------------|
+| OfficeIds           | List<String>        | 是   | EI00D    | 注册公司                              |
+| Agency              | String              | 是   | 1E       | 数据源                                |
+| FQKey               | String              | 是   | -        | 来自Shopping接口的Journey.FQKey       |
+| PlatingCarrier      | String              | 是   | CZ       | 出票航司                              |
+| AgencyRay           | String              | 否   | 3007F    | 出票代理                              |
+| ABFareId            | String              | 否   | -        | 来自Shopping接口的Fare.ABFareId       |
+| JourneyCode         | String              | 否   | -        | 来自Shopping接口的Journey.JourneyCode |
+| FareBasis           | String              | 否   | -        | 票价基础                              |
+| IsVerifyCabin       | Boolean             | 否   | TRUE     | 是否验舱（默认true）                  |
+| IsVerifyPricing     | Boolean             | 否   | TRUE     | 是否验价（默认true）                  |
+| IsBestBuy           | Boolean             | 否   | FALSE    | 是否最低价优选（默认false）           |
+| IsVerifyRule        | Boolean             | 否   | FALSE    | 是否获取条款（默认false）             |
+| IsCachePricing      | Boolean             | 否   | TRUE     | 是否读缓存价格（默认true）            |
+| IsOnBusiness        | Boolean             | 否   | TRUE     | 是否因公（true:因公，false:因私）     |
+| BigCustomerCode      | String              | 否   | -        | 大客户编码                            |
+| Passengers          | List<VerifyPassenger> | 否   | -        | 旅客列表                              |
+| Currency            | String              | 否   | CNY      | 货币（默认CNY）                       |
+| Segments            | List<VerifySegmentRequest> | 否 | 行程列表                      |
+| User                | UserInfo            | 否   | -        | 用户信息                              |
+
+#### 关联对象定义
+1. VerifyPassenger
+| 名称            | 类型   | 必须 | 示例   | 说明                                  |
+|-----------------|--------|------|--------|---------------------------------------|
+| PassengerType   | String | 是   | ADT    | 旅客类型（ADT:成人，CHD:儿童，INF:婴儿，STU:学生） |
+
+2. VerifySegmentRequest
+| 名称    | 类型                | 必须 | 示例 | 说明        |
+|---------|---------------------|------|------|-------------|
+| Legs    | List<VerifyLegRequest> | 否   | -    | 行程腿列表  |
+
+3. VerifyLegRequest
+| 名称            | 类型   | 必须 | 示例                  | 说明          |
+|-----------------|--------|------|-----------------------|---------------|
+| Departure        | String | 是   | CAN                   | 出发地        |
+| Arrival          | String | 是   | BKK                   | 目的地        |
+| DepartureDate    | String | 是   | 2020-05-01T12:00:00   | 起飞时间      |
+| ArrivalDate      | String | 是   | 2020-05-01T14:00:00   | 到达时间      |
+| Airline          | String | 是   | CZ                    | 航司          |
+| FlightNumber     | String | 是   | 8888                  | 航班号        |
+| Cabin            | String | 是   | T                     | 舱位          |
+| FareBasis        | String | 否   | -                     | 票价基础      |
+| Equipment        | String | 否   | -                     | 机型          |
+| OpAirline        | String | 否   | -                     | 承运航司      |
+| OpFltno          | String | 否   | -                     | 承运航班号    |
+
+#### 请求参数示例（代码块）
+{
+  "ABFareId": "A|CAN|SIN|MU|NKE0WBLL|2023-01-23T00:00:00|key(RuleTariff::Rule::OWRT::Routing::Footnote1::Footnote2::PassengerType::FareType::OriginAddonTariff::OriginAddonFootnote1::OriginAddonFootnote2::DestinationAddonTariff::DestinationAddonFootnote1::DestinationAddonFootnote2::TravelAgencyCode::IataNumber::DepartmentCode::Origin::Destination::FareSource::FbrBaseTariff::FbrBaseRule::AccountCode::FbrBaseFareBasis::OriginAddonRouting::DestinationAddonRouting::R3c025TblNo)|008::CSL1::1::0202::::::ADT::PRU::008::::::::::::::::CAN131::08015545::::CAN::SIN::ATPCO::::::::::0303::::",
+  "IsVerifyCabin": true,
+  "FQKey": "H4sIAAAAAAAAA52RX3OiMBTFv0te124TURBm9gFiVRBQhz+d3Z19QAgWi9AGkGD1uzdB68M+luGBe3POuT9yP8CaZjGpgPb3A6yjqiLFjlC/eyNAA/rUBwOAG0pJEXe8gd3fvOGVDY2JEVWk9wJtqED4Ew6AHzGgyaoivvsjg5LoNSnbAmhFk+eXf1xzi+Y5s4iKlKya5dnupb4y3Jtc5C6f4LNh21yrZzTPCuF0AmHtHW5z2BLKe2NlBHl3St4iWjdUyLDuChul2THKeb105qI2RL6ZCIIzl5w90z07wflr0nkIh9IDRA9DyYdQ619wGXwTS5UR+g/rhnHH4vO/jcVv0+KrKEiHy0SED2NJjuVUGm0hQiRRI1lJUaqOJzLZKtJ4yyet86jOih2OOEHP2HPru9uC0ZPQYHy9QCQJfCPb4aaqywOh1zlilQOwSlNCzem9rF94WaQlty5Glal/PYrLvI4t1ZjZHYpNfMRt6FtBRR3Lw23jV8j2O7h895g59Zh7wkfLXuZB7IzX3jYM42JjBaG9qUVOxlYGEWcn155AWoVB5+zjNphZrZ3Bd49n0XJTJsfINnC16jzVOum5RU2dutSBTA6e/+D9ZuKw7HWhs3n9uDqpx9B0TxabJPMFCuJ9OHFmm+m4a0c6Lh8P5o/+V36ByyeoXHyCKwMAAA==",
+  "Currency": "CNY",
+  "JourneyCode": "2c36c6f34b011ed9a67f1f9586eb735b",
+  "IsVerifyPricing": true,
+  "PlatingCarrier": "MU",
+  "Segments": [
+    {
+      "Legs": [
+        {
+          "FareBasis": "NKE0WBLL",
+          "ArrivalDate": "2023-01-24 01:00:00",
+          "Departure": "CAN",
+          "Arrival": "KMG",
+          "Airline": "MU",
+          "FlightNumber": "5740",
+          "OpAirline": "",
+          "DepartureDate": "2023-01-23 22:20:00",
+          "Equipment": "73L",
+          "Cabin": "B",
+          "OpFltno": "5740"
+        },
+        {
+          "FareBasis": "NKE0WBLL",
+          "ArrivalDate": "2023-01-24 15:00:00",
+          "Departure": "KMG",
+          "Arrival": "SIN",
+          "Airline": "MU",
+          "FlightNumber": "9611",
+          "OpAirline": "",
+          "DepartureDate": "2023-01-24 10:40:00",
+          "Equipment": "73L",
+          "Cabin": "N",
+          "OpFltno": "9611"
+        }
+      ]
+    }
+  ],
+  "OfficeIds": ["EI00D"],
+  "IsBestBuy": false,
+  "Agency": "1E",
+  "Passengers": [{"PassengerType": "ADT"}],
+  "IsVerifyRule": false
+}
+
+#### 响应结果
+| 名称          | 类型                | 示例 | 说明                                  |
+|---------------|---------------------|------|---------------------------------------|
+| SessionId     | String              | -    | 会话ID                                |
+| MaxSeats      | Int32               | -    | 最大座位数                            |
+| Segments      | List<VerifySegment>  | -    | 行程列表                              |
+| Pricings      | List<VerifyPricing>  | -    | 价格列表                              |
+| Rule          | VerifyRule          | -    | 条款                                  |
+| OtherId1      | String              | -    | 其他ID1                               |
+| OtherId2      | String              | -    | 其他ID2                               |
+| ABFareIds     | List<String>        | -    | ABFareId列表                          |
+| FQKey         | String              | -    | FQKey                                 |
+
+#### 关联对象定义
+1. VerifySegment
+| 名称  | 类型              | 示例 | 说明        |
+|-------|-------------------|------|-------------|
+| Legs  | List<VerifyLeg>    | -    | 行程腿列表  |
+
+2. VerifyLeg
+| 名称            | 类型   | 示例 | 说明                          |
+|-----------------|--------|------|-------------------------------|
+| Departure        | String | -    | 出发地                        |
+| Arrival          | String | -    | 目的地                        |
+| DepartureDate    | String | -    | 起飞时间                      |
+| ArrivalDate      | String | -    | 到达时间                      |
+| Airline          | String | -    | 航司                          |
+| FlightNumber     | String | -    | 航班号                        |
+| Cabin            | String | -    | 舱位                          |
+| FareBasis        | String | -    | 票价基础                      |
+| Seats            | Int32  | -    | 座位数                        |
+| LegID            | String | -    | 腿ID                          |
+| BerthType        | String | -    | 舱等                          |
+| Equipment        | String | -    | 机型                          |
+| OpAirline        | String | -    | 承运航司                      |
+| OpFltno          | String | -    | 承运航班号                    |
+| DTerm            | String | -    | 出发航站楼                    |
+| ATerm            | String | -    | 到达航站楼                    |
+
+3. VerifyPricing
+| 名称              | 类型   | 示例     | 说明                                  |
+|-------------------|--------|----------|---------------------------------------|
+| PassengerType     | String | ADT/CHD  | 旅客类型（ADT:成人，CHD:儿童，INF:婴儿） |
+| OfficeID          | String | -        | 注册公司                              |
+| AgencyRay         | String | -        | 代理公司                              |
+| PCC               | String | -        | PCC账号                              |
+| Agency            | String | -        | 数据源                                |
+| Currency          | String | CNY      | 货币                                  |
+| BasePrice         | Int32  | -        | 票面价                                |
+| SalePrice         | Int32  | -        | 销售价                                |
+| Tax               | Int32  | -        | 税费                                  |
+| TotalPrice        | Int32  | -        | 总价                                  |
+| CacheBasePrice    | Int32  | -        | 缓存票面价                            |
+| CacheSalePrice    | Int32  | -        | 缓存销售价                            |
+| CacheTax          | Int32  | -        | 缓存税费                              |
+| CacheTotalPrice   | Int32  | -        | 缓存总价                              |
+| SplitSalePrice    | Int32  | -        | 拆分销售价                            |
+| Rebate            | Int32  | -        | 返点                                  |
+| Tickets           | List<VerifyTicket> | -    | 机票票价列表                          |
+| SplitPrices       | List<VerifySplitPrice> | - | 票价拆分列表                  |
+
+4. VerifyTicket
+| 名称                | 类型                | 示例 | 说明                                  |
+|---------------------|---------------------|------|---------------------------------------|
+| Currency             | String              | -    | 货币                                  |
+| BasePrice            | Int32               | -    | 票面价                                |
+| SalePrice            | Int32               | -    | 销售价                                |
+| Tax                  | Int32               | -    | 税费                                  |
+| Total                | Int32               | -    | 总价                                  |
+| AgencyFee            | Decimal             | -    | 代理费                                |
+| EncourageFee         | Decimal             | -    | 后返费                                |
+| TicketFee            | Int32               | -    | 开票费                                |
+| RmkCms               | Int32               | -    | 佣金                                  |
+| SourceCurrency       | String              | -    | 原货币                                |
+| SourceBasePrice      | Decimal             | -    | 原票面价                              |
+| SourceTax            | Decimal             | -    | 原税费                                |
+| SourceTotalPrice     | Decimal             | -    | 原总价                                |
+| PlatingCarrier       | String              | -    | 出票航司                              |
+| FareCalc             | String              | -    | FareCalc字段                          |
+| TicketTimelimit      | String              | -    | 出票期限                              |
+| TourCode             | String              | -    | 旅游代码                              |
+| Legs                 | List<VerifyTicketLeg> | -    | 航班明细列表                          |
+| Fares                | List<VerifyFare>    | -    | 票价明细列表                          |
+| Taxs                 | List<VerifyTax>     | -    | 税费明细列表                          |
+| Baggages             | List<VerifyBaggage> | -    | 行李信息列表                          |
+
+5. VerifyTicketLeg
+| 名称    | 类型   | 示例 | 说明          |
+|---------|--------|------|-------------|
+| LegID   | String | -    | 腿ID        |
+| Cabin   | String | -    | 舱位        |
+| Seats   | Int32  | -    | 座位数      |
+
+6. VerifyFare
+| 名称          | 类型   | 示例 | 说明          |
+|---------------|--------|------|-------------|
+| FareBasis     | String | -    | 票价基础      |
+| Airline       | String | -    | 航司          |
+| Departure     | String | -    | 出发地        |
+| Arrival       | String | -    | 目的地        |
+| BrandCode     | String | -    | 品牌代码      |
+| BrandName     | String | -    | 品牌名称      |
+
+7. VerifyTax
+| 名称        | 类型   | 示例 | 说明          |
+|-------------|--------|------|-------------|
+| TaxCode     | String | -    | 税费代码      |
+| Currency    | String | -    | 货币          |
+| Amount      | Decimal| -    | 金额          |
+
+8. VerifyBaggage
+| 名称          | 类型   | 示例 | 说明          |
+|---------------|--------|------|-------------|
+| Airline       | String | -    | 航司          |
+| Departure     | String | -    | 出发地        |
+| Arrival       | String | -    | 目的地        |
+| BaggageInfo   | String | -    | 行李信息      |
+
+9. VerifySplitPrice
+| 名称                | 类型   | 示例 | 说明                                  |
+|---------------------|--------|------|---------------------------------------|
+| Departure            | String | -    | 出发地                                |
+| Arrival              | String | -    | 目的地                                |
+| FareBasis            | String | -    | 票价基础                              |
+| SourceBasePrice      | Decimal| -    | 供应商底价                            |
+| SourceQPrice         | Decimal| -    | 供应商Q价                             |
+| SourcePrice          | Decimal| -    | 供应商总价                            |
+| ROE                  | Decimal| -    | 汇率                                  |
+| CurrencyRate         | Decimal| -    | 汇率                                  |
+| ExchangePrice        | Int32  | -    | 汇率兑换后价格                        |
+| SalePrice            | Int32  | -    | 销售价                                |
+| AgencyFee            | Decimal| -    | 代理费                                |
+| EncourageFee         | Decimal| -    | 后返费                                |
+
+### 12.3 BizApi.OpenAPI.Easy.AICreateOrder（AI智能创建订单）
+#### 接口说明
+支持机票、酒店、火车票、保险、签证、欧铁等多产品类型的订单创建
+
+#### 接口类型
+POST
+
+#### 请求参数（主要参数）
+| 参数名                | 类型                | 必填 | 说明                                  |
+|---------------------|---------------------|------|---------------------------------------|
+| OutOrderNo          | string              | 否   | 外部订单号                            |
+| SourceTypeID        | integer             | 是   | 来源ID                                |
+| BookerID            | string              | 否   | 订票人                                |
+| LRFollowCode        | string              | 否   | 跟单人账号（如：HS010102）            |
+| OTVendorCode        | string              | 否   | 出票商                                |
+| CustCompanyCode     | string              | 否   | 客户公司编码（G端）                   |
+| PayCompanyCode      | string              | 否   | 支付公司编码                          |
+| RecordID            | string              | 否   | 记录ID                                |
+| TravelNatureCode    | string              | 否   | 差旅性质（Public:因公，Private:因私） |
+| PaymentMethodID     | integer             | 是   | 支付方式（1:现付，3:欠款，5:月结）    |
+| SettlementTypeID    | integer             | 是   | 结算类型（1:欠条，2:现金，3:刷卡，4:汇款，8:一起飞收款宝，9:公司卡，10:无卡，11:网上支付） |
+| Remark              | string              | 否   | 备注                                  |
+| CostCenters         | Array<AICostCenter> | 否   | 成本中心分摊金额信息                  |
+| Products            | Array<AIProduct>    | 是   | 产品单信息                            |
+| Passengers          | Array<AIPassenger>  | 是   | 乘机人/被保人/主入住人信息            |
+| ContactInfo         | Object<EContactInfo>| 是   | 联系人信息                            |
+| DeliveryInfo        | Object<DeliveryInfo>| 否   | 配送信息                              |
+| ExtraExpense        | Object<ExtraExpense>| 否   | 额外费用                              |
+
+#### 产品类型说明（ProductCategoryID 枚举）
+| 产品ID | 产品类型        |
+|--------|-----------------|
+| 2      | 酒店            |
+| 3      | 火车票          |
+| 4      | 保险            |
+| 5      | 签证            |
+| 8      | 国内机票        |
+| 9      | 国际机票        |
+| 10     | 欧铁点到点      |
+| 11     | 欧铁通票        |
+| 725    | 租车            |
+| 796    | 旅游产品        |
+| 809    | 用车            |
+
+#### 关联对象定义
+1. AIProduct
+| 参数名                | 类型                | 必填 | 说明                                  |
+|---------------------|---------------------|------|---------------------------------------|
+| ProductCategoryID    | integer             | 是   | 产品大类（8:国内机票，9:国际机票，4:保险，2:酒店，3:火车票，809:用车） |
+| SubProductCategoryID | integer             | 否   | 产品子类                              |
+| GDSCode              | string              | 是   | GDS代码（必填）                       |
+| PublicAmount         | number              | 否   | 对公应付金额                          |
+| PrivateAmount        | number              | 否   | 对私应付金额                          |
+| BizPolicy            | Object<AIBizPolicy>  | 否   | 差旅政策信息                          |
+| Air                  | Object<AIAirTicket>  | 否   | 机票产品信息（ProductCategoryID=8/9时必填） |
+| Insurance            | Object<AIInsurance>  | 否   | 保险产品信息（ProductCategoryID=4时必填） |
+| Hotel                | Object<AIHotel>      | 否   | 酒店产品信息（ProductCategoryID=2时必填） |
+| Train                | Object<AITrain>      | 否   | 火车票产品信息（ProductCategoryID=3时必填） |
+| Ship                 | Object<AIShip>       | 否   | 船票产品信息                          |
+| PassProduct          | Object<AIEurailPASS> | 否   | 欧铁通票产品信息（ProductCategoryID=11时必填） |
+| PTPProduct           | Object<AIEurailPTP>  | 否   | 欧铁点到点产品信息（ProductCategoryID=10时必填） |
+| TravelProduct        | Array<AITravelProduct> | 否 | 旅游产品信息（ProductCategoryID=796时必填） |
+| Visa                 | Object<AIVisa>       | 否   | 签证产品信息（ProductCategoryID=5时必填） |
+
+2. AIPassenger
+| 参数名                | 类型         | 说明                                  |
+|---------------------|--------------|---------------------------------------|
+| PassengerCode        | string       | 乘客人员编码                          |
+| LastName             | string       | 姓                                    |
+| FirstName            | string       | 名                                    |
+| PassengerTypeCode    | string       | 旅客类型（ADT:成人，CHD:儿童，INF:婴儿） |
+| Birthday             | string(date-time) | 生日（格式：YYYY-MM-DD；非身份证必填，酒店含儿童必填） |
+| Gender               | string       | 性别（M:男，F:女）                    |
+| CertTypeCode         | string       | 证件类型（10:军人证，11:回乡证，12:台胞证，13:港澳通行证，ID:身份证，NI:其他，PP:护照，14:户口本，15:出生证明，16:士兵证） |
+| CertNr               | string       | 证件号码                              |
+| CertValid            | string(date-time) | 证件有效期（非身份证必填）            |
+| Nation               | string       | 国籍（国家二字码，默认CN）            |
+| CertIssue            | string       | 证件发行国家（国家二字码，默认CN）    |
+| Mobile               | string       | 手机号                                |
+| InsFQKey             | string       | 投保产品FQKey（有保险时必填）         |
+| TicketNo             | string       | 投保票号（航意险必填）                |
+| InsFlights           | Array<AIInsFlight> | 投保航班（航意险必填）              |
+
+3. EContactInfo（联系人信息）
+| 参数名  | 类型   | 必填 | 说明                  |
+|---------|--------|------|-----------------------|
+| Name    | string | 是   | 联系人姓名            |
+| Email   | string | 否   | 邮箱（联系方式必填其一）|
+| Mobile  | string | 是   | 手机号（联系方式必填其一）|
+
+4. AIAirTicket（机票产品）
+| 参数名    | 类型   | 必填 | 说明                                  |
+|-----------|--------|------|---------------------------------------|
+| FQKey     | string | 是   | FQKey（来自机票验价接口，必填）       |
+| ABFareId  | string | 否   | ABFareId（来自机票验价接口）          |
+| TripType  | integer| 否   | 行程类型                              |
+
+5. AIHotel（酒店产品）
+| 参数名          | 类型         | 必填 | 说明                                  |
+|-----------------|--------------|------|---------------------------------------|
+| FQKey           | string       | 是   | 对应酒店RateCode                      |
+| GuestRemarks    | string       | 否   | 客户备注                              |
+| CityCode        | string       | 否   | 城市Code                              |
+| CityName        | string       | 否   | 城市名称                              |
+| HotelName       | string       | 否   | 酒店名称                              |
+| CheckInDate     | string(date-time) | 是 | 入住日期（格式：yyyy-MM-dd）          |
+| CheckOutDate    | string(date-time) | 是 | 退房日期（格式：yyyy-MM-dd）          |
+
+6. AITrain（火车票产品）
+| 参数名              | 类型                | 必填 | 说明                                  |
+|---------------------|---------------------|------|---------------------------------------|
+| PlatformUserName    | string              | 否   | 12306账号（自购必填）                  |
+| PlatformPassword    | string              | 否   | 12306密码（自购必填）                  |
+| Legs                | Array<AITrainLeg>    | 否   | 行程FQKey列表（几个行程几条数据）      |
+
+7. AIInsurance（保险产品）
+| 参数名          | 类型         | 必填 | 说明                                  |
+|-----------------|--------------|------|---------------------------------------|
+| EffectiveEnd     | string(date-time) | 是 | 截止日期                              |
+| ProductCode      | string       | 否   | 供应商产品代码                        |
+| ProductName      | string       | 否   | 产品名                                |
+| PlanCode         | string       | 是   | 供应商计划代码                        |
+| DestnName        | string       | 否   | 目的地名称（旅游险必填，如：大连）    |
+
+8. AIVisa（签证产品）
+| 参数名          | 类型         | 必填 | 说明                                  |
+|-----------------|--------------|------|---------------------------------------|
+| ProductCode      | string       | 否   | 产品代码                              |
+| VisaName         | string       | 否   | 签证产品名                            |
+| CountryCode      | string       | 否   | 国家代码                              |
+| DepartureDate    | string(date-time) | 否 | 预计出行日期                          |
+
+9. AIBizPolicy（差旅政策）
+| 参数名              | 类型    | 必填 | 说明                                  |
+|---------------------|---------|------|---------------------------------------|
+| IsContrPolicy        | boolean | 否   | 是否违背差旅政策                      |
+| ContrReason          | string  | 否   | 违背政策原因                          |
+| ContrContent         | string  | 否   | 违背政策内容（多个用;隔开）            |
+| TravelPolicyID       | integer | 否   | 差旅政策ID                            |
+| TravelPurpose        | string  | 否   | 出差原因                              |
+| CostCenterID         | integer | 否   | 成本中心ID                            |
+| CostCenterInfo       | string  | 否   | 成本中心信息                          |
+
+10. AICostCenter（成本中心分摊）
+| 参数名              | 类型    | 必填 | 说明                                  |
+|---------------------|---------|------|---------------------------------------|
+| CostCenterID         | string  | 否   | 分摊成本中心ID                        |
+| CostCenterInfo       | string  | 否   | 分摊成本中心信息                      |
+| CurrencyID           | integer | 否   | 币种ID                                |
+| Amount               | number  | 否   | 分摊金额                              |
+| Percentage           | number  | 否   | 分摊百分比                            |
+
+11. AIShip（船票产品）
+| 参数名    | 类型   | 必填 | 说明          |
+|-----------|--------|------|-------------|
+| FQKey     | string | 否   | FQKey        |
+
+12. AIEurailPASS（欧铁通票）
+| 参数名          | 类型   | 必填 | 说明                                  |
+|-----------------|--------|------|---------------------------------------|
+| FQKey           | string | 否   | FQKey                                 |
+| ProductCode     | string | 否   | 产品代码                              |
+| ProductName     | string | 否   | 产品名称                              |
+| CabinClass      | string | 否   | 座位等级                              |
+| ValidDate       | string | 否   | 有效期                                |
+
+13. AIEurailPTP（欧铁点到点）
+| 参数名    | 类型                | 必填 | 说明                                  |
+|-----------|---------------------|------|---------------------------------------|
+| Legs      | Array<AIEurPTPLeg>   | 否   | 行程FQKey列表（几个行程几条数据）      |
+
+14. DeliveryInfo（配送信息）
+| 参数名              | 类型    | 必填 | 说明                                  |
+|---------------------|---------|------|---------------------------------------|
+| DeliveryMethodID     | integer | 否   | 配送方式（1:送货上门，2:上门取货，3:无需配送；默认3） |
+| DeliveryAddress      | string  | 否   | 配送地址                              |
+
+15. ExtraExpense（额外费用）
+| 参数名              | 类型    | 必填 | 说明                                  |
+|---------------------|---------|------|---------------------------------------|
+| ExtraFeeID           | integer | 是   | 额外费用项ID（1:快递费，2:服务费，3:保险费） |
+| ExtraFeeName         | string  | 否   | 额外费用项名称                        |
+| ExtraFee             | number  | 是   | 额外费用金额                          |
+| CurrencyID           | integer | 是   | 币种（默认4:人民币）                  |
+
+16. AIEurPTPLeg
+| 参数名          | 类型    | 必填 | 说明                                  |
+|-----------------|---------|------|---------------------------------------|
+| LegIndex        | integer | 否   | 行程顺序（1:第一程）                  |
+| TrainNr         | string  | 否   | 火车车次                              |
+| CabinClass      | string  | 否   | 座位等级                              |
+| FQKey           | string  | -    | FQKey                                 |
+
+17. AIInsFlight
+| 参数名          | 类型         | 必填 | 说明                                  |
+|-----------------|--------------|------|---------------------------------------|
+| Airline         | string       | 否   | 航司（如：CA）                        |
+| FlightNr        | string       | 否   | 航班号（如：1301）                    |
+| DepartureDate   | string(date-time) | 否 | 航班起飞时间                          |
+| DepartureCity   | string       | 否   | 出发地城市                            |
+| ArrivalCity     | string       | 否   | 到达地城市                            |
+
+18. AITrainLeg
+| 参数名          | 类型    | 必填 | 说明                                  |
+|-----------------|---------|------|---------------------------------------|
+| LegIndex        | integer | 否   | 行程顺序（1:第一程）                  |
+| TrainNr         | string  | 否   | 火车车次                              |
+| FQKey           | string  | 否   | 对应trainSeatDetails.FQKey            |
+
+19. AITravelProduct
+| 参数名                | 类型                | 必填 | 说明                                  |
+|---------------------|---------------------|------|---------------------------------------|
+| SaleModeID           | integer             | 否   | 销售模式（1:普通，2:秒杀，3:团购，4:预售；默认1） |
+| ProductTypeID        | integer             | 否   | 产品类型（1:主产品（1个），2:副产品（可多个）） |
+| ProductCombinations  | Array<AITravelProductCombo> | 否 | 产品组合列表                  |
+
+20. AITravelProductCombo
+| 参数名          | 类型         | 必填 | 说明                                  |
+|-----------------|--------------|------|---------------------------------------|
+| ProductCode     | string       | 否   | 产品代码                              |
+| ProductName     | string       | 否   | 产品名称                              |
+| SalesCode       | string       | 否   | 销售编码（与SaleModeID匹配）          |
+| TravelDate      | string(date-time) | 否 | 出发日期                              |
+| Qty             | integer      | 否   | 购买数量                              |
+
+#### 响应参数
+| 参数名        | 类型                | 必填 | 说明                                  |
+|---------------|---------------------|------|---------------------------------------|
+| Code          | integer             | 否   | 响应代码（0:成功，其他:失败）          |
+| Msg           | string              | 否   | 错误信息                              |
+| TradeNo       | string              | 否   | 交易单号                              |
+| Orders        | Array<AIProductRsp>  | 否   | 子产品单信息                          |
+
+#### 关联对象定义
+1. AIPassengerRsp
+| 参数名                | 类型   | 说明                                  |
+|---------------------|--------|---------------------------------------|
+| PassengerTypeCode    | string | 旅客类型                              |
+| PassengerName        | string | 旅客名称                              |
+| CertTypeCode         | string | 证件类型                              |
+| CertNr               | string | 证件号                                |
+
+2. AIProductRsp
+| 参数名                | 类型   | 必填 | 说明                                  |
+|---------------------|--------|------|---------------------------------------|
+| OrderNo              | string | 否   | 产品单短单号                          |
+| ProductCategoryID    | integer| 否   | 产品类型ID（2:酒店，8:国内机票，9:国际机票，4:保险，5:签证，10:欧铁点到点，11:欧铁通票，725:租车，796:旅游产品） |
+| PNR                  | string | 否   | PNR（为空表示订座失败）                |
+| PONr                 | string | 否   | 火车票产品时为空表示下单失败          |
+| OrderStatusID        | integer| 否   | 产品单状态（22:座位候补，23:座位确认） |
+| OrderStatusName      | string | 否   | 状态名                                |
+| Passengers           | Array<AIPassengerRsp> | 否 | 对应旅客                              |
+
+#### 使用示例
+1. 创建国内机票订单
+{
+  "SourceTypeID": 1,
+  "PaymentMethodID": 1,
+  "SettlementTypeID": 11,
+  "Products": [
+    {
+      "ProductCategoryID": 8,
+      "GDSCode": "1E",
+      "PublicAmount": 1200.00,
+      "PrivateAmount": 0,
+      "Air": {
+        "FQKey": "xxxxx_verification_key",
+        "TripType": 1
+      }
+    }
+  ],
+  "Passengers": [
+    {
+      "LastName": "张",
+      "FirstName": "三",
+      "PassengerTypeCode": "ADT",
+      "Gender": "M",
+      "CertTypeCode": "ID",
+      "CertNr": "110101199001011234",
+      "Mobile": "138001

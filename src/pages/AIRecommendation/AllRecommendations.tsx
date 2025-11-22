@@ -1,8 +1,8 @@
 // AI推荐方案总列表页面（显示所有历史推荐方案）
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Card, Table, Tag, Button, Space, message, Spin } from 'antd'
-import { EyeOutlined, RobotOutlined } from '@ant-design/icons'
+import { Card, Table, Tag, Button, Space, message, Spin, Empty } from 'antd'
+import { EyeOutlined, RobotOutlined, EnvironmentOutlined, CalendarOutlined, ThunderboltOutlined } from '@ant-design/icons'
 import { supabase } from '../../lib/supabase'
 import './AllRecommendations.css'
 
@@ -187,21 +187,109 @@ const AllRecommendations: React.FC = () => {
       <Card
         title={
           <Space>
-            <RobotOutlined style={{ fontSize: 20, color: '#1890ff' }} />
-            <span>AI推荐方案列表</span>
+            <RobotOutlined style={{ fontSize: 20, color: '#9333EA' }} />
+            <span className="navan-desktop-only">AI推荐方案列表</span>
+            <span className="navan-mobile-only">推荐方案</span>
           </Space>
         }
       >
-        <Table
-          columns={columns}
-          dataSource={recommendations}
-          rowKey="id"
-          loading={loading}
-          pagination={{
-            pageSize: 10,
-            showTotal: (total) => `共 ${total} 条记录`,
-          }}
-        />
+        {/* 移动端卡片列表 */}
+        <div className="mobile-cards-list">
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '40px 0' }}>
+              <Spin size="large" />
+            </div>
+          ) : recommendations.length === 0 ? (
+            <Empty description="暂无推荐方案" style={{ padding: '40px 0' }} />
+          ) : (
+            recommendations.map((rec) => (
+              <Card
+                key={rec.id}
+                className="mobile-record-card"
+                onClick={() => navigate(`/ai-recommendation/${rec.id}/list`)}
+              >
+                <div className="mobile-card-header">
+                  <div className="mobile-card-title-row">
+                    <span className="mobile-card-id">{rec.recommendation_no}</span>
+                    {getStatusTag(rec.status)}
+                  </div>
+                  <div className="mobile-card-route">
+                    {rec.origin} → {rec.destination}
+                  </div>
+                </div>
+                <div className="mobile-card-content">
+                  <div className="mobile-card-item">
+                    <CalendarOutlined className="mobile-card-icon" />
+                    <span className="item-label">出发日期:</span>
+                    <span className="item-value">{new Date(rec.departure_date).toLocaleDateString()}</span>
+                  </div>
+                  {rec.return_date && (
+                    <div className="mobile-card-item">
+                      <CalendarOutlined className="mobile-card-icon" />
+                      <span className="item-label">回程日期:</span>
+                      <span className="item-value">{new Date(rec.return_date).toLocaleDateString()}</span>
+                    </div>
+                  )}
+                  <div className="mobile-card-item">
+                    <ThunderboltOutlined className="mobile-card-icon" />
+                    <span className="item-label">产品:</span>
+                    <span className="item-value">
+                      <Space size={[0, 4]} wrap>
+                        {rec.products.map((p) => (
+                          <Tag key={p} style={{ margin: 0 }}>
+                            {getProductTypeName(p)}
+                          </Tag>
+                        ))}
+                      </Space>
+                    </span>
+                  </div>
+                  <div className="mobile-card-item">
+                    <RobotOutlined className="mobile-card-icon" />
+                    <span className="item-label">方案数量:</span>
+                    <span className="item-value">{rec.option_count || 0} 个方案</span>
+                  </div>
+                  <div className="mobile-card-item">
+                    <span className="item-label">来源:</span>
+                    <span className="item-value">
+                      {getSourceTag(rec.source, rec.source_type)}
+                    </span>
+                  </div>
+                </div>
+                <div className="mobile-card-footer">
+                  <Button
+                    type="link"
+                    icon={<EyeOutlined />}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      navigate(`/ai-recommendation/${rec.id}/list`)
+                    }}
+                    block
+                  >
+                    查看方案
+                  </Button>
+                </div>
+              </Card>
+            ))
+          )}
+        </div>
+
+        {/* PC端表格 */}
+        <div className="navan-desktop-only">
+          <div className="table-responsive-wrapper">
+            <Table
+              columns={columns}
+              dataSource={recommendations}
+              rowKey="id"
+              loading={loading}
+              scroll={{ x: 'max-content' }}
+              pagination={{
+                pageSize: 10,
+                showTotal: (total) => `共 ${total} 条记录`,
+                responsive: true,
+              }}
+            />
+          </div>
+        </div>
       </Card>
     </div>
   )

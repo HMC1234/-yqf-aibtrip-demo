@@ -136,7 +136,3 @@ jobs:
           else
             echo "🌐 COS地址: https://$BUCKET.cos-website.$REGION.myqcloud.com"
           fi
-<<<<<<< HEAD
-=======
-
->>>>>>> a356223 (feat: 娣诲姞鑵捐浜慍OS鑷姩閮ㄧ讲鏀寔)

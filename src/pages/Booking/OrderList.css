@@ -1,8 +1,380 @@
+/* Navan风格 - 订单列表页面 */
+
 .order-list {
-  /* 样式 */
+  min-height: calc(100vh - 80px);
+  background: var(--navan-gray-50);
 }
 
+.order-list .ant-card {
+  border-radius: var(--navan-radius-lg);
+  box-shadow: var(--navan-shadow-md);
+  border: 1px solid var(--navan-gray-200);
+  margin: var(--navan-space-8) auto;
+  max-width: 1400px;
+}
 
+.order-list .ant-card-head {
+  border-bottom: 1px solid var(--navan-gray-200);
+  padding: var(--navan-space-6) var(--navan-space-8);
+  background: var(--navan-white);
+}
 
+.order-list .ant-card-head-title {
+  font-size: var(--navan-h4);
+  font-weight: var(--navan-font-semibold);
+  color: var(--navan-gray-900);
+  display: flex;
+  align-items: center;
+  gap: var(--navan-space-3);
+}
 
+.order-list .ant-card-head-title .anticon {
+  color: var(--navan-accent);
+  font-size: 20px;
+}
 
+.order-list .ant-card-body {
+  padding: var(--navan-space-6) var(--navan-space-8);
+}
+
+/* Tabs样式 */
+.order-list .ant-tabs {
+  margin-bottom: var(--navan-space-6);
+}
+
+.order-list .ant-tabs-tab {
+  padding: var(--navan-space-3) var(--navan-space-5);
+  font-size: var(--navan-body);
+  font-weight: var(--navan-font-medium);
+  color: var(--navan-gray-600);
+  transition: color var(--navan-transition-fast);
+}
+
+.order-list .ant-tabs-tab:hover {
+  color: var(--navan-accent);
+}
+
+.order-list .ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: var(--navan-accent);
+  font-weight: var(--navan-font-semibold);
+}
+
+.order-list .ant-tabs-ink-bar {
+  background: var(--navan-accent);
+  height: 3px;
+}
+
+/* Table样式 */
+.order-list .ant-table {
+  background: var(--navan-white);
+  border-radius: var(--navan-radius-md);
+}
+
+.order-list .ant-table-thead > tr > th {
+  background: var(--navan-gray-50);
+  border-bottom: 2px solid var(--navan-gray-200);
+  font-size: var(--navan-body-small);
+  font-weight: var(--navan-font-semibold);
+  color: var(--navan-gray-700);
+  padding: 10px 16px;
+  height: 44px;
+}
+
+.order-list .ant-table-tbody > tr > td {
+  border-bottom: 1px solid var(--navan-gray-100);
+  padding: 12px 16px;
+  font-size: var(--navan-body);
+  color: var(--navan-gray-900);
+  height: 48px;
+  vertical-align: middle;
+}
+
+.order-list .ant-table-tbody > tr:hover > td {
+  background: var(--navan-gray-50);
+}
+
+.order-list .ant-table-tbody > tr > td:last-child {
+  text-align: right;
+}
+
+/* Tag样式 */
+.order-list .ant-tag {
+  margin: 0 4px 0 0;
+  padding: 2px 8px;
+  height: 22px;
+  line-height: 18px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 4px;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+.order-list .ant-tag.ant-tag-blue {
+  background: var(--navan-purple-light);
+  color: var(--navan-accent);
+}
+
+.order-list .ant-tag.ant-tag-green {
+  background: #D1FAE5;
+  color: #10B981;
+}
+
+.order-list .ant-tag.ant-tag-orange {
+  background: #FEF3C7;
+  color: #F59E0B;
+}
+
+.order-list .ant-tag.ant-tag-red {
+  background: #FEE2E2;
+  color: #EF4444;
+}
+
+/* 金额样式 */
+.order-amount {
+  font-size: var(--navan-h6);
+  font-weight: var(--navan-font-semibold);
+  color: var(--navan-accent);
+}
+
+.order-currency {
+  font-size: var(--navan-body-small);
+  color: var(--navan-gray-500);
+  margin-left: var(--navan-space-1);
+}
+
+/* Button样式 */
+.order-list .ant-btn-link {
+  color: var(--navan-accent);
+  font-size: var(--navan-body);
+  font-weight: var(--navan-font-medium);
+  padding: 0;
+  height: auto;
+  transition: color var(--navan-transition-fast);
+}
+
+.order-list .ant-btn-link:hover {
+  color: var(--navan-accent-hover);
+}
+
+.order-list .ant-btn-link .anticon {
+  margin-right: var(--navan-space-2);
+}
+
+/* 页码样式 */
+.order-list .ant-pagination {
+  margin-top: var(--navan-space-6);
+  text-align: right;
+}
+
+.order-list .ant-pagination .ant-pagination-item {
+  border-radius: var(--navan-radius-md);
+  border: 1px solid var(--navan-gray-300);
+}
+
+.order-list .ant-pagination .ant-pagination-item-active {
+  background: var(--navan-accent);
+  border-color: var(--navan-accent);
+}
+
+.order-list .ant-pagination .ant-pagination-item-active a {
+  color: var(--navan-white);
+}
+
+.order-list .ant-pagination .ant-pagination-item:hover {
+  border-color: var(--navan-accent);
+}
+
+.order-list .ant-pagination .ant-pagination-item:hover a {
+  color: var(--navan-accent);
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+  .order-list .ant-card {
+    margin: var(--navan-space-6) var(--navan-space-4);
+  }
+
+  .order-list .ant-card-head,
+  .order-list .ant-card-body {
+    padding: var(--navan-space-4) var(--navan-space-6);
+  }
+}
+
+@media (max-width: 768px) {
+  .order-list {
+    background: var(--navan-white);
+  }
+
+  .order-list .ant-card {
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
+    border-bottom: 1px solid var(--navan-gray-200);
+  }
+
+  .order-list .ant-card-head {
+    padding: var(--navan-space-4);
+  }
+
+  .order-list .ant-card-head-title {
+    font-size: var(--navan-h5);
+  }
+
+  .order-list .ant-card-body {
+    padding: var(--navan-space-4);
+  }
+
+  .order-list .ant-table {
+    font-size: var(--navan-body-small);
+  }
+
+  .order-list .ant-table-thead > tr > th,
+  .order-list .ant-table-tbody > tr > td {
+    padding: 8px 12px;
+    height: auto;
+  }
+
+  /* 移动端卡片列表样式 */
+  .mobile-cards-list {
+    display: block;
+  }
+  
+  .desktop-table-wrapper {
+    display: none;
+  }
+  
+  /* 移动端卡片样式 */
+  .mobile-record-card {
+    margin-bottom: var(--navan-space-4);
+    border-radius: var(--navan-radius-lg);
+    border: 1px solid var(--navan-gray-200);
+    box-shadow: var(--navan-shadow-sm);
+    cursor: pointer;
+    transition: all var(--navan-duration-normal) var(--navan-ease-out);
+    background: var(--navan-white);
+    overflow: hidden;
+  }
+  
+  .mobile-record-card:hover {
+    box-shadow: var(--navan-shadow-md);
+    transform: translateY(-2px);
+    border-color: var(--navan-purple-light);
+  }
+  
+  .mobile-card-header {
+    padding: var(--navan-space-4);
+    border-bottom: 1px solid var(--navan-gray-100);
+    background: var(--navan-gray-50);
+  }
+  
+  .mobile-card-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--navan-space-3);
+  }
+  
+  .mobile-card-id {
+    font-family: 'monospace';
+    font-size: var(--navan-body-small);
+    font-weight: var(--navan-font-semibold);
+    color: var(--navan-gray-900);
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .mobile-card-content {
+    padding: var(--navan-space-4);
+  }
+  
+  .mobile-card-info-row {
+    display: flex;
+    align-items: center;
+    gap: var(--navan-space-2);
+    margin-bottom: var(--navan-space-3);
+    flex-wrap: wrap;
+  }
+  
+  .mobile-card-info-row.mobile-card-highlight {
+    background: var(--navan-gray-50);
+    padding: var(--navan-space-3);
+    border-radius: var(--navan-radius-md);
+    margin: var(--navan-space-3) 0;
+  }
+  
+  .mobile-card-info-row:last-child {
+    margin-bottom: 0;
+  }
+  
+  .mobile-card-icon {
+    color: var(--navan-purple);
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  
+  .mobile-card-label {
+    font-size: var(--navan-body-small);
+    color: var(--navan-gray-500);
+    font-weight: var(--navan-font-medium);
+    min-width: 48px;
+    flex-shrink: 0;
+  }
+  
+  .mobile-card-value {
+    font-size: var(--navan-body-small);
+    color: var(--navan-gray-900);
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .mobile-card-footer {
+    padding: var(--navan-space-4);
+    border-top: 1px solid var(--navan-gray-100);
+    background: var(--navan-gray-50);
+  }
+  
+  .mobile-card-footer .ant-btn {
+    height: 44px;
+    border-radius: var(--navan-radius-md);
+    font-size: var(--navan-body);
+    font-weight: var(--navan-font-medium);
+  }
+  
+  /* 移动端固定悬浮按钮 */
+  .order-list .ant-card-extra {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 100;
+  }
+  
+  .order-list .ant-card-extra .ant-btn-primary {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    box-shadow: var(--navan-shadow-lg);
+    font-size: 24px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .order-list .ant-card-extra .ant-btn-primary .anticon {
+    display: none;
+  }
+  
+  .order-list .ant-card-extra .ant-btn-primary::before {
+    content: '+';
+    font-size: 28px;
+    line-height: 1;
+  }
+}

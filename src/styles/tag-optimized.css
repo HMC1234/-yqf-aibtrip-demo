@@ -1,0 +1,43 @@
+/* 统一的Tag标签样式优化 - 更紧凑、美观 */
+
+/* 所有表格中的Tag标签 */
+.ant-table .ant-tag,
+.ant-table-tbody .ant-tag,
+.ant-table-thead .ant-tag {
+  margin: 0;
+  padding: 2px 8px;
+  height: 22px;
+  line-height: 18px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 4px;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+/* 通用Tag样式（所有页面） */
+.ant-tag {
+  margin: 0 4px 0 0;
+  padding: 2px 8px;
+  height: 22px;
+  line-height: 18px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 4px;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
+/* 移除Ant Design默认的行高和内边距 */
+.ant-tag,
+.ant-tag-close-icon {
+  line-height: 1;
+}
+
+

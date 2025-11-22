@@ -1,9 +1,9 @@
-// 出差申请列表页面
+// 出差申请列表页面（支持移动端卡片布局）
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Table, Button, Tag, Space, Card, Tabs } from 'antd'
+import { Table, Button, Tag, Space, Card, Tabs, Empty, Spin } from 'antd'
 import type { TabsProps } from 'antd'
-import { FileTextOutlined, EyeOutlined } from '@ant-design/icons'
+import { FileTextOutlined, EyeOutlined, CalendarOutlined, EnvironmentOutlined } from '@ant-design/icons'
 import { supabase } from '../../lib/supabase'
 import { TravelRequest } from '../../types'
 import './RequestList.css'
@@ -65,6 +65,16 @@ const RequestList: React.FC = () => {
     return <Tag color={statusInfo.color}>{statusInfo.text}</Tag>
   }
 
+  const getProductTypeName = (type: string) => {
+    const map: Record<string, string> = {
+      flight: '机票',
+      hotel: '酒店',
+      train: '火车票',
+      car: '用车',
+    }
+    return map[type] || type
+  }
+
   const columns = [
     {
       title: '申请单号',
@@ -93,7 +103,7 @@ const RequestList: React.FC = () => {
       title: '回程日期',
       dataIndex: 'return_date',
       key: 'return_date',
-      render: (text: string) => new Date(text).toLocaleDateString(),
+      render: (text: string) => (text ? new Date(text).toLocaleDateString() : '-'),
     },
     {
       title: '产品',
@@ -103,9 +113,7 @@ const RequestList: React.FC = () => {
         <Space>
           {products.map((p) => (
             <Tag key={p}>
-              {p === 'flight' ? '机票' :
-               p === 'hotel' ? '酒店' :
-               p === 'train' ? '火车票' : '用车'}
+              {getProductTypeName(p)}
             </Tag>
           ))}
         </Space>
@@ -147,6 +155,7 @@ const RequestList: React.FC = () => {
           <Button
             type="primary"
             onClick={() => navigate('/travel-request/new')}
+            className="navan-desktop-only"
           >
             提交新申请
           </Button>
@@ -156,22 +165,104 @@ const RequestList: React.FC = () => {
           activeKey={activeTab}
           items={tabItems}
           onChange={setActiveTab}
-        >
-        </Tabs>
-        <Table
-          columns={columns}
-          dataSource={requests}
-          rowKey="id"
-          loading={loading}
-          pagination={{
-            pageSize: 10,
-            showTotal: (total) => `共 ${total} 条记录`,
-          }}
         />
+        
+        {/* 移动端卡片列表 */}
+        <div className="mobile-cards-list">
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '40px 0' }}>
+              <Spin size="large" />
+            </div>
+          ) : requests.length === 0 ? (
+            <Empty description="暂无申请记录" style={{ padding: '40px 0' }} />
+          ) : (
+            requests.map((request) => (
+              <Card
+                key={request.id}
+                className="mobile-record-card"
+                onClick={() => navigate(`/travel-request/${request.id}`)}
+              >
+                <div className="mobile-card-header">
+                  <div className="mobile-card-title-row">
+                    <span className="mobile-card-id">{request.request_no}</span>
+                    {getStatusTag(request.status)}
+                  </div>
+                </div>
+                
+                <div className="mobile-card-content">
+                  <div className="mobile-card-info-row">
+                    <EnvironmentOutlined className="mobile-card-icon" />
+                    <span className="mobile-card-label">行程：</span>
+                    <span className="mobile-card-value">
+                      {request.origin} → {request.destination}
+                    </span>
+                  </div>
+                  
+                  <div className="mobile-card-info-row">
+                    <CalendarOutlined className="mobile-card-icon" />
+                    <span className="mobile-card-label">出发：</span>
+                    <span className="mobile-card-value">
+                      {new Date(request.departure_date).toLocaleDateString()}
+                    </span>
+                    {request.return_date && (
+                      <>
+                        <span className="mobile-card-label" style={{ marginLeft: 12 }}>回程：</span>
+                        <span className="mobile-card-value">
+                          {new Date(request.return_date).toLocaleDateString()}
+                        </span>
+                      </>
+                    )}
+                  </div>
+                  
+                  <div className="mobile-card-info-row">
+                    <FileTextOutlined className="mobile-card-icon" />
+                    <span className="mobile-card-label">产品：</span>
+                    <Space wrap size={[4, 4]}>
+                      {request.products.map((p) => (
+                        <Tag key={p} style={{ margin: 0 }}>
+                          {getProductTypeName(p)}
+                        </Tag>
+                      ))}
+                    </Space>
+                  </div>
+                </div>
+                
+                <div className="mobile-card-footer">
+                  <Button
+                    type="primary"
+                    block
+                    icon={<EyeOutlined />}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      navigate(`/travel-request/${request.id}`)
+                    }}
+                  >
+                    查看详情
+                  </Button>
+                </div>
+              </Card>
+            ))
+          )}
+        </div>
+
+        {/* 桌面端表格 */}
+        <div className="desktop-table-wrapper">
+          <Table
+            columns={columns}
+            dataSource={requests}
+            rowKey="id"
+            loading={loading}
+            scroll={{ x: 'max-content' }}
+            pagination={{
+              pageSize: 10,
+              showTotal: (total) => `共 ${total} 条记录`,
+              responsive: true,
+            }}
+          />
+        </div>
       </Card>
     </div>
   )
 }
 
 export default RequestList
-
