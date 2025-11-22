@@ -32,48 +32,19 @@ jobs:
         env:
           CI: false
 
-      - name: Setup Python for coscmd
+      - name: Setup Python for Tencent COS SDK
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
 
-      - name: Install coscmd
+      - name: Install Tencent COS Python SDK
         run: |
-          pip install coscmd
+          pip install cos-python-sdk-v5
 
-      - name: Configure coscmd
+      - name: Deploy to Tencent COS using Python SDK
         env:
           SECRET_ID: ${{ secrets.TENCENT_SECRET_ID }}
           SECRET_KEY: ${{ secrets.TENCENT_SECRET_KEY }}
-          BUCKET: ${{ secrets.TENCENT_BUCKET || env.BUCKET }}
-          REGION: ${{ secrets.TENCENT_REGION || env.REGION }}
-        run: |
-          echo "配置coscmd..."
-          echo "存储桶: $BUCKET"
-          echo "地域: $REGION"
-          
-          if [ -z "$SECRET_ID" ] || [ -z "$SECRET_KEY" ]; then
-            echo "❌ 错误: SecretId或SecretKey未配置"
-            echo "请检查GitHub Secrets: TENCENT_SECRET_ID 和 TENCENT_SECRET_KEY"
-            exit 1
-          fi
-          
-          echo "开始配置coscmd..."
-          coscmd config -a "$SECRET_ID" -s "$SECRET_KEY" -b "$BUCKET" -r "$REGION"
-          
-          if [ $? -ne 0 ]; then
-            echo "❌ coscmd配置失败"
-            echo "可能的原因："
-            echo "1. SecretId或SecretKey错误"
-            echo "2. 存储桶名称或地域错误"
-            echo "3. 密钥权限不足"
-            exit 1
-          fi
-          
-          echo "✅ coscmd配置成功"
-
-      - name: Deploy to Tencent COS
-        env:
           BUCKET: ${{ secrets.TENCENT_BUCKET || env.BUCKET }}
           REGION: ${{ secrets.TENCENT_REGION || env.REGION }}
         run: |
@@ -93,34 +64,138 @@ jobs:
             exit 1
           fi
           
-          # 先上传index.html（不设置header，避免coscmd的bug）
-          echo "上传index.html..."
-          coscmd upload build/index.html /index.html
-          
+          # 使用Python SDK上传文件
+          python3 << 'PYTHON_SCRIPT'
+import os
+import sys
+from pathlib import Path
+from qcloud_cos import CosConfig
+from qcloud_cos import CosS3Client
+
+secret_id = os.environ.get('SECRET_ID')
+secret_key = os.environ.get('SECRET_KEY')
+region = os.environ.get('REGION', 'ap-guangzhou')
+bucket = os.environ.get('BUCKET')
+
+if not secret_id or not secret_key:
+    print("❌ 错误: SecretId或SecretKey未配置")
+    sys.exit(1)
+
+print(f"配置COS客户端...")
+print(f"存储桶: {bucket}")
+print(f"地域: {region}")
+
+try:
+    config = CosConfig(Region=region, SecretId=secret_id, SecretKey=secret_key)
+    client = CosS3Client(config)
+    print("✅ COS客户端配置成功")
+except Exception as e:
+    print(f"❌ COS客户端配置失败: {e}")
+    sys.exit(1)
+
+# 上传index.html（设置不缓存策略）
+print("上传index.html...")
+try:
+    response = client.upload_file(
+        Bucket=bucket,
+        LocalFilePath='build/index.html',
+        Key='index.html',
+        Metadata={
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Content-Type': 'text/html; charset=utf-8'
+        }
+    )
+    print(f"✅ index.html上传成功")
+except Exception as e:
+    print(f"❌ index.html上传失败: {e}")
+    sys.exit(1)
+
+# 上传static目录下的所有文件
+static_dir = Path('build/static')
+if static_dir.exists():
+    print("上传static目录...")
+    uploaded = 0
+    failed = 0
+    
+    for file_path in static_dir.rglob('*'):
+        if file_path.is_file():
+            relative_path = file_path.relative_to(Path('build'))
+            key = str(relative_path).replace('\\', '/')
+            
+            # 根据文件扩展名设置Content-Type
+            content_type_map = {
+                '.js': 'application/javascript',
+                '.css': 'text/css',
+                '.json': 'application/json',
+                '.png': 'image/png',
+                '.jpg': 'image/jpeg',
+                '.jpeg': 'image/jpeg',
+                '.gif': 'image/gif',
+                '.svg': 'image/svg+xml',
+                '.woff': 'font/woff',
+                '.woff2': 'font/woff2',
+                '.ttf': 'font/ttf',
+                '.eot': 'application/vnd.ms-fontobject',
+                '.map': 'application/json',
+            }
+            
+            ext = file_path.suffix.lower()
+            content_type = content_type_map.get(ext, 'application/octet-stream')
+            
+            # 对于JS/CSS等静态资源，设置较长的缓存时间
+            cache_control = 'public, max-age=31536000' if ext in ['.js', '.css', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.woff', '.woff2'] else 'public, max-age=3600'
+            
+            try:
+                response = client.upload_file(
+                    Bucket=bucket,
+                    LocalFilePath=str(file_path),
+                    Key=key,
+                    Metadata={
+                        'Content-Type': content_type,
+                        'Cache-Control': cache_control
+                    }
+                )
+                uploaded += 1
+                if uploaded % 10 == 0:
+                    print(f"  已上传 {uploaded} 个文件...")
+            except Exception as e:
+                print(f"  ❌ {key} 上传失败: {e}")
+                failed += 1
+    
+    print(f"✅ static目录上传完成: 成功 {uploaded} 个, 失败 {failed} 个")
+    
+    if failed > 0:
+        print(f"⚠️  有 {failed} 个文件上传失败")
+        sys.exit(1)
+else:
+    print("⚠️  static目录不存在，跳过")
+
+# 上传asset-manifest.json（如果有）
+manifest_path = Path('build/asset-manifest.json')
+if manifest_path.exists():
+    print("上传asset-manifest.json...")
+    try:
+        response = client.upload_file(
+            Bucket=bucket,
+            LocalFilePath=str(manifest_path),
+            Key='asset-manifest.json',
+            Metadata={
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-cache'
+            }
+        )
+        print("✅ asset-manifest.json上传成功")
+    except Exception as e:
+        print(f"⚠️  asset-manifest.json上传失败: {e}")
+
+print("✅ 所有文件上传成功")
+print("✅ 部署完成！")
+PYTHON_SCRIPT
+
           if [ $? -ne 0 ]; then
-            echo "❌ index.html上传失败"
+            echo "❌ 部署失败"
             exit 1
           fi
-          
-          echo "✅ index.html上传成功"
-          
-          # 上传static目录和其他文件
-          echo "上传static目录和其他文件..."
-          coscmd upload -rs build/static /static
-          
-          if [ $? -ne 0 ]; then
-            echo "❌ static目录上传失败"
-            exit 1
-          fi
-          
-          # 上传asset-manifest.json（如果有）
-          if [ -f "build/asset-manifest.json" ]; then
-            echo "上传asset-manifest.json..."
-            coscmd upload build/asset-manifest.json /asset-manifest.json
-          fi
-          
-          echo "✅ 所有文件上传成功"
-          echo "✅ 部署完成！"
           
       - name: Deployment Summary
         env:
