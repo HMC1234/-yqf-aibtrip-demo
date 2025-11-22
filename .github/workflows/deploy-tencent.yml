@@ -74,8 +74,8 @@ from pathlib import Path
 from qcloud_cos import CosConfig
 from qcloud_cos import CosS3Client
 
-          secret_id = os.environ.get('SECRET_ID') or os.environ.get('TENCENT_SECRET_ID')
-          secret_key = os.environ.get('SECRET_KEY') or os.environ.get('TENCENT_SECRET_KEY')
+secret_id = os.environ.get('SECRET_ID') or os.environ.get('TENCENT_SECRET_ID')
+secret_key = os.environ.get('SECRET_KEY') or os.environ.get('TENCENT_SECRET_KEY')
 region = os.environ.get('REGION', 'ap-guangzhou')
 bucket = os.environ.get('BUCKET')
 
