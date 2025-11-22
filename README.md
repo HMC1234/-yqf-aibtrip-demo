@@ -2,6 +2,8 @@
 
 ## 🚀 快速开始
 
+<!-- Trigger deployment -->
+
 ### 方式1：一键启动（推荐）
 
 **Windows用户**：
