@@ -45,10 +45,27 @@ export class YQFClient {
       config.version = '2.0'
     }
     
-    // 直接使用配置的baseUrl，不使用代理
-    // 确保baseUrl是完整的API地址
-    if (config.baseUrl && !config.baseUrl.startsWith('http')) {
-      // 如果baseUrl不是完整URL，则使用默认地址
+    // 在开发环境中，如果直接调用外部API会遇到CORS问题
+    // 自动使用代理路径来绕过CORS限制
+    if (typeof window !== 'undefined') {
+      const isLocalhost = window.location.hostname === 'localhost' || 
+                         window.location.hostname === '127.0.0.1' ||
+                         window.location.hostname === '[::1]'
+      const isOriginalApiUrl = config.baseUrl === 'https://bizapi.yiqifei.cn/servings' ||
+                               (config.baseUrl && config.baseUrl.includes('bizapi.yiqifei.cn'))
+      
+      // 在开发环境中，如果baseUrl是原始API地址，则使用代理路径
+      if (isLocalhost && isOriginalApiUrl && process.env.NODE_ENV === 'development') {
+        config.baseUrl = '/api/yqf'
+        if (process.env.NODE_ENV === 'development') {
+          console.log('🔄 [开发环境] 自动使用代理路径绕过CORS限制:', config.baseUrl)
+        }
+      }
+    }
+    
+    // 确保baseUrl是完整的API地址（如果不是代理路径）
+    if (config.baseUrl && !config.baseUrl.startsWith('http') && !config.baseUrl.startsWith('/')) {
+      // 如果baseUrl不是完整URL也不是代理路径，则使用默认地址
       config.baseUrl = 'https://bizapi.yiqifei.cn/servings'
     }
     
@@ -99,16 +116,23 @@ export class YQFClient {
     
     // 调试日志：显示实际构建的URL和参数
     if (process.env.NODE_ENV === 'development') {
+      const isProxy = url.startsWith('/api/yqf')
       console.log('🔍 [API调用] 配置信息:', {
         基础地址: config.baseUrl,
         appKey: config.appKey,
         version: config.version,
         接口方法: method,
+        使用代理: isProxy ? '是（开发环境自动启用）' : '否',
       })
       console.log('🔍 [API调用] 系统级参数:', systemParams)
       console.log('🔍 [API调用] 查询参数对象:', queryParams)
       console.log('🔍 [API调用] 完整请求URL:', url)
-      console.log('✅ [API调用] 直接调用:', url)
+      if (isProxy) {
+        console.log('🔄 [API调用] 通过代理调用（开发环境）:', url)
+        console.log('   → 代理目标: https://bizapi.yiqifei.cn/servings')
+      } else {
+        console.log('✅ [API调用] 直接调用:', url)
+      }
     }
 
     // 准备业务参数（JSON格式）
