@@ -8,7 +8,7 @@ on:
 
 env:
   REGION: ap-guangzhou
-  BUCKET: yqf-aibtrip-demo
+  BUCKET: yqf-aibtrip-demo-1387623418
 
 jobs:
   build-and-deploy:
