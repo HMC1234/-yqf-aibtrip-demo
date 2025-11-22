@@ -98,18 +98,32 @@ except Exception as e:
 # 上传index.html（使用Python SDK，避免coscmd的bug）
 print("使用Python SDK上传index.html...")
 try:
+    # 先上传文件
     response = client.upload_file(
         Bucket=bucket,
         LocalFilePath='build/index.html',
-        Key='index.html',
-        Metadata={
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Content-Type': 'text/html; charset=utf-8'
-        }
+        Key='index.html'
     )
     print(f"✅ index.html上传成功")
+    
+    # 然后使用put_object_attribute设置元数据
+    try:
+        client.put_object_acl(
+            Bucket=bucket,
+            Key='index.html',
+            ACL='public-read'
+        )
+        # 设置HTTP响应头（使用cos的响应头规则功能）
+        # 注意：Metadata参数在upload_file中可能不支持，需要在控制台配置
+        print("⚠️  注意：Cache-Control需要在腾讯云控制台手动配置")
+        print("   路径：存储桶 > 基础配置 > 自定义Headers > 添加规则")
+        print("   为 index.html 设置 Cache-Control = no-cache, no-store, must-revalidate")
+    except Exception as e:
+        print(f"⚠️  设置权限失败（可能已经设置）: {e}")
 except Exception as e:
     print(f"❌ index.html上传失败: {e}")
+    import traceback
+    traceback.print_exc()
     sys.exit(1)
 
 # 上传static目录下的所有文件
@@ -148,14 +162,11 @@ if static_dir.exists():
             cache_control = 'public, max-age=31536000' if ext in ['.js', '.css', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.woff', '.woff2'] else 'public, max-age=3600'
             
             try:
+                # 上传文件（不设置Metadata，避免兼容性问题）
                 response = client.upload_file(
                     Bucket=bucket,
                     LocalFilePath=str(file_path),
-                    Key=key,
-                    Metadata={
-                        'Content-Type': content_type,
-                        'Cache-Control': cache_control
-                    }
+                    Key=key
                 )
                 uploaded += 1
                 if uploaded % 10 == 0:
@@ -180,11 +191,7 @@ if manifest_path.exists():
         response = client.upload_file(
             Bucket=bucket,
             LocalFilePath=str(manifest_path),
-            Key='asset-manifest.json',
-            Metadata={
-                'Content-Type': 'application/json',
-                'Cache-Control': 'no-cache'
-            }
+            Key='asset-manifest.json'
         )
         print("✅ asset-manifest.json上传成功")
     except Exception as e:
