@@ -40,14 +40,28 @@ jobs:
           TENCENT_SECRET_KEY: ${{ secrets.TENCENT_SECRET_KEY }}
           TCB_ENV_ID: ${{ secrets.TENCENT_CLOUDBASE_ENV_ID || env.ENV_ID }}
         run: |
-          # 使用环境变量方式登录（新版本 CLI 推荐方式）
-          tcb login --apiKeyId ${{ secrets.TENCENT_SECRET_ID }} --apiKey ${{ secrets.TENCENT_SECRET_KEY }}
+          # CloudBase CLI 2.10+ 使用环境变量方式认证（非交互式）
+          # 设置环境变量后，CLI 会自动使用这些凭证，无需显式登录
+          export TENCENT_SECRET_ID=$TENCENT_SECRET_ID
+          export TENCENT_SECRET_KEY=$TENCENT_SECRET_KEY
           
-          # 如果上面的命令失败，尝试使用交互式登录的环境变量方式
-          # export TENCENT_SECRET_ID=${{ secrets.TENCENT_SECRET_ID }}
-          # export TENCENT_SECRET_KEY=${{ secrets.TENCENT_SECRET_KEY }}
+          # 验证 CLI 版本
+          echo "CloudBase CLI 版本:"
+          tcb -v
+          
+          # 检查环境ID
+          if [ -z "$TCB_ENV_ID" ] || [ "$TCB_ENV_ID" = "your-env-id" ]; then
+            echo "❌ 错误: 环境ID未配置或使用默认值"
+            echo "请在 GitHub Secrets 中设置 TENCENT_CLOUDBASE_ENV_ID"
+            exit 1
+          fi
+          
+          echo "环境ID: $TCB_ENV_ID"
+          echo ""
           
           # 部署到 CloudBase Hosting
+          # 新版本 CLI 支持环境变量认证，无需显式登录
+          echo "开始部署到 CloudBase Hosting..."
           tcb hosting deploy build -e $TCB_ENV_ID
           
       - name: Deployment Summary
