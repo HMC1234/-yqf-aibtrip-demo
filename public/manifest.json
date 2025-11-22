@@ -1,0 +1,54 @@
+{
+  "short_name": "一起飞商旅",
+  "name": "一起飞智能商旅管理系统",
+  "description": "智能出差申请、AI推荐预订、订单管理",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#9333EA",
+  "background_color": "#FFFFFF",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "shortcuts": [
+    {
+      "name": "出差申请",
+      "short_name": "申请",
+      "description": "创建新的出差申请",
+      "url": "/travel-request/new",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "AI预订",
+      "short_name": "AI预订",
+      "description": "使用AI智能预订",
+      "url": "/ai-booking",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "我的订单",
+      "short_name": "订单",
+      "description": "查看我的订单",
+      "url": "/booking/orders",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}
+
