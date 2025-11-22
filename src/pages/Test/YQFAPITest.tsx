@@ -196,14 +196,12 @@ const YQFAPITest: React.FC = () => {
         })
       }
 
-      // 检查是否使用代理
-      const isUsingProxy = currentConfig.baseUrl.startsWith('/api/yqf')
       console.log('🔍 [航班查询] 准备调用API:', {
         基础地址: currentConfig.baseUrl,
         接口方法: 'ShoppingServer.EasyShopping_V2',
         完整URL: `${currentConfig.baseUrl}?version=2.0&app_key=${currentConfig.appKey}&method=ShoppingServer.EasyShopping_V2`,
         查询参数: params,
-        调用方式: isUsingProxy ? '通过代理（开发环境）' : '直接调用',
+        调用方式: '直接调用API',
       })
 
       const response = await FlightAPI.searchFlights(params)
@@ -379,26 +377,12 @@ const YQFAPITest: React.FC = () => {
                         name="baseUrl"
                         rules={[
                           { required: true, message: '请输入API地址' },
-                          {
-                            validator: (_, value) => {
-                              if (!value) {
-                                return Promise.resolve()
-                              }
-                              const trimmed = value.trim()
-                              if (!trimmed.includes('bizapi.yiqifei.cn/servings')) {
-                                return Promise.reject(new Error('航班查询必须使用 https://bizapi.yiqifei.cn/servings'))
-                              }
-                              return Promise.resolve()
-                            },
-                          },
                         ]}
                         initialValue="https://bizapi.yiqifei.cn/servings"
-                        tooltip="航班查询接口地址：https://bizapi.yiqifei.cn/servings（开发环境会自动通过代理转发）"
+                        tooltip="根据文档，直接使用API地址：https://bizapi.yiqifei.cn/servings"
                       >
                         <Input 
-                          placeholder="https://bizapi.yiqifei.cn/servings" 
-                          readOnly
-                          style={{ background: '#f5f5f5', cursor: 'not-allowed' }}
+                          placeholder="https://bizapi.yiqifei.cn/servings 或 /api/yqf（代理）"
                         />
                       </Form.Item>
                     </Col>
@@ -555,9 +539,9 @@ const YQFAPITest: React.FC = () => {
                   form={searchForm} 
                   layout="vertical"
                   initialValues={{
-                    origin: '北京',
-                    destination: '上海',
-                    departureDate: dayjs('2025-12-01'),
+                    origin: '广州',  // 默认出发地：广州
+                    destination: '北京',  // 默认目的地：北京
+                    departureDate: dayjs('2025-12-01'),  // 默认出发日期：2025年12月1日
                     passengerType: 'ADT',
                     flightType: 'D',
                     berthType: 'Y',

@@ -10,23 +10,101 @@ import {
   message,
   Spin,
   Divider,
+  Modal,
 } from 'antd'
-import { RobotOutlined, ShoppingOutlined, ArrowLeftOutlined, EnvironmentOutlined, CalendarOutlined, FileTextOutlined } from '@ant-design/icons'
+import { RobotOutlined, ShoppingOutlined, ArrowLeftOutlined, EnvironmentOutlined, CalendarOutlined, FileTextOutlined, CheckCircleOutlined } from '@ant-design/icons'
 import { supabase } from '../../lib/supabase'
 import { TravelRequest } from '../../types'
+import { useAuthStore } from '../../store/authStore'
 import './RequestDetail.css'
 
 const RequestDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const { user } = useAuthStore()
   const [request, setRequest] = useState<TravelRequest | null>(null)
   const [loading, setLoading] = useState(true)
+  const [canApprove, setCanApprove] = useState<boolean>(false)
+  const [approving, setApproving] = useState<boolean>(false)
 
   useEffect(() => {
     if (id) {
       loadRequest(id)
+      loadUserApprovalPermission()
     }
   }, [id])
+
+  const loadUserApprovalPermission = async () => {
+    try {
+      const { data: { user: authUser } } = await supabase.auth.getUser()
+      if (!authUser) {
+        console.warn('未找到认证用户')
+        return
+      }
+
+      console.log('正在加载用户审批权限，用户ID:', authUser.id)
+
+      const { data, error } = await supabase
+        .from('users')
+        .select('can_approve')
+        .eq('id', authUser.id)
+        .single()
+
+      if (error) {
+        console.error('加载审批权限失败:', error)
+        // 如果字段不存在，错误可能是 "column \"can_approve\" does not exist"
+        if (error.message?.includes('can_approve')) {
+          console.error('提示：can_approve 字段可能不存在，请先执行数据库迁移脚本')
+        }
+      } else if (data) {
+        const hasPermission = data.can_approve !== false // 默认true
+        console.log('用户审批权限加载成功:', { can_approve: data.can_approve, hasPermission })
+        setCanApprove(hasPermission)
+      } else {
+        console.warn('未找到用户数据')
+      }
+    } catch (error) {
+      console.error('加载审批权限失败:', error)
+    }
+  }
+
+  const handleApprove = async () => {
+    if (!request) return
+
+    Modal.confirm({
+      title: '确认审批',
+      content: `确定要审批出差申请单 ${request.request_no} 吗？`,
+      okText: '确定审批',
+      cancelText: '取消',
+      onOk: async () => {
+        setApproving(true)
+        try {
+          const { data: { user: authUser } } = await supabase.auth.getUser()
+          if (!authUser) {
+            message.error('用户未登录')
+            return
+          }
+
+          const { error } = await supabase
+            .from('travel_requests')
+            .update({ status: 'approved' })
+            .eq('id', request.id)
+
+          if (error) {
+            message.error('审批失败：' + error.message)
+          } else {
+            message.success('审批成功')
+            // 重新加载申请单
+            await loadRequest(request.id)
+          }
+        } catch (error: any) {
+          message.error('审批失败：' + error.message)
+        } finally {
+          setApproving(false)
+        }
+      },
+    })
+  }
 
   const loadRequest = async (requestId: string) => {
     setLoading(true)
@@ -115,7 +193,27 @@ const RequestDetail: React.FC = () => {
         <div className="mobile-detail-header">
           <div className="mobile-detail-title-row">
             <span className="mobile-detail-id">{request.request_no}</span>
-            {getStatusTag(request.status)}
+            <Space>
+              {getStatusTag(request.status)}
+              {canApprove && request.status === 'pending' && (
+                <Button
+                  type="link"
+                  size="small"
+                  icon={<CheckCircleOutlined />}
+                  loading={approving}
+                  onClick={handleApprove}
+                  className="approve-btn"
+                  style={{ 
+                    padding: '0 8px',
+                    height: 'auto',
+                    fontSize: '12px',
+                    lineHeight: '1.5'
+                  }}
+                >
+                  审批
+                </Button>
+              )}
+            </Space>
           </div>
           <div className="mobile-detail-subtitle">出差申请单详情</div>
         </div>
@@ -244,7 +342,29 @@ const RequestDetail: React.FC = () => {
       <Card
         className="desktop-detail-card"
         title={`申请单详情 - ${request.request_no}`}
-        extra={getStatusTag(request.status)}
+        extra={
+          <Space>
+            {getStatusTag(request.status)}
+            {canApprove && request.status === 'pending' && (
+              <Button
+                type="link"
+                size="small"
+                icon={<CheckCircleOutlined />}
+                loading={approving}
+                onClick={handleApprove}
+                className="approve-btn"
+                style={{ 
+                  padding: '0 8px',
+                  height: 'auto',
+                  fontSize: '12px',
+                  lineHeight: '1.5'
+                }}
+              >
+                审批
+              </Button>
+            )}
+          </Space>
+        }
       >
         <Descriptions column={2} bordered>
           <Descriptions.Item label="申请单号">

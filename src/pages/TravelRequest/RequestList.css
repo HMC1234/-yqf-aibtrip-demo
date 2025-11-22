@@ -217,6 +217,35 @@
   font-weight: var(--navan-font-medium);
 }
 
+/* 审批按钮样式 */
+.request-list .approve-btn {
+  padding: 0 8px !important;
+  height: auto !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+  color: var(--navan-purple) !important;
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  transition: all var(--navan-duration-normal) var(--navan-ease-out) !important;
+}
+
+.request-list .approve-btn:hover {
+  color: var(--navan-purple-dark) !important;
+  background: var(--navan-purple-light) !important;
+}
+
+.request-list .approve-btn .anticon {
+  font-size: 12px !important;
+}
+
+.request-list .approve-btn.ant-btn-loading {
+  opacity: 0.6;
+}
+
 /* Tag样式 */
 .request-list .ant-tag {
   margin: 0;

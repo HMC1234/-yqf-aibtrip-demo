@@ -45,13 +45,10 @@ export class YQFClient {
       config.version = '2.0'
     }
     
-    // 根据文档，直接调用API地址即可，不需要代理
-    // 如果API服务器支持CORS，可以直接调用
-    // 如果遇到CORS错误，可以在测试页面配置使用代理
-    
-    // 确保baseUrl是完整的API地址（如果不是代理路径）
-    if (config.baseUrl && !config.baseUrl.startsWith('http') && !config.baseUrl.startsWith('/')) {
-      // 如果baseUrl不是完整URL也不是代理路径，则使用默认地址
+    // 根据文档，直接调用API地址，不使用代理
+    // 确保baseUrl是完整的API地址
+    if (!config.baseUrl || !config.baseUrl.startsWith('http')) {
+      // 如果baseUrl不是完整URL，则使用默认地址
       config.baseUrl = 'https://bizapi.yiqifei.cn/servings'
     }
     
@@ -102,23 +99,16 @@ export class YQFClient {
     
     // 调试日志：显示实际构建的URL和参数
     if (process.env.NODE_ENV === 'development') {
-      const isProxy = url.startsWith('/api/yqf')
       console.log('🔍 [API调用] 配置信息:', {
         基础地址: config.baseUrl,
         appKey: config.appKey,
         version: config.version,
         接口方法: method,
-        使用代理: isProxy ? '是（开发环境自动启用）' : '否',
       })
       console.log('🔍 [API调用] 系统级参数:', systemParams)
       console.log('🔍 [API调用] 查询参数对象:', queryParams)
       console.log('🔍 [API调用] 完整请求URL:', url)
-      if (isProxy) {
-        console.log('🔄 [API调用] 通过代理调用（开发环境）:', url)
-        console.log('   → 代理目标: https://bizapi.yiqifei.cn/servings')
-      } else {
-        console.log('✅ [API调用] 直接调用:', url)
-      }
+      console.log('✅ [API调用] 直接调用API:', url)
     }
 
     // 准备业务参数（JSON格式）
@@ -141,7 +131,22 @@ export class YQFClient {
       // 检查HTTP状态
       if (!response.ok) {
         const errorText = await response.text().catch(() => '无法读取错误信息')
-        throw new Error(`HTTP错误: ${response.status} ${response.statusText}。响应内容: ${errorText.substring(0, 200)}`)
+        let errorMessage = `HTTP错误: ${response.status} ${response.statusText}`
+        
+        if (errorText) {
+          errorMessage += `。响应内容: ${errorText.substring(0, 500)}`
+        }
+        
+        // 如果是404错误，提供更详细的诊断信息
+        if (response.status === 404) {
+          errorMessage += '\n\n💡 诊断：直接调用API返回404，可能的原因：'
+          errorMessage += '\n   1. API地址或路径不正确'
+          errorMessage += '\n   2. 请求URL: ' + url
+          errorMessage += '\n   3. 请检查API地址是否正确：https://bizapi.yiqifei.cn/servings'
+          errorMessage += '\n   4. 请检查系统级参数是否正确（version=2.0, app_key, method）'
+        }
+        
+        throw new Error(errorMessage)
       }
 
       // 解析响应（响应是JSON格式，不需要解密）
@@ -161,9 +166,9 @@ export class YQFClient {
           ? '网络请求失败。可能的原因：1) API服务器不可达 2) CORS跨域问题 3) 网络连接问题。'
           : `网络错误: ${error.message}`
         
-        // 如果是CORS错误，提供解决方案提示
+        // 如果是CORS错误，说明API服务器不支持跨域请求
         if (error.message.includes('Failed to fetch') || error.message.includes('CORS')) {
-          errorMsg += '\n\n💡 提示：如果遇到CORS跨域问题，可以在测试页面的"配置"标签页中，将API Base URL设置为 "/api/yqf" 来使用代理服务器。'
+          errorMsg += '\n\n💡 提示：这是浏览器的CORS跨域限制。如果API服务器不支持CORS，需要联系API提供商配置CORS策略，或者使用后端代理。'
         }
         
         throw new Error(errorMsg)

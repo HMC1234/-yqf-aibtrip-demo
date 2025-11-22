@@ -166,6 +166,35 @@
   border-bottom: none;
 }
 
+/* 审批按钮样式 */
+.request-detail .approve-btn {
+  padding: 0 8px !important;
+  height: auto !important;
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+  color: var(--navan-purple) !important;
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  transition: all var(--navan-duration-normal) var(--navan-ease-out) !important;
+}
+
+.request-detail .approve-btn:hover {
+  color: var(--navan-purple-dark) !important;
+  background: var(--navan-purple-light) !important;
+}
+
+.request-detail .approve-btn .anticon {
+  font-size: 12px !important;
+}
+
+.request-detail .approve-btn.ant-btn-loading {
+  opacity: 0.6;
+}
+
 /* Tag样式 */
 .request-detail .ant-tag {
   margin: 0;

@@ -10,6 +10,7 @@ export interface User {
   company_id?: string
   department_id?: string
   cost_center_id?: string
+  can_approve?: boolean // 是否可以审批出差申请单权限：true=有权限，false=无权限
 }
 
 // 出差申请单类型

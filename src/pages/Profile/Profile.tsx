@@ -1,10 +1,10 @@
 // 个人信息页面（支持移动端优化布局）
 import React, { useEffect, useState } from 'react'
-import { Card, Descriptions, Button, Space, Tabs, Table, Tag, message, Spin, Radio, Alert, Empty, Divider } from 'antd'
+import { Card, Descriptions, Button, Space, Tabs, Table, Tag, message, Spin, Radio, Alert, Empty, Divider, Switch } from 'antd'
 import { 
   UserOutlined, EditOutlined, BgColorsOutlined, MailOutlined, PhoneOutlined, 
   EnvironmentOutlined, CalendarOutlined, FileTextOutlined, DollarOutlined, 
-  ShoppingOutlined, EyeOutlined 
+  ShoppingOutlined, EyeOutlined, CheckCircleOutlined
 } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../../lib/supabase'
@@ -49,6 +49,8 @@ const Profile: React.FC = () => {
   const [loading, setLoading] = useState(true)
   const [requestsLoading, setRequestsLoading] = useState(false)
   const [ordersLoading, setOrdersLoading] = useState(false)
+  const [updatingApprovalPermission, setUpdatingApprovalPermission] = useState(false)
+  const [canApprove, setCanApprove] = useState<boolean>(true) // 默认有权限
 
   const handleThemeChange = (theme: UITheme) => {
     setTheme(theme)
@@ -67,7 +69,12 @@ const Profile: React.FC = () => {
   const loadUserData = async () => {
     try {
       const { data: { user: authUser } } = await supabase.auth.getUser()
-      if (!authUser) return
+      if (!authUser) {
+        console.warn('未找到认证用户')
+        return
+      }
+
+      console.log('正在加载用户数据，用户ID:', authUser.id)
 
       const { data, error } = await supabase
         .from('users')
@@ -76,14 +83,71 @@ const Profile: React.FC = () => {
         .single()
 
       if (error) {
-        message.error('加载用户信息失败：' + error.message)
-      } else {
+        console.error('加载用户信息失败:', error)
+        // 如果错误是因为字段不存在，给出提示
+        if (error.message?.includes('can_approve')) {
+          message.error('加载用户信息失败：can_approve 字段不存在，请先执行数据库迁移脚本')
+        } else {
+          message.error('加载用户信息失败：' + error.message)
+        }
+      } else if (data) {
+        console.log('用户数据加载成功:', { 
+          email: data.email, 
+          can_approve: data.can_approve,
+          hasCanApprove: 'can_approve' in data
+        })
         setUserData(data)
+        // 设置审批权限状态，确保即使字段不存在也使用默认值
+        const hasPermission = data.can_approve !== false // 如果为null或undefined，默认为true
+        setCanApprove(hasPermission)
+        // 更新authStore中的用户信息，确保can_approve字段同步
+        const { setUser } = useAuthStore.getState()
+        setUser({ ...user, ...data } as any)
+      } else {
+        console.warn('未找到用户数据')
       }
     } catch (error: any) {
+      console.error('加载用户信息异常:', error)
       message.error('加载用户信息失败：' + error.message)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleApprovalPermissionChange = async (checked: boolean) => {
+    setUpdatingApprovalPermission(true)
+    try {
+      const { data: { user: authUser } } = await supabase.auth.getUser()
+      if (!authUser) {
+        message.error('用户未登录')
+        return
+      }
+
+      const { error } = await supabase
+        .from('users')
+        .update({ can_approve: checked })
+        .eq('id', authUser.id)
+
+      if (error) {
+        console.error('更新审批权限失败:', error)
+        message.error('更新审批权限失败：' + error.message)
+        // 如果更新失败，恢复原来的状态
+        setCanApprove(!checked)
+      } else {
+        console.log('审批权限更新成功:', { checked })
+        message.success(`审批权限已${checked ? '开启' : '关闭'}`)
+        // 更新本地状态
+        setCanApprove(checked)
+        // 重新加载用户数据
+        await loadUserData()
+      }
+    } catch (error: any) {
+      console.error('更新审批权限异常:', error)
+      message.error('更新审批权限失败：' + error.message)
+      // 恢复原来的状态
+      setCanApprove(!checked)
+    } finally {
+      setUpdatingApprovalPermission(false)
     }
   }
 
@@ -395,6 +459,28 @@ const Profile: React.FC = () => {
                     </div>
                   </>
                 )}
+
+                {/* 审批权限设置（移动端）- 始终显示 */}
+                <Divider style={{ margin: '12px 0' }} />
+                <div className="mobile-profile-info-item">
+                  <CheckCircleOutlined className="mobile-profile-icon" />
+                  <div className="mobile-profile-info-content" style={{ flex: 1 }}>
+                    <div className="mobile-profile-info-label">审批权限</div>
+                    <div className="mobile-profile-info-value" style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <Switch
+                        checked={userData?.can_approve !== false && canApprove} // 使用状态变量，默认true
+                        onChange={handleApprovalPermissionChange}
+                        disabled={updatingApprovalPermission || !userData}
+                        checkedChildren="有"
+                        unCheckedChildren="无"
+                        style={{ flexShrink: 0 }}
+                      />
+                      <span style={{ fontSize: 14, color: '#666' }}>
+                        {(userData?.can_approve !== false && canApprove) ? '有权限审批出差申请单' : '无审批权限'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -424,6 +510,20 @@ const Profile: React.FC = () => {
                 </Descriptions.Item>
                 <Descriptions.Item label="注册时间">
                   {userData?.created_at ? new Date(userData.created_at).toLocaleString() : '-'}
+                </Descriptions.Item>
+                <Descriptions.Item label="审批权限">
+                  <Space>
+                    <Switch
+                      checked={userData?.can_approve !== false && canApprove} // 使用状态变量，默认true
+                      onChange={handleApprovalPermissionChange}
+                      disabled={updatingApprovalPermission || !userData}
+                      checkedChildren="有"
+                      unCheckedChildren="无"
+                    />
+                    <span style={{ color: '#666' }}>
+                      {(userData?.can_approve !== false && canApprove) ? '有权限审批出差申请单' : '无审批权限'}
+                    </span>
+                  </Space>
                 </Descriptions.Item>
               </Descriptions>
             </div>
