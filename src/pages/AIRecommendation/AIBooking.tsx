@@ -36,14 +36,15 @@ const AIBooking: React.FC<AIBookingProps> = ({ defaultTab = 'chat' }) => {
   const handleTabChange = (key: string) => {
     // 类型检查，确保key是有效的tab值
     if (key === 'chat' || key === 'recommendations' || key === 'approved-requests') {
-      setActiveTab(key)
-      // 根据key更新路由
-      if (key === 'chat') {
-        navigate('/ai-booking/chat', { replace: true })
-      } else if (key === 'recommendations') {
-        navigate('/ai-booking/recommendations', { replace: true })
-      } else if (key === 'approved-requests') {
-        navigate('/ai-booking/approved-requests', { replace: true })
+      // 防止重复导航
+      const currentPath = location.pathname
+      const targetPath = key === 'chat' ? '/ai-booking/chat' 
+                     : key === 'recommendations' ? '/ai-booking/recommendations'
+                     : '/ai-booking/approved-requests'
+      
+      if (currentPath !== targetPath) {
+        setActiveTab(key)
+        navigate(targetPath, { replace: true })
       }
     }
   }

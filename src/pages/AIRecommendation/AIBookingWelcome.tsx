@@ -1,6 +1,6 @@
 // AI预订欢迎/选择页面 - 过渡页面
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { Card, Button, Space } from 'antd'
 import {
   RobotOutlined,
@@ -13,6 +13,7 @@ import './AIBookingWelcome.css'
 
 const AIBookingWelcome: React.FC = () => {
   const navigate = useNavigate()
+  const location = useLocation()
 
   const options = [
     {
@@ -48,7 +49,10 @@ const AIBookingWelcome: React.FC = () => {
   ]
 
   const handleSelect = (route: string) => {
-    navigate(route)
+    // 防止重复导航
+    if (location.pathname !== route) {
+      navigate(route)
+    }
   }
 
   return (

@@ -196,12 +196,14 @@ const YQFAPITest: React.FC = () => {
         })
       }
 
+      // 检查是否使用代理
+      const isUsingProxy = currentConfig.baseUrl.startsWith('/api/yqf')
       console.log('🔍 [航班查询] 准备调用API:', {
         基础地址: currentConfig.baseUrl,
         接口方法: 'ShoppingServer.EasyShopping_V2',
         完整URL: `${currentConfig.baseUrl}?version=2.0&app_key=${currentConfig.appKey}&method=ShoppingServer.EasyShopping_V2`,
         查询参数: params,
-        调用方式: '直接调用（不使用代理）',
+        调用方式: isUsingProxy ? '通过代理（开发环境）' : '直接调用',
       })
 
       const response = await FlightAPI.searchFlights(params)

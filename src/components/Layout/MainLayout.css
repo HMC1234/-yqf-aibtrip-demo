@@ -82,8 +82,19 @@
   text-decoration: none;
   transition: color 0.3s ease;
   cursor: pointer;
-  padding: 8px 0;
+  padding: 8px 16px;
   position: relative;
+  background: none;
+  border: none;
+  font-family: inherit;
+  /* 触摸友好：最小高度44px */
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* 移除移动端点击高亮 */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .header-nav-item:hover {
@@ -238,6 +249,17 @@
   transition: all var(--navan-duration-normal) var(--navan-ease-out);
   border-left: 3px solid transparent;
   cursor: pointer;
+  background: none;
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
+  border-left: 3px solid transparent;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  font-size: inherit;
+  min-height: 44px; /* 触摸友好 */
+  -webkit-tap-highlight-color: transparent; /* 移除移动端点击高亮 */
 }
 
 .mobile-nav-item:hover {

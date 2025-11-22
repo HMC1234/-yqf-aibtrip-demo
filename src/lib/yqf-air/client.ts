@@ -55,11 +55,12 @@ export class YQFClient {
                                (config.baseUrl && config.baseUrl.includes('bizapi.yiqifei.cn'))
       
       // 在开发环境中，如果baseUrl是原始API地址，则使用代理路径
-      if (isLocalhost && isOriginalApiUrl && process.env.NODE_ENV === 'development') {
+      // 注意：在浏览器中，process.env.NODE_ENV 是编译时替换的，所以这里直接检查localhost
+      if (isLocalhost && isOriginalApiUrl) {
         config.baseUrl = '/api/yqf'
-        if (process.env.NODE_ENV === 'development') {
-          console.log('🔄 [开发环境] 自动使用代理路径绕过CORS限制:', config.baseUrl)
-        }
+        console.log('🔄 [开发环境] 自动使用代理路径绕过CORS限制:', config.baseUrl)
+        console.log('   → 原始地址:', 'https://bizapi.yiqifei.cn/servings')
+        console.log('   → 代理路径:', config.baseUrl)
       }
     }
     

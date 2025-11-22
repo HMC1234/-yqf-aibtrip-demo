@@ -1,0 +1,474 @@
+/* PWA移动端全面优化修复 */
+
+/* ===== 全局移动端优化 ===== */
+
+/* 防止移动端点击时出现高亮 */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+/* 移动端滚动优化 */
+html {
+  -webkit-overflow-scrolling: touch;
+  overflow-scrolling: touch;
+}
+
+body {
+  -webkit-overflow-scrolling: touch;
+  overflow-scrolling: touch;
+  /* 防止移动端下拉刷新导致的页面偏移 */
+  overscroll-behavior-y: none;
+  /* 防止移动端左右滑动切换标签页 */
+  overscroll-behavior-x: none;
+}
+
+/* ===== 触摸友好的按钮和链接 ===== */
+
+/* 确保所有可点击元素最小尺寸为44x44px（Apple HIG标准） */
+button,
+a,
+[role="button"],
+.ant-btn,
+.ant-menu-item,
+.ant-card,
+.clickable {
+  min-height: 44px;
+  min-width: 44px;
+  /* 增加触摸区域 */
+  padding: 8px 16px;
+}
+
+/* 小按钮在移动端也需要足够的触摸区域 */
+.ant-btn-sm {
+  min-height: 36px;
+  padding: 6px 12px;
+}
+
+/* 移动端按钮文字可读性 */
+@media (max-width: 768px) {
+  .ant-btn {
+    font-size: 16px; /* 防止iOS自动缩放 */
+    line-height: 1.5;
+  }
+
+  /* 全宽按钮在移动端 */
+  .ant-btn-block {
+    width: 100%;
+    height: 48px;
+    font-size: 16px;
+  }
+}
+
+/* ===== 表单优化 ===== */
+
+/* 移动端输入框防止自动缩放 */
+@media (max-width: 768px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important; /* 防止iOS自动缩放 */
+  }
+
+  .ant-input,
+  .ant-select-selector,
+  .ant-picker-input input {
+    font-size: 16px !important;
+    height: 44px; /* 触摸友好高度 */
+  }
+
+  .ant-form-item {
+    margin-bottom: 20px;
+  }
+}
+
+/* ===== 导航和菜单优化 ===== */
+
+/* 移动端导航项确保可点击 */
+.mobile-nav-item,
+.header-nav-item {
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+/* 移动端抽屉菜单优化 */
+.mobile-drawer :global(.ant-drawer-body) {
+  padding-bottom: 20px;
+  max-height: calc(100vh - 64px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 移动端菜单项增加间距，避免误触 */
+@media (max-width: 768px) {
+  .mobile-nav-item {
+    margin-bottom: 4px;
+    min-height: 52px;
+    padding: 14px 20px;
+  }
+}
+
+/* ===== 卡片和列表优化 ===== */
+
+/* 移动端卡片点击区域优化 */
+@media (max-width: 768px) {
+  .ant-card {
+    border-radius: 12px;
+    margin-bottom: 16px;
+    /* 增加卡片内边距，提升可读性 */
+    padding: 16px;
+  }
+
+  .ant-card-body {
+    padding: 16px;
+  }
+
+  /* 卡片标题文字大小 */
+  .ant-card-head-title {
+    font-size: 16px;
+    font-weight: 600;
+  }
+}
+
+/* 移动端列表项优化 */
+.mobile-record-card,
+.mobile-order-card {
+  /* 确保卡片可点击区域足够大 */
+  min-height: 100px;
+  padding: 16px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  /* 移除默认的卡片阴影，在移动端更清爽 */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  /* 防止选中文字 */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.mobile-record-card:active,
+.mobile-order-card:active {
+  transform: scale(0.98);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== 表格优化 ===== */
+
+/* 移动端表格横向滚动优化 */
+@media (max-width: 768px) {
+  .table-responsive-wrapper {
+    position: relative;
+    /* 添加渐变提示可以滚动 */
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    /* 隐藏滚动条但保持功能 */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+  }
+
+  .table-responsive-wrapper::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .table-responsive-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+  }
+
+  /* 表格最小宽度确保内容完整显示 */
+  .table-responsive-wrapper .ant-table {
+    min-width: 800px;
+  }
+
+  /* 表格单元格优化 */
+  .ant-table td,
+  .ant-table th {
+    padding: 12px 8px;
+    white-space: nowrap;
+  }
+}
+
+/* ===== 分页优化 ===== */
+
+/* 移动端分页按钮优化 */
+@media (max-width: 768px) {
+  .ant-pagination {
+    margin: 20px 0;
+    text-align: center;
+  }
+
+  .ant-pagination-item {
+    min-width: 36px;
+    min-height: 36px;
+    line-height: 34px;
+  }
+
+  /* 隐藏不必要的分页信息 */
+  .ant-pagination-options {
+    display: none;
+  }
+
+  /* 分页输入框优化 */
+  .ant-pagination-options-quick-jumper {
+    display: none;
+  }
+}
+
+/* ===== 标签页（Tabs）优化 ===== */
+
+/* 移动端标签页横向滚动 */
+@media (max-width: 768px) {
+  .ant-tabs {
+    /* 允许横向滚动 */
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    /* 隐藏滚动条 */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .ant-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ant-tabs-nav {
+    /* 标签页导航可以滚动 */
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    /* 防止换行 */
+    white-space: nowrap;
+    /* 添加左右padding，让第一个和最后一个标签更好看 */
+    padding: 0 16px;
+  }
+
+  .ant-tabs-tab {
+    /* 标签最小宽度 */
+    min-width: 80px;
+    padding: 12px 20px;
+    /* 不换行 */
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .ant-tabs-tab-btn {
+    font-size: 14px;
+  }
+}
+
+/* ===== Modal和Drawer优化 ===== */
+
+/* 移动端Modal全屏显示 */
+@media (max-width: 768px) {
+  .ant-modal {
+    max-width: 100% !important;
+    top: 0 !important;
+    padding-bottom: 0 !important;
+    margin: 0 !important;
+  }
+
+  .ant-modal-content {
+    border-radius: 0 !important;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .ant-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px;
+  }
+
+  .ant-modal-header {
+    border-radius: 0;
+    padding: 16px;
+  }
+
+  .ant-modal-footer {
+    padding: 12px 16px;
+    border-top: 1px solid var(--navan-gray-200);
+  }
+}
+
+/* 移动端Drawer优化 */
+@media (max-width: 768px) {
+  .ant-drawer-content-wrapper {
+    width: 85% !important;
+    max-width: 320px;
+  }
+}
+
+/* ===== 下拉菜单优化 ===== */
+
+/* 移动端下拉菜单优化 */
+@media (max-width: 768px) {
+  .ant-dropdown-menu {
+    /* 菜单项高度优化 */
+    padding: 8px 0;
+  }
+
+  .ant-dropdown-menu-item {
+    min-height: 44px;
+    padding: 12px 20px;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+}
+
+/* ===== 消息提示优化 ===== */
+
+/* 移动端消息提示位置优化 */
+@media (max-width: 768px) {
+  .ant-message {
+    top: 20px !important;
+    left: 16px !important;
+    right: 16px !important;
+    width: auto !important;
+  }
+
+  .ant-notification {
+    top: 20px !important;
+    right: 16px !important;
+    left: 16px !important;
+    width: auto !important;
+    max-width: calc(100% - 32px);
+  }
+}
+
+/* ===== 内容区域优化 ===== */
+
+/* 移动端内容区域padding优化 */
+@media (max-width: 768px) {
+  .layout-content {
+    /* 确保内容不会被固定头部遮挡 */
+    padding-top: 0;
+    /* 底部留出安全区域（针对iPhone等有底部指示器的设备） */
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* 页面容器padding */
+  .page-container {
+    padding: 16px;
+  }
+}
+
+/* ===== 加载状态优化 ===== */
+
+/* 移动端加载状态 */
+@media (max-width: 768px) {
+  .ant-spin {
+    padding: 40px 0;
+  }
+
+  .ant-skeleton {
+    padding: 16px;
+  }
+}
+
+/* ===== 空状态优化 ===== */
+
+/* 移动端空状态优化 */
+@media (max-width: 768px) {
+  .ant-empty {
+    padding: 40px 16px;
+  }
+
+  .ant-empty-image {
+    margin-bottom: 16px;
+  }
+
+  .ant-empty-description {
+    font-size: 14px;
+    color: var(--navan-gray-600);
+  }
+}
+
+/* ===== 固定头部优化 ===== */
+
+/* 确保固定头部在移动端正常工作 */
+.layout-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  /* 在iOS上保持固定 */
+  position: -webkit-sticky;
+}
+
+/* ===== 文本选择和复制优化 ===== */
+
+/* 移动端允许文本选择（对于需要复制的文本） */
+.selectable-text {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+/* 防止不必要的文本选择 */
+.no-select {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* ===== 图片优化 ===== */
+
+/* 移动端图片自适应 */
+@media (max-width: 768px) {
+  img {
+    max-width: 100%;
+    height: auto;
+    /* 防止图片加载时的布局闪烁 */
+    display: block;
+  }
+}
+
+/* ===== 安全区域适配（iPhone X等） ===== */
+
+/* iPhone X等设备的安全区域适配 */
+@supports (padding: max(0px)) {
+  .layout-content {
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
+
+  .layout-header {
+    padding-top: max(0px, env(safe-area-inset-top));
+  }
+}
+
+/* ===== 性能优化 ===== */
+
+/* 移动端动画性能优化 */
+@media (max-width: 768px) {
+  * {
+    /* 使用GPU加速 */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    /* 优化重绘 */
+    will-change: transform;
+  }
+
+  /* 减少不必要的动画 */
+  .ant-card,
+  .mobile-record-card,
+  .mobile-order-card {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+}
+
+/* ===== 路由跳转优化 ===== */
+
+/* 防止移动端路由跳转时的闪烁 */
+.page-container {
+  min-height: calc(100vh - 64px);
+  /* 平滑滚动到顶部 */
+  scroll-behavior: smooth;
+}
+
+/* 移动端页面切换时的滚动位置重置 */
+@media (max-width: 768px) {
+  .page-container {
+    /* 重置滚动位置 */
+    scroll-top: 0;
+  }
+}
+

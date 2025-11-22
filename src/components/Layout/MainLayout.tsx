@@ -32,7 +32,10 @@ const MainLayout: React.FC = () => {
   ]
 
   const handleNavClick = (key: string) => {
-    navigate(key)
+    // 防止重复导航到相同路径
+    if (location.pathname !== key) {
+      navigate(key)
+    }
     setMobileMenuOpen(false) // 关闭移动端菜单
   }
 
@@ -77,15 +80,16 @@ const MainLayout: React.FC = () => {
           {/* 导航菜单（居中，PC端显示） */}
           <nav className="header-nav">
             {navItems.map((item) => (
-              <a
+              <button
                 key={item.key}
+                type="button"
                 className={`header-nav-item ${
                   location.pathname === item.key ? 'active' : ''
                 }`}
                 onClick={() => handleNavClick(item.key)}
               >
                 {item.label}
-              </a>
+              </button>
             ))}
           </nav>
 
@@ -135,16 +139,18 @@ const MainLayout: React.FC = () => {
       >
         <nav className="mobile-nav">
           {navItems.map((item) => (
-            <a
+            <button
               key={item.key}
+              type="button"
               className={`mobile-nav-item ${
-                location.pathname === item.key ? 'active' : ''
+                location.pathname === item.key || 
+                (item.key === '/dashboard' && location.pathname === '/') ? 'active' : ''
               }`}
               onClick={() => handleNavClick(item.key)}
             >
               <span className="mobile-nav-icon">{item.icon}</span>
               <span className="mobile-nav-label">{item.label}</span>
-            </a>
+            </button>
           ))}
         </nav>
 
