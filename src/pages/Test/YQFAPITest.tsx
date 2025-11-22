@@ -198,8 +198,8 @@ const YQFAPITest: React.FC = () => {
 
       console.log('🔍 [航班查询] 准备调用API:', {
         基础地址: currentConfig.baseUrl,
-        接口方法: 'BizApi.OpenAPI.Shopping.EasyShopping_V2',
-        完整URL: `${currentConfig.baseUrl}?app_key=${currentConfig.appKey}&method=BizApi.OpenAPI.Shopping.EasyShopping_V2`,
+        接口方法: 'ShoppingServer.EasyShopping_V2',
+        完整URL: `${currentConfig.baseUrl}?version=2.0&app_key=${currentConfig.appKey}&method=ShoppingServer.EasyShopping_V2`,
         查询参数: params,
         调用方式: '直接调用（不使用代理）',
       })

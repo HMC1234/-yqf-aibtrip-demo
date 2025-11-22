@@ -57,7 +57,7 @@ export class YQFClient {
 
   /**
    * 调用API接口
-   * @param method 接口方法名（如：BizApi.OpenAPI.Shopping.EasyShopping_V2）
+   * @param method 接口方法名（如：ShoppingServer.EasyShopping_V2）
    * @param params 业务参数（会被加密）
    * @returns API响应
    */
