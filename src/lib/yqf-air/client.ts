@@ -45,24 +45,9 @@ export class YQFClient {
       config.version = '2.0'
     }
     
-    // 在开发环境中，如果直接调用外部API会遇到CORS问题
-    // 自动使用代理路径来绕过CORS限制
-    if (typeof window !== 'undefined') {
-      const isLocalhost = window.location.hostname === 'localhost' || 
-                         window.location.hostname === '127.0.0.1' ||
-                         window.location.hostname === '[::1]'
-      const isOriginalApiUrl = config.baseUrl === 'https://bizapi.yiqifei.cn/servings' ||
-                               (config.baseUrl && config.baseUrl.includes('bizapi.yiqifei.cn'))
-      
-      // 在开发环境中，如果baseUrl是原始API地址，则使用代理路径
-      // 注意：在浏览器中，process.env.NODE_ENV 是编译时替换的，所以这里直接检查localhost
-      if (isLocalhost && isOriginalApiUrl) {
-        config.baseUrl = '/api/yqf'
-        console.log('🔄 [开发环境] 自动使用代理路径绕过CORS限制:', config.baseUrl)
-        console.log('   → 原始地址:', 'https://bizapi.yiqifei.cn/servings')
-        console.log('   → 代理路径:', config.baseUrl)
-      }
-    }
+    // 根据文档，直接调用API地址即可，不需要代理
+    // 如果API服务器支持CORS，可以直接调用
+    // 如果遇到CORS错误，可以在测试页面配置使用代理
     
     // 确保baseUrl是完整的API地址（如果不是代理路径）
     if (config.baseUrl && !config.baseUrl.startsWith('http') && !config.baseUrl.startsWith('/')) {
@@ -172,9 +157,15 @@ export class YQFClient {
       // 处理不同类型的错误
       if (error.name === 'TypeError' && error.message.includes('fetch')) {
         // 网络错误或CORS错误
-        const errorMsg = error.message.includes('Failed to fetch') 
-          ? '网络请求失败。可能的原因：1) API服务器不可达 2) CORS跨域问题 3) 网络连接问题。请检查API地址是否正确，或联系API提供商确认CORS配置。'
+        let errorMsg = error.message.includes('Failed to fetch') 
+          ? '网络请求失败。可能的原因：1) API服务器不可达 2) CORS跨域问题 3) 网络连接问题。'
           : `网络错误: ${error.message}`
+        
+        // 如果是CORS错误，提供解决方案提示
+        if (error.message.includes('Failed to fetch') || error.message.includes('CORS')) {
+          errorMsg += '\n\n💡 提示：如果遇到CORS跨域问题，可以在测试页面的"配置"标签页中，将API Base URL设置为 "/api/yqf" 来使用代理服务器。'
+        }
+        
         throw new Error(errorMsg)
       }
       
