@@ -138,31 +138,8 @@ if static_dir.exists():
             relative_path = file_path.relative_to(Path('build'))
             key = str(relative_path).replace('\\', '/')
             
-            # 根据文件扩展名设置Content-Type
-            content_type_map = {
-                '.js': 'application/javascript',
-                '.css': 'text/css',
-                '.json': 'application/json',
-                '.png': 'image/png',
-                '.jpg': 'image/jpeg',
-                '.jpeg': 'image/jpeg',
-                '.gif': 'image/gif',
-                '.svg': 'image/svg+xml',
-                '.woff': 'font/woff',
-                '.woff2': 'font/woff2',
-                '.ttf': 'font/ttf',
-                '.eot': 'application/vnd.ms-fontobject',
-                '.map': 'application/json',
-            }
-            
-            ext = file_path.suffix.lower()
-            content_type = content_type_map.get(ext, 'application/octet-stream')
-            
-            # 对于JS/CSS等静态资源，设置较长的缓存时间
-            cache_control = 'public, max-age=31536000' if ext in ['.js', '.css', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.woff', '.woff2'] else 'public, max-age=3600'
-            
             try:
-                # 上传文件（不设置Metadata，避免兼容性问题）
+                # 上传文件（使用最简单的参数，避免兼容性问题）
                 response = client.upload_file(
                     Bucket=bucket,
                     LocalFilePath=str(file_path),
