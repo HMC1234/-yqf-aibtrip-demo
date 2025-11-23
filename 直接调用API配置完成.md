@@ -98,3 +98,4 @@ https://bizapi.yiqifei.cn/servings?version=2.0&app_key=xxx&method=ShoppingServer
 
 现在代码完全按照文档要求，直接调用API接口，不使用任何代理。
 
+

@@ -32,17 +32,18 @@ const RequestDetail: React.FC = () => {
       loadRequest(id)
       loadUserApprovalPermission()
     }
-  }, [id])
+  }, [id, user]) // 添加 user 依赖
 
   const loadUserApprovalPermission = async () => {
     try {
       const { data: { user: authUser } } = await supabase.auth.getUser()
       if (!authUser) {
-        console.warn('未找到认证用户')
+        console.warn('⚠️ 未找到认证用户')
+        setCanApprove(false)
         return
       }
 
-      console.log('正在加载用户审批权限，用户ID:', authUser.id)
+      console.log('🔍 正在加载用户审批权限，用户ID:', authUser.id)
 
       const { data, error } = await supabase
         .from('users')
@@ -51,20 +52,31 @@ const RequestDetail: React.FC = () => {
         .single()
 
       if (error) {
-        console.error('加载审批权限失败:', error)
-        // 如果字段不存在，错误可能是 "column \"can_approve\" does not exist"
-        if (error.message?.includes('can_approve')) {
-          console.error('提示：can_approve 字段可能不存在，请先执行数据库迁移脚本')
+        console.error('❌ 加载审批权限失败:', error)
+        if (error.message?.includes('can_approve') || error.code === 'PGRST204') {
+          console.error('⚠️ 提示：can_approve 字段可能不存在！')
+          console.error('📝 请执行以下SQL脚本添加字段：')
+          console.error('   文件: 一键设置审批权限.sql')
+          console.warn('💡 临时设置 canApprove = true（字段不存在时）')
+          setCanApprove(true)
+        } else {
+          setCanApprove(false)
         }
       } else if (data) {
-        const hasPermission = data.can_approve !== false // 默认true
-        console.log('用户审批权限加载成功:', { can_approve: data.can_approve, hasPermission })
+        const hasPermission = data.can_approve !== false
+        console.log('✅ 用户审批权限加载成功:', { 
+          can_approve: data.can_approve, 
+          hasPermission 
+        })
         setCanApprove(hasPermission)
       } else {
-        console.warn('未找到用户数据')
+        console.warn('⚠️ 未找到用户数据，默认设置为有权限')
+        setCanApprove(true)
       }
-    } catch (error) {
-      console.error('加载审批权限失败:', error)
+    } catch (error: any) {
+      console.error('❌ 加载审批权限异常:', error)
+      console.warn('💡 异常情况下，临时设置 canApprove = true')
+      setCanApprove(true)
     }
   }
 

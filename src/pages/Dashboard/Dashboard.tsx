@@ -420,11 +420,17 @@ const Dashboard: React.FC = () => {
                     <div className="mobile-orders-list">
                       {paidNotTraveledOrders.slice(0, 5).map((order) => {
                         const statusInfo = getOrderStatusInfo(order)
+                        const handleCardClick = (e: React.MouseEvent) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          navigate(`/booking/orders/${order.id}`)
+                        }
+                        
                         return (
                           <Card
                             key={order.id}
                             className="mobile-order-card"
-                            onClick={() => navigate(`/booking/orders/${order.id}`)}
+                            onClick={handleCardClick}
                           >
                             <div className="mobile-order-card-header">
                               <div className="mobile-order-card-title-row">

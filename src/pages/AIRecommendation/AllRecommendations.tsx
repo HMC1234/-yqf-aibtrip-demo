@@ -202,11 +202,18 @@ const AllRecommendations: React.FC = () => {
           ) : recommendations.length === 0 ? (
             <Empty description="暂无推荐方案" style={{ padding: '40px 0' }} />
           ) : (
-            recommendations.map((rec) => (
+            recommendations.map((rec) => {
+              const handleCardClick = (e: React.MouseEvent) => {
+                e.preventDefault()
+                e.stopPropagation()
+                navigate(`/ai-recommendation/${rec.id}/list`)
+              }
+              
+              return (
               <Card
                 key={rec.id}
                 className="mobile-record-card"
-                onClick={() => navigate(`/ai-recommendation/${rec.id}/list`)}
+                onClick={handleCardClick}
               >
                 <div className="mobile-card-header">
                   <div className="mobile-card-title-row">
@@ -269,7 +276,8 @@ const AllRecommendations: React.FC = () => {
                   </Button>
                 </div>
               </Card>
-            ))
+              )
+            })
           )}
         </div>
 

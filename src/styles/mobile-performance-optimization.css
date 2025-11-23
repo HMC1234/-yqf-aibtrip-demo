@@ -1,0 +1,486 @@
+/* ============================================
+   移动端性能优化 CSS
+   解决滚动不顺畅、按钮响应慢、页面加载慢等问题
+   ============================================ */
+
+/* ===== 滚动性能优化 ===== */
+
+/* 全局滚动优化 - 使用硬件加速 */
+html {
+  /* 启用硬件加速滚动 */
+  -webkit-overflow-scrolling: touch;
+  overflow-scrolling: touch;
+  /* 优化滚动性能 */
+  scroll-behavior: smooth;
+  /* 防止滚动时的卡顿 */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+body {
+  /* 启用硬件加速滚动 */
+  -webkit-overflow-scrolling: touch;
+  overflow-scrolling: touch;
+  /* 防止下拉刷新 */
+  overscroll-behavior-y: none;
+  overscroll-behavior-x: none;
+  /* 优化性能 */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  /* 优化字体渲染 */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* 移动端滚动容器优化 */
+@media (max-width: 768px) {
+  /* 主内容区域滚动优化 */
+  #root {
+    /* 启用硬件加速 */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    /* 优化渲染 */
+    will-change: scroll-position;
+    /* 防止滚动时的重绘 */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+
+  /* 页面容器滚动优化 */
+  .page-container,
+  .layout-content {
+    /* 启用硬件加速滚动 */
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+    /* 优化性能 */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    /* 减少重绘 */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+
+  /* 卡片列表滚动优化 */
+  .mobile-cards-list,
+  .ant-card-body {
+    /* 启用硬件加速滚动 */
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+    /* 优化滚动性能 */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+
+  /* 抽屉菜单滚动优化 */
+  .ant-drawer-body {
+    /* 启用硬件加速滚动 */
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+    /* 优化性能 */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+}
+
+/* ===== 触摸交互优化 ===== */
+
+/* 防止移动端点击延迟和误触 */
+@media (max-width: 768px) {
+  /* 所有可点击元素 */
+  button,
+  a,
+  [role="button"],
+  .ant-btn,
+  .ant-card,
+  .mobile-record-card,
+  .mobile-order-card,
+  .clickable {
+    /* 防止双击缩放延迟 */
+    touch-action: manipulation;
+    /* 禁用长按菜单 */
+    -webkit-touch-callout: none;
+    /* 禁用文本选择 */
+    user-select: none;
+    -webkit-user-select: none;
+    /* 移除点击高亮 */
+    -webkit-tap-highlight-color: transparent;
+    /* 优化点击响应 */
+    cursor: pointer;
+    /* 使用GPU加速 */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+
+  /* 按钮点击反馈优化 */
+  .ant-btn:active,
+  button:active,
+  .mobile-record-card:active,
+  .mobile-order-card:active {
+    /* 快速响应，不使用transform（避免重排） */
+    opacity: 0.7;
+    transition: opacity 0.1s ease;
+  }
+
+  /* 防止按钮点击时的闪烁 */
+  .ant-btn,
+  button {
+    /* 防止点击时的布局抖动 */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    /* 优化渲染 */
+    will-change: opacity;
+  }
+}
+
+/* ===== 防止滚动时的性能问题 ===== */
+
+/* 固定头部优化 - 使用will-change提升性能 */
+.layout-header {
+  /* 使用GPU加速 */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  /* 优化固定定位性能 */
+  will-change: transform;
+  /* 防止滚动时的重绘 */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Sticky元素优化 */
+.ant-card-head {
+  /* 使用GPU加速 */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  /* 优化sticky性能 */
+  will-change: transform;
+}
+
+/* ===== 动画性能优化 ===== */
+
+/* 减少不必要的动画，使用transform代替top/left */
+@media (max-width: 768px) {
+  /* 卡片悬停效果优化（移动端禁用或简化） */
+  .ant-card,
+  .mobile-record-card,
+  .mobile-order-card {
+    /* 使用更快的过渡 */
+    transition: opacity 0.15s ease, box-shadow 0.15s ease;
+    /* 禁用transform动画（避免重排） */
+    /* transform: scale(0.98) 改为 opacity */
+  }
+
+  /* 简化移动端动画 */
+  * {
+    /* 使用GPU加速 */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+
+  /* 禁用不必要的动画 */
+  .ant-card:hover,
+  .mobile-record-card:hover,
+  .mobile-order-card:hover {
+    /* 移动端禁用hover效果 */
+    transform: none !important;
+    box-shadow: inherit !important;
+  }
+}
+
+/* ===== 页面加载性能优化 ===== */
+
+/* 减少初始渲染时的重排和重绘 */
+@media (max-width: 768px) {
+  /* 延迟非关键元素的渲染 */
+  .ant-table,
+  .ant-pagination {
+    /* 优化表格渲染 */
+    contain: layout style paint;
+  }
+
+  /* 优化卡片渲染 */
+  .ant-card {
+    /* 使用contain属性优化渲染 */
+    contain: layout style;
+    /* 优化性能 */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+}
+
+/* ===== 路由跳转优化 ===== */
+
+/* 防止路由跳转时的闪烁和延迟 */
+.page-container {
+  /* 最小高度避免布局抖动 */
+  min-height: calc(100vh - 64px);
+  /* 优化渲染 */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+/* 页面切换时的优化 */
+@media (max-width: 768px) {
+  /* 防止页面切换时的滚动位置问题 */
+  .page-container {
+    /* 立即重置滚动位置 */
+    scroll-top: 0;
+    /* 防止滚动时的性能问题 */
+    overflow-x: hidden;
+  }
+}
+
+/* ===== 按钮响应优化 ===== */
+
+/* 防止按钮点击延迟 */
+@media (max-width: 768px) {
+  /* 所有按钮优化 */
+  .ant-btn,
+  button {
+    /* 立即响应触摸 */
+    touch-action: manipulation;
+    /* 防止延迟 */
+    -webkit-tap-highlight-color: transparent;
+    /* 优化点击响应 */
+    position: relative;
+    /* 使用GPU加速 */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+
+  /* 按钮点击时的视觉反馈（快速响应） */
+  .ant-btn:active {
+    opacity: 0.6;
+    transition: opacity 0.05s ease;
+  }
+
+  /* 防止按钮点击时的布局抖动 */
+  .ant-btn-loading {
+    /* 保持按钮尺寸 */
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+/* ===== 列表和卡片性能优化 ===== */
+
+/* 移动端卡片列表优化 */
+@media (max-width: 768px) {
+  .mobile-record-card,
+  .mobile-order-card {
+    /* 使用contain优化渲染 */
+    contain: layout style;
+    /* GPU加速 */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    /* 优化触摸响应 */
+    touch-action: manipulation;
+    /* 防止点击延迟 */
+    -webkit-tap-highlight-color: transparent;
+    /* 简化过渡效果 */
+    transition: opacity 0.1s ease;
+  }
+
+  /* 卡片点击反馈（不使用transform避免重排） */
+  .mobile-record-card:active,
+  .mobile-order-card:active {
+    opacity: 0.8;
+    transition: opacity 0.05s ease;
+  }
+}
+
+/* ===== 表格横向滚动优化 ===== */
+
+/* 表格滚动性能优化 */
+@media (max-width: 768px) {
+  .table-responsive-wrapper {
+    /* 启用硬件加速滚动 */
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+    /* GPU加速 */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    /* 优化滚动性能 */
+    will-change: scroll-position;
+    /* 防止滚动时的重绘 */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+}
+
+/* ===== 标签页（Tabs）滚动优化 ===== */
+
+/* Tabs横向滚动优化 */
+@media (max-width: 768px) {
+  .ant-tabs,
+  .ant-tabs-nav {
+    /* 启用硬件加速滚动 */
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+    /* GPU加速 */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    /* 优化滚动性能 */
+    will-change: scroll-position;
+  }
+}
+
+/* ===== 防止页面抖动 ===== */
+
+/* 防止移动端页面加载时的抖动 */
+@media (max-width: 768px) {
+  /* 预加载关键样式 */
+  .ant-card-head,
+  .ant-card-body {
+    /* 防止布局抖动 */
+    min-height: 1px;
+  }
+
+  /* 防止图片加载时的布局抖动 */
+  img {
+    /* 保留空间 */
+    display: block;
+    /* 防止加载时的抖动 */
+    width: 100%;
+    height: auto;
+  }
+}
+
+/* ===== 减少重绘和回流 ===== */
+
+/* 优化需要频繁更新的元素 */
+@media (max-width: 768px) {
+  /* 减少不必要的重绘 */
+  .ant-spin,
+  .ant-loading {
+    /* 使用GPU加速 */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    /* 优化动画性能 */
+    will-change: transform;
+  }
+
+  /* 优化消息提示 */
+  .ant-message,
+  .ant-notification {
+    /* GPU加速 */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    /* 优化渲染 */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+}
+
+/* ===== 内存优化 ===== */
+
+/* 减少内存占用 */
+@media (max-width: 768px) {
+  /* 隐藏不必要的装饰元素 */
+  .ant-card::before,
+  .ant-card::after {
+    display: none;
+  }
+
+  /* 简化阴影效果（减少GPU负担） */
+  .ant-card {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  }
+}
+
+/* ===== 防止页面卡顿 ===== */
+
+/* 优化长列表滚动 */
+@media (max-width: 768px) {
+  /* 长列表虚拟滚动优化（如果有） */
+  .virtual-list,
+  .ant-list {
+    /* 使用GPU加速 */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    /* 优化滚动性能 */
+    will-change: scroll-position;
+  }
+}
+
+/* ===== 路由跳转性能优化 ===== */
+
+/* 防止路由跳转时的延迟 */
+@media (max-width: 768px) {
+  /* 页面切换优化 */
+  .fade-enter,
+  .fade-exit {
+    /* 使用GPU加速 */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+
+  /* 减少路由切换时的动画 */
+  .page-container {
+    /* 快速切换 */
+    transition: none;
+  }
+}
+
+/* ===== 优化关键渲染路径 ===== */
+
+/* 延迟非关键内容加载 */
+@media (max-width: 768px) {
+  /* 隐藏非关键元素直到需要时 */
+  .lazy-load {
+    /* 延迟加载 */
+    content-visibility: auto;
+    contain-intrinsic-size: 200px;
+  }
+}
+
+/* ===== 优化字体渲染 ===== */
+
+/* 移动端字体渲染优化 */
+@media (max-width: 768px) {
+  body {
+    /* 优化字体渲染 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    /* 防止字体闪烁 */
+    font-display: swap;
+  }
+}
+
+/* ===== 防止滚动穿透 ===== */
+
+/* 防止Modal或Drawer打开时背景滚动 */
+@media (max-width: 768px) {
+  /* Modal打开时锁定背景滚动 */
+  body.ant-modal-open {
+    position: fixed;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  /* Drawer打开时锁定背景滚动 */
+  body.ant-drawer-open {
+    position: fixed;
+    width: 100%;
+    overflow: hidden;
+  }
+}
+
+/* ===== 优化加载状态 ===== */
+
+/* 减少加载动画的GPU负担 */
+@media (max-width: 768px) {
+  .ant-spin-dot {
+    /* 使用简化的加载动画 */
+    animation-duration: 0.8s;
+  }
+
+  /* 减少加载状态的渲染 */
+  .ant-spin-container {
+    /* 优化渲染 */
+    contain: layout style;
+  }
+}
+
+

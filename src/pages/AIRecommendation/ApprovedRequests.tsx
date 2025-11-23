@@ -146,11 +146,18 @@ const ApprovedRequests: React.FC = () => {
           ) : requests.length === 0 ? (
             <Empty description="暂无已审批申请" style={{ padding: '40px 0' }} />
           ) : (
-            requests.map((request) => (
+            requests.map((request) => {
+              const handleCardClick = (e: React.MouseEvent) => {
+                e.preventDefault()
+                e.stopPropagation()
+                navigate(`/travel-request/${request.id}`)
+              }
+              
+              return (
               <Card
                 key={request.id}
                 className="mobile-record-card"
-                onClick={() => navigate(`/travel-request/${request.id}`)}
+                onClick={handleCardClick}
               >
                 <div className="mobile-card-header">
                   <div className="mobile-card-title-row">
@@ -202,7 +209,8 @@ const ApprovedRequests: React.FC = () => {
                   </Button>
                 </div>
               </Card>
-            ))
+              )
+            })
           )}
         </div>
 

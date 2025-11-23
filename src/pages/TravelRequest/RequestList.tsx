@@ -21,17 +21,18 @@ const RequestList: React.FC = () => {
   useEffect(() => {
     loadRequests()
     loadUserApprovalPermission()
-  }, [activeTab])
+  }, [activeTab, user]) // 添加 user 依赖，当用户信息变化时重新加载权限
 
   const loadUserApprovalPermission = async () => {
     try {
       const { data: { user: authUser } } = await supabase.auth.getUser()
       if (!authUser) {
-        console.warn('未找到认证用户')
+        console.warn('⚠️ 未找到认证用户')
+        setCanApprove(false) // 没有用户时设为false
         return
       }
 
-      console.log('正在加载用户审批权限，用户ID:', authUser.id)
+      console.log('🔍 正在加载用户审批权限，用户ID:', authUser.id)
 
       const { data, error } = await supabase
         .from('users')
@@ -40,20 +41,38 @@ const RequestList: React.FC = () => {
         .single()
 
       if (error) {
-        console.error('加载审批权限失败:', error)
+        console.error('❌ 加载审批权限失败:', error)
         // 如果字段不存在，错误可能是 "column \"can_approve\" does not exist"
-        if (error.message?.includes('can_approve')) {
-          console.error('提示：can_approve 字段可能不存在，请先执行数据库迁移脚本')
+        if (error.message?.includes('can_approve') || error.code === 'PGRST204') {
+          console.error('⚠️ 提示：can_approve 字段可能不存在！')
+          console.error('📝 请执行以下SQL脚本添加字段：')
+          console.error('   文件: 一键设置审批权限.sql')
+          console.error('   或: database_add_approval_permission.sql')
+          // 如果字段不存在，默认设为true（允许用户尝试审批）
+          console.warn('💡 临时设置 canApprove = true（字段不存在时）')
+          setCanApprove(true)
+        } else {
+          setCanApprove(false)
         }
       } else if (data) {
-        const hasPermission = data.can_approve !== false // 默认true
-        console.log('用户审批权限加载成功:', { can_approve: data.can_approve, hasPermission })
+        // 如果数据存在，检查 can_approve 字段
+        const hasPermission = data.can_approve !== false // 默认true（null/undefined视为true）
+        console.log('✅ 用户审批权限加载成功:', { 
+          can_approve: data.can_approve, 
+          hasPermission,
+          willShowApproveButton: hasPermission
+        })
         setCanApprove(hasPermission)
       } else {
-        console.warn('未找到用户数据')
+        console.warn('⚠️ 未找到用户数据，默认设置为有权限')
+        // 如果查询成功但没有数据，可能是新用户，默认给权限
+        setCanApprove(true)
       }
-    } catch (error) {
-      console.error('加载审批权限失败:', error)
+    } catch (error: any) {
+      console.error('❌ 加载审批权限异常:', error)
+      // 异常情况下，默认给权限（避免功能不可用）
+      console.warn('💡 异常情况下，临时设置 canApprove = true')
+      setCanApprove(true)
     }
   }
 
@@ -276,11 +295,18 @@ const RequestList: React.FC = () => {
           ) : requests.length === 0 ? (
             <Empty description="暂无申请记录" style={{ padding: '40px 0' }} />
           ) : (
-            requests.map((request) => (
+            requests.map((request) => {
+              const handleCardClick = (e: React.MouseEvent) => {
+                e.preventDefault()
+                e.stopPropagation()
+                navigate(`/travel-request/${request.id}`)
+              }
+              
+              return (
               <Card
                 key={request.id}
                 className="mobile-record-card"
-                onClick={() => navigate(`/travel-request/${request.id}`)}
+                onClick={handleCardClick}
               >
                 <div className="mobile-card-header">
                   <div className="mobile-card-title-row">
@@ -364,7 +390,8 @@ const RequestList: React.FC = () => {
                   </Button>
                 </div>
               </Card>
-            ))
+              )
+            })
           )}
         </div>
 

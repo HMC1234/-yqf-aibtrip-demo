@@ -202,11 +202,18 @@ const OrderList: React.FC = () => {
           ) : orders.length === 0 ? (
             <Empty description="暂无订单记录" style={{ padding: '40px 0' }} />
           ) : (
-            orders.map((order) => (
+            orders.map((order) => {
+              const handleCardClick = (e: React.MouseEvent) => {
+                e.preventDefault()
+                e.stopPropagation()
+                navigate(`/booking/orders/${order.id}`)
+              }
+              
+              return (
               <Card
                 key={order.id}
                 className="mobile-record-card"
-                onClick={() => navigate(`/booking/orders/${order.id}`)}
+                onClick={handleCardClick}
               >
                 <div className="mobile-card-header">
                   <div className="mobile-card-title-row">
@@ -272,7 +279,8 @@ const OrderList: React.FC = () => {
                   </Button>
                 </div>
               </Card>
-            ))
+              )
+            })
           )}
         </div>
 
